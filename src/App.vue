@@ -1,30 +1,68 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class='views'>
+    <router-view v-slot="{ Component }">
+      <transition name="pageChange" mode="out-in">
+          <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
-  <router-view/>
+  <TabMenu />
+  <Menu></Menu>
+  <CustomNotification />
 </template>
 
+<script>
+import TabMenu from '@/components/menu/side/TabMenu.vue'
+import Menu from '@/components/menu/main/Menu.vue'
+import CustomNotification from '@/components/CustomNotification.vue';
+
+export default {
+  components: {
+    TabMenu,
+    Menu,
+    CustomNotification
+  },
+  // computed: {
+  //   not() { return this.$store.getters.getNotifications }
+  // }
+}
+</script>
 <style lang="scss">
+.views {
+  width: 100vw;
+  min-height: 100vh;
+  padding-bottom: 44px;
+  overflow-x: hidden;
+  padding: 4px 4px 44px;
+}
+.pageChange-enter {
+  opacity: 0;
+}
+
+.pageChange-enter-active {
+  transition: opacity 1s ease-in;
+}
+
+// .pageChange-leave {
+// }
+
+.pageChange-leave-active {
+  transition: opacity 1s ease-out;
+  opacity: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
+  height: 100vh;
+  width: 100vw;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+@media (min-width: 600px) {
+  .views {
+    padding: 1rem 1rem 44px;
   }
 }
+
 </style>
