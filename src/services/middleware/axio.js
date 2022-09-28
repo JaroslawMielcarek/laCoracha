@@ -4,13 +4,12 @@ import store from '../../store/index'
 import router from '../../router/index'
 import { setNotification } from '../util/universal'
 
-const API_URL = 'https://lacoracha-backend.azurewebsites.net/api/' //'http://localhost:8080/api/'
+const API_URL = 'https://lacoracha-backend.azurewebsites.net/api/'
 
 export default function axio (url, data, headers = undefined) {
   return axios
     .post(API_URL + url, data, { headers: headers || authHeader() })
     .then(response => {
-      // console.log('response', response.message, response.data)
       if (response.message) return response.message
       return response.data
     })
