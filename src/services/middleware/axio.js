@@ -4,7 +4,7 @@ import store from '../../store/index'
 import router from '../../router/index'
 import { setNotification } from '../util/universal'
 
-const API_URL = 'https://lacoracha-backend.azurewebsites.net' //'http://localhost:8080/api/'
+const API_URL = 'https://lacoracha-backend.azurewebsites.net/api/' //'http://localhost:8080/api/'
 
 export default function axio (url, data, headers = undefined) {
   return axios
