@@ -55,7 +55,6 @@ export default {
   computed: {
     players () {
       const list = this.$store.getters.getPlayers
-      // console.log('sortBy', this.sortBy, list)
       if (this.sortBy === 'memberID') return sortListOfObjectsBy(list, 'memberID', false)
       if (this.sortBy === 'team') return sortListOfObjectsBy(list, 'team', false)
       if (this.sortBy === 'name') return sortListOfObjectsBy(list, 'nick', false)
