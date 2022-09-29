@@ -1,4 +1,6 @@
-
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const WEEK_DAYS = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
+  
 export function generateHoursArray (hour, maxHour, slot) {
   const arr = []
   while (hour <= maxHour) {
@@ -18,11 +20,9 @@ export function isoDateToDayMonthYear (date) {
   return day && month && year ? `${day}/${month}/${year}` : '--/--/----'
 }
 export function getDayOfWeek (date) {
-  const WEEK_DAYS = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
-  return WEEK_DAYS[new Date(date).getDay()]
+ return WEEK_DAYS[new Date(date).getDay()]
 }
 export function getMonthName (date) {
-  const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
   return MONTHS[new Date(date).getMonth()]
 }
 export function areEqualDates (firstDate, secondDate) {
@@ -34,4 +34,10 @@ export function areEqualDates (firstDate, secondDate) {
 }
 export function isBeforeToday (date) {
   return new Date(date) < new Date()
+}
+export function getAllMonths () {
+  return [...MONTHS]
+}
+export function getAllWeekDays () {
+  return [...WEEK_DAYS]
 }

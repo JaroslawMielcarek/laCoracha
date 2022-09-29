@@ -4,7 +4,7 @@
     <h5>Miembro: {{ playerID }} - pagos</h5>
     <div class='month'>
       <h5 class='name'>Nuevo mes</h5>
-      <input class='row' type='month' v-model="newMonth.monthYear" @change="checkIfMonthExist" />
+      <input class='row' type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="newMonth.monthYear" @change="checkIfMonthExist" />
       <button class='btn white full-width' @click="addMonth" :disabled="!newMonth.monthYear">Agregar</button>
     </div>
     <div class='months row' v-if='player.payments'>
@@ -53,7 +53,8 @@ export default {
   computed: {
     playerID () { return this.value.memberID },
     payments () { return this.sortListOfObjectsBy(this.value.payments, 'monthYear', true) },
-    errorList () { return this.errors.join('\n') }
+    errorList () { return this.errors.join('\n') },
+    months () { return this.$store.getters.getMonths }
   },
   methods: {
     sortListOfObjectsBy,
@@ -95,8 +96,8 @@ export default {
     submitForm () {
       if (!this.checkForm()) return null
 
-      const { id, payments } = this.player
-      const player = { id, payments }
+      const { _id, payments } = this.player
+      const player = { _id, payments }
       this.$store.dispatch('updatePlayer', player)
         .then(response => {
           this.errors = [response]
@@ -104,8 +105,7 @@ export default {
           this.$emit('updated')
         })
         .catch(error => {
-          console.log('err', error)
-          this.errors = error.data.message
+          this.errors = error
         })
     }
   }
