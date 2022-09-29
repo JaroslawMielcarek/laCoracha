@@ -53,7 +53,7 @@ export default {
     },
     setError (message) {
       this.errorMessage.push(message)
-      setTimeout(() => { this.errorMessage = '' }, 4000)
+      setTimeout(() => { this.errorMessage = [] }, 4000)
     },
     handleSubmit () {
       if (this.email !== this.email_confirm) return this.setError(['Los correos electrónicos son diferentes!'])
@@ -61,7 +61,6 @@ export default {
       AuthService.forgot({ email: this.email })
         .then(response => {
           this.setError(response.message)
-          alert('Revise su correo electrónico para ver las instrucciones a seguir', response)
           this.resetForm()
         })
         .catch(error => {
