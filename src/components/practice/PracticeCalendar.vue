@@ -68,13 +68,13 @@ export default {
     checkOcupation (practice) { return 100 - practice.percentOcupied },
     checkIfParticipating (practice) {
       if (!practice) return false
-      return !!practice.players.find(p => p.id === this.currentUser.id)
+      return !!practice.players.find(p => p._id === this.currentUser._id)
     },
     handleClose () { this.practiceID = undefined },
-    togglePracticeDetails (day) { if (day.practice) this.practiceID = (this.practiceID) ? undefined : day.practice.id }
+    togglePracticeDetails (day) { if (day.practice) this.practiceID = (this.practiceID) ? undefined : day.practice._id }
   },
   computed: {
-    practiceDetails () { return this.practicesAroundToday.find(p => p.id === this.practiceID) },
+    practiceDetails () { return this.practicesAroundToday.find(p => p._id === this.practiceID) },
     currentUser () { return this.$store.getters.getUser },
     checkStrikes () {
       const player = this.currentUser

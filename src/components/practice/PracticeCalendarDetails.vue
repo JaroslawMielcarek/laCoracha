@@ -34,6 +34,7 @@
 <script>
 import { getDayOfWeek } from '@/services/util/time.js'
 import { checkIfPracticeAvailable, isInQueue } from '@/services/util/practice.js'
+import { setNotification } from '@/services/util/universal'
 
 export default {
   emits: ['closeDetails'],
@@ -58,21 +59,27 @@ export default {
     checkIfPracticeAvailable,
     handleClose () {
       this.$emit('closeDetails', JSON.parse(JSON.stringify({})))
-      // emit handleClose
     },
     toggleParticipation () {
       const practice = this.value
-      const { id, nick, practices, preferedPositions } = this.currentUser
-      // const player = { id, nick, practices, preferedPositions }
-      this.$store.dispatch('subscribeForPractice', { _id: practice.id, player: { _id: id, nick, practices, preferedPositions } })
+      const { _id, nick, practices, preferedPositions } = this.currentUser
+      if(!preferedPositions || !preferedPositions.length) return this.error = 'Primero elige tus posiciones preferidas'
+
+      this.$store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick, practices, preferedPositions } })
         .then(response => { this.error = response })
-        .catch(err => { this.error = err })
+        .catch(err => { 
+          setNotification({
+            name: 'subscribeForPractice error',
+            text: err,
+            typeOfNotification: 'danger'
+          })
+        })
     }
   },
   watch: {
     error () {
       if (this.error) {
-        setTimeout(() => { this.error = '' }, 3000)
+        const t = setTimeout(() => { this.error = ''; clearTimeout(t) }, 3000)
       }
     }
   },
