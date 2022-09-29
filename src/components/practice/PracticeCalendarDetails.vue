@@ -63,10 +63,18 @@ export default {
     toggleParticipation () {
       const practice = this.value
       const { _id, nick, practices, preferedPositions } = this.currentUser
+      
       if(!preferedPositions || !preferedPositions.length) return this.error = 'Primero elige tus posiciones preferidas'
 
-      this.$store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick, practices, preferedPositions } })
-        .then(response => { this.error = response })
+      this.$store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick: nick.value, practices, preferedPositions } })
+        .then(response => { 
+          setNotification({
+            name: 'subscribeForPractice response',
+            text: response,
+            typeOfNotification: 'success'
+          })
+          this.error = response 
+        })
         .catch(err => { 
           setNotification({
             name: 'subscribeForPractice error',
