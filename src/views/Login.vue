@@ -62,8 +62,7 @@ export default {
           })
           .catch((error) => {
             this.errorMessage = (error.response && error.response.data && error.response.data.message) ||
-              error.message ||
-              error.toString()
+              error.message
             setTimeout(() => { this.errorMessage = '' }, 4000)
           })
       }

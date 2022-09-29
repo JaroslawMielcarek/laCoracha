@@ -1,7 +1,6 @@
 <template>
   <div class = 'plusMinusInput'>
     <button class = "btn decrease" id="decrease" @click.prevent="val--" v-bind:disabled="val < (min + 1)">-</button>
-    <!-- <input class = 'value--input' v-model.number='val' /> -->
     <input  class = 'value--input'
             type = "text"
             min = 0

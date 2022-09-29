@@ -23,7 +23,7 @@
         :required='true'
         key='email_confirm'/>
     </div>
-    <template v-if="errorMessage">
+    <template v-if="errorMessage.length">
       <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
     </template>
     <button type='submit' class='btn white full-width'>Enviar</button>
@@ -41,7 +41,7 @@ export default {
   },
   data () {
     return {
-      errorMessage: '',
+      errorMessage: [],
       email: '',
       email_confirm: ''
     }
@@ -52,11 +52,11 @@ export default {
       this.email_confirm = ''
     },
     setError (message) {
-      this.errorMessage = message
+      this.errorMessage.push(message)
       setTimeout(() => { this.errorMessage = '' }, 4000)
     },
     handleSubmit () {
-      if (this.email !== this.email_confirm) return this.setError('Los correos electrónicos son diferentes!')
+      if (this.email !== this.email_confirm) return this.setError(['Los correos electrónicos son diferentes!'])
 
       AuthService.forgot({ email: this.email })
         .then(response => {
@@ -69,8 +69,7 @@ export default {
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
-              error.message ||
-              error.toString())
+              error.message)
         })
     }
   }

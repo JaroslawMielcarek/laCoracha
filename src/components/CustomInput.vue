@@ -64,11 +64,11 @@ export default {
       const re = new RegExp(this.pattern)
       const value = event.target.value
       if (this.required && value === '') {
-        this.error = { message: "Can't be empty", showHint: false }
+        this.error = { message: "No puede estar vacío", showHint: false }
         this.resetError()
         this.$emit('update:value', '')
       } else if (value && re && !re.test(value)) {
-        this.error = { message: "Doesn't fit requirements!", showHint: true }
+        this.error = { message: "No se ajusta a los requisitos!", showHint: true }
         this.resetError()
         this.$emit('update:value', '')
       } else {

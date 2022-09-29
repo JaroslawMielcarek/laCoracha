@@ -38,7 +38,7 @@ export default {
       const f = event.target.files[0]
 
       if(f.size > this.sizeLimit) {
-        this.error = 'File is too heavy!'
+        this.error = 'El archivo es demasiado pesado!'
         return setTimeout(() => this.error = '', 3000)
       }
 
@@ -57,7 +57,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-
 .uploadFile {
   display: flex;
   max-width: 20ch;

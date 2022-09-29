@@ -59,9 +59,9 @@ export default {
   methods: {
     validate (val) {
       const value = parseFloat(val)
-      if (Number.isNaN(value)) return this.$emit('update:value', 0)
-      if (value < this.min) { this.error = { message: `Need to be bigger than ${this.min}`, showHint: false }; return }
-      if (value > this.max) { this.error = { message: `Need to be smaller than ${this.max}`, showHint: false }; return }
+      if (Number.isNaN(value)) return this.$emit('update:value', this.min)
+      if (value < this.min) { this.error = { message: `Necesita ser más grande que ${this.min}`, showHint: false }; return }
+      if (value > this.max) { this.error = { message: `Necesita ser más pequeño que ${this.max}`, showHint: false }; return }
       this.error = { message: '', showHint: false }
       this.$emit('update:value', value)
     }
@@ -105,7 +105,7 @@ export default {
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 

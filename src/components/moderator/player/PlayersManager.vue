@@ -23,7 +23,7 @@
           <p class='column number'>{{player.number? player.number.value : ''}}</p>
           <p class='column gender'>{{player.isFemale ? 'Mujer' : 'Hombre'}}</p>
           <p class='column team'>{{player.team}}</p>
-          <div class='action column'><button class='btn danger' @click="removePlayer('Player', player)">x</button></div>
+          <div class='action column'><button class='btn danger' @click="removeElement('Player', player)">x</button></div>
         </div>
       </div>
     </div>
