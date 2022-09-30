@@ -23,7 +23,6 @@
       <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
       <p class='btn text' @click="clearForm">Clear</p>
     </div>
-    <p v-if="errors.length">{{errors}}</p>
   </form>
 </template>
 
@@ -57,16 +56,16 @@ export default {
   },
   data () {
     return {
-      errors: [],
       entry: isEmptyObject(this.value)
         ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
-        : JSON.parse(JSON.stringify(this.value)) // { ...this.value }
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   watch: {
     value () {
-      if (!isEmptyObject(this.value)) this.entry = JSON.parse(JSON.stringify(this.value)) // { ...this.value }
-      else this.entry = JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
+      this.entry = isEmptyObject(this.value)
+        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   computed: {
@@ -89,7 +88,6 @@ export default {
       }
     },
     togglePlayer (playerID) {
-      console.log('entry', this.entry.players)
       const playerExist = this.entry.players.find(p => p === playerID)
       if (playerExist) this.entry.players = this.entry.players.filter(p => p !== playerID)
       else this.entry.players.push(playerID)
@@ -98,19 +96,7 @@ export default {
       this.entry.file = event.target.files[0]
     },
     clearForm () { this.$emit('clearForm') },
-    checkForm () {
-      this.errors = []
-
-      if (!this.entry.name) this.errors.push('Team name required')
-
-      return !this.errors.length
-    },
-    submitForm () {
-      if (this.checkForm()) {
-        if (this.isEditing) return this.$emit('submitForm', 'updateTeam', this.entry)
-        return this.$emit('submitForm', 'addTeam', this.entry)
-      }
-    }
+    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updateTeam' : 'addTeam', this.entry) }
   }
 }
 </script>

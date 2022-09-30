@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultPractice">Add Practice</button>
+    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultPractice">Add Practice</button>
     <AddEditPractice v-else :value="value" :isEditing="isEditing" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))" @clearForm="setState(undefined)"/>
   </div>
 </template>
@@ -39,7 +39,6 @@ import AddEditPractice from '@/components/moderator/practice/AddEditPractice.vue
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import { isoDateToDayMonthYear, getDayOfWeek } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement} from '@/services/util/universal.js'
-import store from '@/store/index'
 
 export default {
   name: 'PracticeManager',
@@ -55,14 +54,14 @@ export default {
     }
   },
   created(){
-    store.dispatch('fetchPractices')
+    this.$store.dispatch('fetchPractices')
   },
   computed: {
     practices () {
-      if (this.showBy === 'week') return store.getters.getPracticesOf('week')
-      if (this.showBy === 'month') return store.getters.getPracticesOf('month')
-      if (this.showBy === 'season') return store.getters.getPracticesOf('season')
-      return store.getters.getPractices
+      if (this.showBy === 'week') return this.$store.getters.getPracticesOf('week')
+      if (this.showBy === 'month') return this.$store.getters.getPracticesOf('month')
+      if (this.showBy === 'season') return this.$store.getters.getPracticesOf('season')
+      return this.$store.getters.getPractices
     }
   },
   methods: {

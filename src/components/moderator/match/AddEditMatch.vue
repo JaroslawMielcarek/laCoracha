@@ -27,12 +27,6 @@
       <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
       <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
     </div>
-    <div v-if="Array.isArray(errors)">
-      <p v-for="error of errors" :key="error">{{error}}</p>
-    </div>
-    <div v-else>
-      <p>{{errors}}</p>
-    </div>
   </form>
 </template>
 
@@ -62,35 +56,21 @@ export default {
   },
   data () {
     return {
-      errors: [],
       entry: isEmptyObject(this.value)
         ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultMatch))
-        : JSON.parse(JSON.stringify(this.value)) // { ...this.value }
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   watch: {
     value () {
-      if (!isEmptyObject(this.value)) this.entry = JSON.parse(JSON.stringify(this.value)) // { ...this.value }
-      else this.entry = JSON.parse(JSON.stringify(this.$store.getters.getDefaultMatch))
+      this.entry = isEmptyObject(this.value)
+        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultMatch))
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   methods: {
     isEmptyObject,
-    checkForm () {
-      this.errors = []
-
-      if (!this.entry.homeTeam.clubName) this.errors.push('Home team name required')
-      if (!this.entry.guestTeam.clubName) this.errors.push('Guest team name required')
-      if (!this.entry.dateTime.date) this.errors.push('Date required')
-      if (!this.entry.dateTime.time) this.errors.push('Time required')
-
-      return !this.errors.length
-    },
-    submitForm () {
-      if (this.checkForm()) {
-        return this.$emit('submitForm', this.isEditing ? 'updateMatch' : 'addMatch', this.entry)
-      }
-    }
+    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updateMatch' : 'addMatch', this.entry) }
   }
 }
 </script>

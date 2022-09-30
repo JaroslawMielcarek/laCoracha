@@ -26,7 +26,6 @@
       <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
       <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
     </div>
-    <p v-if="errors.length">{{errors}}</p>
   </form>
 </template>
 
@@ -60,16 +59,16 @@ export default {
   },
   data () {
     return {
-      errors: [],
       entry: isEmptyObject(this.value)
         ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPlayer))
-        : JSON.parse(JSON.stringify(this.value)) // { ...this.value }
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   watch: {
     value () {
-      if (!isEmptyObject(this.value)) this.entry = JSON.parse(JSON.stringify(this.value)) // { ...this.value }
-      else this.entry = JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
+      this.entry = isEmptyObject(this.value)
+        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   computed: {
@@ -94,21 +93,7 @@ export default {
         this.entry.id = ''
       }
     },
-    checkForm () {
-      this.errors = []
-
-      // if (!this.entry.memberID) this.errors.push('Player memberID required')
-      // if (!this.entry.guestTeam.clubName) this.errors.push('Guest team name required')
-      // if (!this.entry.dateTime.date) this.errors.push('Date required')
-      // if (!this.entry.dateTime.time) this.errors.push('Time required')
-
-      return !this.errors.length
-    },
-    submitForm () {
-      if (this.checkForm()) {
-        return this.$emit('submitForm', this.isEditing ? 'updatePlayer' : 'addPlayer', this.setInTeamPerformancePercents(this.entry))
-      }
-    }
+    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updatePlayer' : 'addPlayer', this.setInTeamPerformancePercents(this.entry)) }
   }
 }
 </script>

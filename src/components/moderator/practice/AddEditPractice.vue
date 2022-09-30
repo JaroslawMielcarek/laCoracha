@@ -5,7 +5,7 @@
       <span>Date and Time:</span>
       <CustomDateTimeInput v-model="entry.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
       <span>Players Limit:</span>
-      <CustomSelectInput v-model:value="entry.playersLimit" :options="['6', '12', '18', '24']" placeholder="Players Limit"/>
+      <CustomSelectInput v-model:value="entry.playersLimit" :options="['6', '12', '18', '24']" placeholder="Players Limit" :required="true"/>
     </div>
     <PracticePlayersList :playersSubscribed="entry.players" :key="playersList" @addPlayer="addPlayer($event)" @removePlayer="removePlayer($event)"/>
     <div class='row legend__container'>
@@ -18,7 +18,6 @@
       <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
       <p class='btn text' @click="clearForm">Clear</p>
     </div>
-    <p v-if="errors.length">{{errors}}</p>
   </form>
 </template>
 
@@ -48,18 +47,16 @@ export default {
   },
   data () {
     return {
-      errors: [],
       entry: isEmptyObject(this.value)
         ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPractice))
-        : JSON.parse(JSON.stringify(this.value)) // { ...this.value }
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   watch: {
     value () {
-      if (!isEmptyObject(this.value)) {
-        this.entry = {}
-        this.entry = JSON.parse(JSON.stringify(this.value)) // { ...this.value }
-      } else this.entry = JSON.parse(JSON.stringify(this.$store.getters.getDefaultPractice))
+      this.entry = isEmptyObject(this.value)
+        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPractice))
+        : JSON.parse(JSON.stringify(this.value))
     }
   },
   computed: {
@@ -81,20 +78,7 @@ export default {
     addPlayer (player) { this.entry.players.push(player) },
     removePlayer (player) { this.entry.players = this.entry.players.filter(p => p._id !== player._id) },
     clearForm () { this.$emit('clearForm', JSON.parse(JSON.stringify({}))) },
-    checkForm () {
-      this.errors = []
-
-      if (!this.entry.dateTime) this.errors.push('Practice date and time required')
-      if (!this.entry.playersLimit) this.errors.push('Players Limit required')
-
-      return !this.errors.length
-    },
-    submitForm () {
-      if (this.checkForm()) {
-        if (this.isEditing) return this.$emit('submitForm', 'updatePractice', this.entry)
-        return this.$emit('submitForm', 'addPractice', this.entry)
-      }
-    }
+    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updatePractice' : 'addPractice', this.entry) }
   }
 }
 </script>

@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultTeam">Add Team</button>
+    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultTeam">Add Team</button>
     <AddEditTeam v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
@@ -36,7 +36,6 @@
 import AddEditTeam from '@/components/moderator/team/AddEditTeam.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
-import store from '@/store/index'
 
 export default {
   name: 'TeamsManager',
@@ -52,7 +51,7 @@ export default {
   },
   computed: { 
     teams () { 
-      const list = store.getters.getTeams
+      const list = this.$store.getters.getTeams
         if (this.sortBy === 'name') return sortListOfObjectsBy(list, 'name', false)
         if (this.sortBy === 'league') return sortListOfObjectsBy(list, 'league', false)
         if (this.sortBy === 'gender') return sortListOfObjectsBy(list, 'gender', false)

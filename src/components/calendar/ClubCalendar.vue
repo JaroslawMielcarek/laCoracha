@@ -24,7 +24,6 @@
       <p class="legend friendly">Amistoso</p>
       <p class="legend disputed">Disputado</p>
     </div>
-    <!-- {{matches(showBy)}} -->
   </div>
 </template>
 

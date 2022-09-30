@@ -1,5 +1,5 @@
 <template>
-  <select class='select' :value="value" @change="this.$emit('update:value', $event.target.value)" :disabled="disabled">
+  <select class='select' :value="value" @change="this.$emit('update:value', $event.target.value)" :disabled="disabled" :required="required">
     <option value="" disabled selected>{{ placeholder }}</option>
     <option v-for="option in options" :key="option">{{ option }}</option>
   </select>
@@ -23,6 +23,10 @@ export default {
       default: 'Choose option'
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    required: {
       type: Boolean,
       default: false
     }
