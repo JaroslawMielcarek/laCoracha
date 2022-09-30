@@ -7,7 +7,7 @@
   <p v-if="!payments.length" class='no-data'>¡No hay historial de pagos en este período!</p>
   <div v-else class='calendar'>
     <div class='month' v-for="element in payments" :key="element">
-      <h5 class='name'>{{ getMonthName(element.monthYear) }}</h5>
+      <h5 class='name'>{{ getMonthNameByNumber(element.monthYear) }}</h5>
       <div :class="['payment', {paid: payment.isPaid !== 'no'}]" v-for="payment in element.payments" :key="payment">
         <p class='type'>{{payment.type}}:</p>
         <p class='qty'>{{payment.qty}}</p>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { getMonthName } from '@/services/util/time.js'
+import { getMonthNameByNumber } from '@/services/util/time.js'
 export default {
   name: 'PaymentCalendar',
   components: {
@@ -28,7 +28,7 @@ export default {
     }
   },
   methods: {
-    getMonthName
+    getMonthNameByNumber
   },
   computed: {
     maxYear () { return new Date().getFullYear() + 2 },

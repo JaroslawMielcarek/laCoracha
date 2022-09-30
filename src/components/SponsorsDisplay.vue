@@ -5,7 +5,7 @@
   <div class='sponsor__main row' v-if="sponsors.main.length">
     <template v-for="sponsor in sponsors.main" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
-        <div class="logo__wrapper">
+        <div class="logo__wrapper" v-if="sponsor.logo">
           <img :src="`data:image/${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
         </div>
         <p class="name">{{sponsor.name}}</p>
@@ -15,7 +15,7 @@
   <div class='sponsor__sub row' v-if="sponsors.side.length">
     <template v-for="sponsor in sponsors.side" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
-        <div class="logo__wrapper">
+        <div class="logo__wrapper" v-if="sponsor.logo">
           <img :src="`data:image/${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
         </div>
           <p class="name">{{sponsor.name}}</p>
@@ -52,6 +52,7 @@ export default {
         if(s.isMain) return spon.main.push(s)
         spon.side.push(s)
       })
+      console.log('spon', spon)
       return spon
     }
   },
@@ -60,6 +61,7 @@ export default {
     fetchSponsors () {
       PublicService.getAll('Sponsors')
         .then(response => {
+          console.log('reposnose', response)
           this.sponsorsList = response
         })
         .catch(error => {

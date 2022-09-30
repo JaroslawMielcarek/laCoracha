@@ -5,7 +5,7 @@
       <p v-if="checkStrikes.lastStrike">Último strike obtenido en <b>{{isoDateToDayMonthYear(checkStrikes.lastStrike)}}</b></p>
     </div>
     <div class='card'>
-      <h3 class='month'>{{getMonthName(new Date())}}</h3>
+      <h3 class='month'>{{getMonthNameByNumber(new Date())}}</h3>
       <div class='day__names'>
         <div class='name' v-for='name in daysNames' :key="name">{{name}}</div>
       </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { getDayOfWeek, getMonthName, areEqualDates, isoDateToDayMonthYear } from '@/services/util/time.js'
+import { getDayOfWeek, getMonthNameByNumber, areEqualDates, isoDateToDayMonthYear } from '@/services/util/time.js'
 import { isInQueue } from '@/services/util/practice.js'
 import PracticeCalendarDetails from '@/components/practice/PracticeCalendarDetails.vue'
 export default {
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     getDayOfWeek,
-    getMonthName,
+    getMonthNameByNumber,
     areEqualDates,
     isInQueue,
     isoDateToDayMonthYear,
