@@ -101,6 +101,10 @@ export const auth = {
     getUserRoles (state) {
       if (state.user) return state.user.roles
       return null
+    },
+    getUserGender (state) {
+      if (state.user) return state.user.isFemale
+      return false
     }
   }
 }

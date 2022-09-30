@@ -9,7 +9,7 @@
         <CustomToolTip :text="isLogged ? 'You can log out' : ' You can log in'" direction='right'/>
         <div className = 'avatar'
             @click=" toggleIsOpen() " >
-            <img src='@/assets/images/profileMan.svg' alt = "Player avatar" />
+            <img :src="getAvatar" alt = "Player avatar" />
         </div>
         <router-link to='/' v-if="isLogged"><button class='btn white' @click=" logout()"> logout </button></router-link>
         <router-link to='/login' v-else><button class= 'btn color' @click=" login()"> login </button></router-link>
@@ -84,7 +84,9 @@ export default {
     isLogged () { return this.$store.getters.getStatus },
     userRoles () { return this.$store.getters.getUserRoles },
     isModerator () { return this.userRoles && this.userRoles.includes('ROLE_MODERATOR') },
-    isAdmin () { return this.userRoles && this.userRoles.includes('ROLE_ADMIN') }
+    isAdmin () { return this.userRoles && this.userRoles.includes('ROLE_ADMIN') },
+    isFemale () { return this.$store.getters.getUserGender },
+    getAvatar () { return this.isLogged && this.isFemale ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') }
   }
 }
 </script>
