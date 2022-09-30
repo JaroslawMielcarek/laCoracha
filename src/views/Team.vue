@@ -91,7 +91,6 @@ export default {
       const recieve = performance.recieve.percent ? performance.recieve.percent * SCORE_WEIGHTS[position].recieve : 0
       const serve = performance.serve.percent ? performance.serve.percent * SCORE_WEIGHTS[position].serve : 0
       const set = performance.set.percent ? performance.set.percent * SCORE_WEIGHTS[position].set : 0
-      // console.log('stats', attack, block, recieve, serve, set)
       return Math.round((attack + block + recieve + serve + set + Number.EPSILON) * 100) / 100
     },
     expandHeight(val) { this.expanded = val },
@@ -141,6 +140,8 @@ export default {
   position: absolute;
   width: 100%;
   height: auto;
+    // grid-column: 1 / -1;
+    // grid-row: 1 /-1;
 }
 
 .player[data-position='Colocador']{
@@ -173,7 +174,6 @@ export default {
   display: inline-block;
     grid-area: reserve;
     width: 38px;
-    //grid-area: reserve;
     margin-right: 10px;
     transition: width .3s ease-in-out;
     &:last-of-type {
@@ -181,11 +181,6 @@ export default {
     }
     &:hover{
         width: 72px;
-        //margin-right: 10px;
     }
-}
-.field{
-    grid-column: 1 / -1;
-    grid-row: 1 /-1;
 }
 </style>

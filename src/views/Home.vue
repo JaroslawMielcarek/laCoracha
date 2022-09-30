@@ -42,7 +42,7 @@
 // @ is an alias to /src
 import ClubCalendar from '@/components/calendar/ClubCalendar.vue'
 import SponsorsDisplay from '@/components/SponsorsDisplay.vue'
-
+import { sendToWhatsApp } from '@/services/util/universal'
 export default {
   name: 'Home',
   components: {
@@ -50,7 +50,7 @@ export default {
     SponsorsDisplay
   },
   methods: {
-    sendToWhatsApp () { window.location.href = 'https://wa.me/393497492300' }
+    sendToWhatsApp
   }
 }
 </script>

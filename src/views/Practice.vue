@@ -12,9 +12,5 @@ export default {
   components: {
     PracticeCalendar
   },
-  data () {
-    return {
-    }
-  },
 }
 </script>

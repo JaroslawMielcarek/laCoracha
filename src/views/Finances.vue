@@ -104,8 +104,6 @@ export default {
       return sum
       // player.balance = sum
     }
-  },
-  watch: {
   }
 }
 </script>

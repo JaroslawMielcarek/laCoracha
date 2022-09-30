@@ -29,9 +29,7 @@
         Forgot password?
       </router-link>
     </div>
-    <template v-if="errorMessage">
-      <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-    </template>
+    <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
     <button type='submit' class='btn white full-width'>INICIA SESIÓN</button>
   </form>
 </template>
@@ -45,7 +43,7 @@ export default {
   },
   data () {
     return {
-      errorMessage: '',
+      errorMessage: [],
       username: '',
       password: '',
       fromUrl: ''
@@ -61,14 +59,13 @@ export default {
             else this.$router.push({ path: '/' })
           })
           .catch((error) => {
-            this.errorMessage = (error.response && error.response.data && error.response.data.message) ||
-              error.message
-            setTimeout(() => { this.errorMessage = '' }, 4000)
+            this.errorMessage = error.message
+            const t = setTimeout(() => { 
+              this.errorMessage = []
+              clearTimeout(t)
+            }, 4000)
           })
       }
-    },
-    insertUsername (value) {
-      this.username = value
     }
   }
 }
@@ -81,7 +78,8 @@ export default {
   align-items: baseline;
   justify-content: space-between;
 }
-.forgotten {
+.forgotten, 
+.register {
   color: rgba($blueDark, .6);
   &:hover {
     color: rgba($blueDark, .2);

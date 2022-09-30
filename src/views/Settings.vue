@@ -18,11 +18,6 @@
       <p class='extra__message'>Seleccione de mayor deseo a menor</p>
       <PreferedPositions />
     </div>
-    <!-- <div class='container'>
-      <h3>Choose prefered hours:</h3>
-      <p class='extra__message'>When are you usually able to participate:</p>
-      <PreferedHours />
-    </div> -->
     <div class='container' id="privacy_preferences">
       <h3>Preferencias de privacidad:</h3>
       <p class='extra__message'>Selecciona lo que estás dispuesto a compartir en nuestra página.</p>
@@ -33,7 +28,6 @@
 
 <script>
 import BasicInfo from '@/components/settings/BasicInfo.vue'
-// import PreferedHours from '@/components/settings/PreferedHours.vue'
 import PreferedPositions from '@/components/settings/PreferedPositions.vue'
 import PrivacyPref from '@/components/settings/PrivacyPref.vue'
 import PaymentCalendar from '@/components/payment/PaymentCalendar.vue'
@@ -42,7 +36,6 @@ export default {
   name: 'Settings',
   components: {
     BasicInfo,
-    // PreferedHours,
     PreferedPositions,
     PrivacyPref,
     PaymentCalendar

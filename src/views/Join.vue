@@ -13,40 +13,36 @@
     </div>
     <fieldset class='inline-group row'>
       <legend><p class='extra__message'>Nivel</p></legend>
-      <div class='option'>
-        <input v-model="level" value='Nunca jugó' type='radio' id='novice' name='level'/>
-        <label :class="['btn', checkIfSelected('Nunca jugó', level)? 'color' : 'white']" for='novice'>Nunca jugó</label>
-      </div>
-      <div class='option'>
-        <input v-model="level" value='Jugó un poco' type='radio' id='amature' name='level'/>
-        <label :class="['btn', checkIfSelected('Jugó un poco', level)? 'color' : 'white']" for='amature'>Jugó un poco</label>
-      </div>
-      <div class='option'>
-        <input v-model="level" value='Se como jugar' type='radio' id='played' name='level' />
-        <label :class="['btn', checkIfSelected('Se como jugar', level)? 'color' : 'white']" for='played'>Se como jugar</label>
-      </div>
+      <label :class="['btn', checkIfSelected('Nunca jugó', level)]">
+        <input v-model="level" value='Nunca jugó' type='radio' name='level' />
+        Nunca jugó
+      </label>
+      <label :class="['btn', checkIfSelected('Jugó un poco', level)]">
+        <input v-model="level" value='Jugó un poco' type='radio' name='level' />
+        Jugó un poco
+      </label>
+      <label :class="['btn', checkIfSelected('Se como jugar', level)]">
+        <input v-model="level" value='Se como jugar' type='radio' name='level' />
+        Se como jugar
+      </label>
     </fieldset>
      <fieldset class='inline-group row'>
       <legend><p class='extra__message'>Edad</p></legend>
-      <div class='option'>
-        <input v-model="age" value='less than 16' type='radio' id='16' name='age'/>
-        <label :class="['btn', checkIfSelected('less than 16', age)? 'color' : 'white']" for='16'> &lt; 16</label>
-      </div>
-      <div class='option'>
-        <input v-model="age" value='16-18' type='radio' id='16-18' name='age'/>
-        <label :class="['btn', checkIfSelected('16-18', age)? 'color' : 'white']" for='16-18'>16 - 18</label>
-      </div>
-      <div class='option'>
-        <input v-model="age" value='18-20' type='radio' id='18-20' name='age'/>
-        <label :class="['btn', checkIfSelected('18-20', age)? 'color' : 'white']" for='18-20'>18 - 20</label>
-      </div>
-      <div class='option'>
-        <input v-model="age" value='more than 20' type='radio' id='20' name='age' />
-        <label :class="['btn', checkIfSelected('more than 20', age)? 'color' : 'white']" for='20'>&gt; 20</label>
-      </div>
+      <label :class="['btn', checkIfSelected('menos que 16', age)]">
+        <input v-model="age" value='menos que 16' type='radio' name='age' />
+        &lt; 16
+      </label>
+      <label :class="['btn', checkIfSelected('16 - 18', age)]">
+        <input v-model="age" value='16 - 18' type='radio' name='age' />
+        16 - 18
+      </label>
+      <label :class="['btn', checkIfSelected('más que 20', age)]">
+        <input v-model="age" value='más que 20' type='radio' name='age' />
+        &gt; 20
+      </label>
     </fieldset>
+    <p v-for='err in error ' class='error' :key="err">{{err}}</p>
     <button class='submit btn color full-width' type='submit'>Unirse</button>
-  <p v-for='err in error ' class='error' :key="err">{{err}}</p>
   </form>
 </template>
 
@@ -67,7 +63,7 @@ export default {
     }
   },
   methods: {
-    checkIfSelected (value, choosed) { return choosed === value },
+    checkIfSelected (value, choosed) { return choosed === value ? 'color' : 'white' },
     checkForm () {
       this.error = []
 
@@ -98,7 +94,6 @@ export default {
             return mapObj[matched]
           }
         )
-        console.log('text', text)
         window.location.href = `https://wa.me/393497492300?text=${text}`
         this.clearForm()
       }
@@ -110,28 +105,18 @@ export default {
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .wrapper {
-  width: clamp(300px, 90vw, 450px);
+  width: clamp(300px, 90vw, 380px);
   padding: 1em 1em 2em;
 }
 .inline-group {
   display: flex;
-  justify-content: space-between;
+  column-gap: 10px;
   margin-bottom: 10px;
 }
-.option {
-  position: relative;
+.btn {
   flex-shrink: 0;
-  // width: 30%;
   input {
-    // width: 100%;
-    // height: 100%;
-    position: absolute;
-    opacity: 0;
-    // border: 1px solid black;
-    // z-index: 1;
-  }
-  label {
-    font-size: clamp(0.6rem, 1rem, 1.2rem)
+    display: none;
   }
 }
 .submit {

@@ -49,8 +49,11 @@ export default {
       this.password_confirm = ''
     },
     setError (message) {
-      this.error = message
-      setTimeout(() => { this.error = '' }, 3000)
+      this.errorMessage = message
+      const t = setTimeout(() => { 
+        this.errorMessage = ''
+        clearTimeout(t) 
+      }, 3000)
     },
     handleSubmit () {
       if (this.password !== this.password_confirm) return this.setError('Los contraseñas son diferentes')

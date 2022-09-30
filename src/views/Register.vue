@@ -1,7 +1,7 @@
 <template>
   <form class='wrapper' @submit.prevent="register">
     <h3 class='title'>Registro</h3>
-    <p class='text_small'>Primero debe tener un MemberID para poder registrarse. Póngase en contacto con <a class='small link' href='https://wa.me/393497492300'>nosotros</a> para obtener uno.</p>
+    <p class='text_small'>Primero debe tener un MemberID para poder registrarse. Póngase en contacto con <span class='small link' @click="sendToWhatsApp()">nosotros</span> para obtener uno.</p>
     <div class='row'>
       <label>Usuario:</label>
       <CustomInput
@@ -46,15 +46,14 @@
         :required="true"
         key='memberID'/>
     </div>
-    <template v-if="errorMessage">
-      <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-    </template>
+    <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
     <button type='submit' class='btn white full-width'>Crear Cuenta</button>
   </form>
 </template>
 
 <script>
 import CustomInput from '@/components/CustomInput.vue'
+import { sendToWhatsApp } from '@/services/util/universal'
 
 export default {
   components: {
@@ -62,7 +61,7 @@ export default {
   },
   data () {
     return {
-      errorMessage: '',
+      errorMessage: [],
       user: {
         username: '',
         password: '',
@@ -72,20 +71,18 @@ export default {
     }
   },
   methods: {
+    sendToWhatsApp,
     register () {
       this.$store.dispatch('register', this.user)
         .then(() => {
-          if (this.$route.query.nextUrl) this.$router.push({ path: this.$route.query.nextUrl })
-          else this.$router.push({ path: '/login' })
+          this.$router.push({ path: '/login' })
         })
         .catch((error) => {
-          this.errorMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
-          setTimeout(() => { this.errorMessage = '' }, 4000)
+          this.errorMessage = error.message
+          const t = setTimeout(() => { 
+            this.errorMessage = []
+            clearTimeout(t)
+          }, 4000)
         })
     }
   }
@@ -97,5 +94,6 @@ export default {
 
 .link {
   font-weight: 900;
+  cursor: pointer;
 }
 </style>
