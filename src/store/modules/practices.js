@@ -2,15 +2,15 @@ import UserService from '@/services/user.service.js'
 import ModeratorService from '@/services/moderator.service.js'
 import { sortByDate, getByTimeRange } from '@/services/util/object'
 
+
+const DEFAULT_PRACTICE = {
+  dateTime: { date: '', time: '' },
+  playersLimit: 12,
+  players: []
+}
+
 export const practices = {
   state: () => ({
-    defaultPractice: {
-      dateTime: { date: '', time: '' },
-      playersLimit: 12,
-      // playersSubscribed: 0,
-      // percentOcupied: 0,
-      players: []
-    },
     practices: []
   }),
   actions: {
@@ -99,7 +99,7 @@ export const practices = {
       
       return sortByDate(getByTimeRange(state.practices, timeRange), 'dateTime', true)
     },
-    getDefaultPractice: (state) => { return state.defaultPractice },
+    getDefaultPractice: () => { return DEFAULT_PRACTICE },
     getPractices: (state) => { return sortByDate(state.practices, 'dateTime', true) }
   }
 }

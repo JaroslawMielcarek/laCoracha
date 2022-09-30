@@ -17,7 +17,7 @@
           <p class="no-data">No players to display</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
-          <div class='action column'><button class='btn color' @click="setState(player, true, true)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(player, true)">Edit</button></div>
           <p class='column id'>{{player.memberID || 'no data'}}</p>
           <p class='column name'>{{player.nick ? player.nick.value : ''}}</p>
           <p class='column number'>{{player.number? player.number.value : ''}}</p>
@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <AddEditPlayer v-if="visible" :value="value" :isEditing="isEditing" @clearForm="setState({})" @submitForm="(acction, value) => submitForm(acction, value, setState({}))"/>
+    <AddEditPlayer v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
 
@@ -43,9 +43,8 @@ export default {
   },
   data () {
     return {
-      visible: false,
       isEditing: false,
-      value: {},
+      value: undefined,
       sortBy: 'memberID',
     }
   },
@@ -66,8 +65,7 @@ export default {
     setNotification,
     submitForm, 
     removeElement,
-    setState (value, visible = false, isEditing = false) {
-      this.visible = visible
+    setState (value, isEditing = false) {
       this.value = value
       this.isEditing = isEditing
     }

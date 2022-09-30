@@ -29,8 +29,8 @@
         </div>
       </div>
     </div>
-    <button v-if="!visible" class='btn white' @click="visible = !visible">Add Practice</button>
-    <AddEditPractice v-else :value="value" :isEditing="isEditing" @submitForm="(acction, value) => submitForm(acction, value, setState({}))" @clearForm="setState"/>
+    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultPractice">Add Practice</button>
+    <AddEditPractice v-else :value="value" :isEditing="isEditing" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))" @clearForm="setState(undefined)"/>
   </div>
 </template>
 
@@ -49,14 +49,13 @@ export default {
   },
   data () {
     return {
-      visible: false,
       isEditing: false,
-      value: {},
+      value: undefined,
       showBy: 'all',
     }
   },
   created(){
-    this.$store.dispatch('fetchPractices')
+    store.dispatch('fetchPractices')
   },
   computed: {
     practices () {
@@ -72,8 +71,7 @@ export default {
     setNotification,
     submitForm, 
     removeElement,
-    setState (value, visible = false, isEditing = false) {
-      this.visible = visible
+    setState (value, isEditing = false) {
       this.value = value
       this.isEditing = isEditing
     }

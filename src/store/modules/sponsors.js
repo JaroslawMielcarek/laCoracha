@@ -1,5 +1,14 @@
 import AdminService from '@/services/admin.service.js'
 
+
+const DEFAULT_SPONSOR = {
+  name: '',
+  contribution: 0,
+  isMain: false,
+  link: '',
+  logo: undefined
+}
+
 export const sponsors = {
   state: () => ({
     sponsors: [],
@@ -68,5 +77,6 @@ export const sponsors = {
   getters: {
     getSponsors (state) { return state.sponsors },
     getSponsorsNames (state) { return state.sponsors.map(s => s.name) },
+    getDefaultSponsor () { return DEFAULT_SPONSOR },
   }
 }

@@ -2,6 +2,28 @@ import PublicService from '@/services/public.service.js'
 import ModeratorService from '@/services/moderator.service.js'
 import { getByTimeRange, sortByDate } from '@/services/util/object'
 
+const DEFAULT_MATCH = {
+  league: '',
+  dateTime: {
+    date: '',
+    time: ''
+  },
+  location: '',
+  friendly: false,
+  homeTeam: {
+    clubName: '',
+    teamName: '',
+    teamGender: '',
+    wonSets: null
+  },
+  guestTeam: {
+    clubName: '',
+    teamName: '',
+    teamGender: '',
+    wonSets: null
+  }
+}
+
 export const matches = {
   state: () => ({
     matches: [],
@@ -84,6 +106,7 @@ export const matches = {
       return sortByDate(getByTimeRange(state.matches, timeRange), 'dateTime', true)
     },
     getMatches (state) { return sortByDate(state.matches, 'dateTime', true) },
-    getMatchesErrorMessage (state) { return state.errorMessage }
+    getMatchesErrorMessage (state) { return state.errorMessage },
+    getDefaultMatch () { return DEFAULT_MATCH },
   }
 }

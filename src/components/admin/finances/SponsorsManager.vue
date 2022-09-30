@@ -15,23 +15,23 @@
         <p class="no-data">No sponsors to display</p>
       </div>
       <div class='list-row' v-for="sponsor in sponsors" :key="sponsor">
-        <div class='action column'><button class='btn color' @click="setState(sponsor, true, true)">Edit</button></div>
+        <div class='action column'><button class='btn color' @click="setState(sponsor, true)">Edit</button></div>
         <p class='column'>{{sponsor.name}}</p>
         <p class='column contribution'>{{sponsor.contribution}}</p>
         <p class='column'>{{sponsor.isMain? 'Sí' : 'No'}}</p>
         <p class='column link'>{{sponsor.link}}</p>
         <p class='column'>{{sponsor.logo ? 'Sí': 'No'}}</p>
-        <p class='column'><button class='btn danger' @click="removeSponsor(sponsor)">x</button></p>
+        <p class='column'><button class='btn danger' @click="removeElement('Sponsor', sponsor)">x</button></p>
       </div>
     </div>
   </div>
-  <button v-if="!visible" class='btn white' @click="visible = !visible">Add Sponsor</button>
-  <AddEditSponsor v-else :value="value" :isEditing="isEditing" @clearForm="setState({})" @submitForm="submitForm"/>
+  <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultSponsor">Add Sponsor</button>
+  <AddEditSponsor v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
 </template>
 <script>
 
 import AddEditSponsor from './AddEditSponsor.vue';
-import { setNotification } from '@/services/util/universal.js'
+import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
 
 export default {
   components: {
@@ -39,35 +39,16 @@ export default {
   },
   data () {
     return {
-      visible: false,
       isEditing: false,
-      value: {},
+      value: undefined,
     }
   },
   computed: { sponsors () { return this.$store.getters.getSponsors } },
   methods: {
     setNotification,
-    removeSponsor (value) { if (confirm('Are you sure you want delete sponsor')) this.$store.dispatch('removeSponsor', value) },
-    submitForm (acction, value) {
-      this.$store.dispatch(acction, value)
-        .then(response => {
-          this.setState({})
-          this.setNotification({
-            name: acction,
-            text: response,
-            typeOfNotification: 'success'
-          })
-        })
-        .catch(error => {
-          this.setNotification({
-            name: acction,
-            text: error,
-            typeOfNotification: 'danger'
-          })
-        })
-    },
-    setState (value, visible = false, isEditing = false) {
-      this.visible = visible
+    submitForm,
+    removeElement,
+    setState (value, isEditing = false) {
       this.value = value
       this.isEditing = isEditing
     }

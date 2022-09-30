@@ -1,6 +1,14 @@
 import PublicService from '@/services/public.service.js'
 import ModeratorService from '@/services/moderator.service.js'
 
+const DEFAULT_TEAM = {
+  logo: undefined,
+  name: '',
+  feminino: false,
+  league: '',
+  players: []
+}
+
 export const teams = {
   state: () => ({
     teams: [],
@@ -86,6 +94,7 @@ export const teams = {
   getters: {
     getTeams: (state) => { return state.teams },
     getTeamsNames: (state) => { return state.teams.map(t => t.name) },
-    getTeamsErrorMessage: (state) => { return state.errorMessage }
+    getTeamsErrorMessage: (state) => { return state.errorMessage },
+    getDefaultTeam () { return DEFAULT_TEAM },
   }
 }

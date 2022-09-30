@@ -20,7 +20,7 @@
           <p class="no-data">No matches to display</p>
         </div>
         <div class='list-row' v-for="match in matches" :key="match">
-          <div class='action column'><button class='btn color' @click="setState(match, true, true)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(match, true)">Edit</button></div>
           <div class='column blocks'>
             <p class='title'>{{match.homeTeam.clubName}}</p>
             <p class='team'>{{match.homeTeam.teamName}}</p>
@@ -45,8 +45,8 @@
         </div>
       </div>
     </div>
-    <button v-if="!visible" class='btn white' @click="visible = !visible">Add Match</button>
-    <AddEditMatch v-if="visible" :value="value" :isEditing="isEditing" @clearForm="setState({})" @submitForm="(acction,value) => submitForm(acction, value, setState({}))"/>
+    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultMatch">Add Match</button>
+    <AddEditMatch v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
 
@@ -65,9 +65,8 @@ export default {
   },
   data () {
     return {
-      value: {},
+      value: undefined,
       isEditing: false,
-      visible: false,
       showBy: 'all',
       sortBy: 'date',
     }
@@ -89,8 +88,7 @@ export default {
     setNotification,
     submitForm,
     removeElement,
-    setState (value, visible = false, isEditing = false) {
-      this.visible = visible
+    setState (value, isEditing = false) {
       this.value = value
       this.isEditing = isEditing
     },

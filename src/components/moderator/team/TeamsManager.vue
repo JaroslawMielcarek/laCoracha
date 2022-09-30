@@ -17,7 +17,7 @@
           <p class="no-data">No teams to display</p>
         </div>
         <div class='list-row' v-for="team in teams" :key="team">
-          <p class='column'><button class='btn color' @click="setState(team, true, true)">Edit</button></p>
+          <p class='column'><button class='btn color' @click="setState(team, true)">Edit</button></p>
           <p class='column'>{{team.name}}</p>
           <p class='column'>{{team.league}}</p>
           <p class='column'>{{team.gender}}</p>
@@ -27,8 +27,8 @@
         </div>
       </div>
     </div>
-  <button v-if="!visible" class='btn white' @click="visible = !visible">Add Team</button>
-  <AddEditTeam v-else :value="value" :isEditing="isEditing" @clearForm="setState({})" @submitForm="(acction, value) => submitForm(acction, value, setState({}))"/>
+    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultTeam">Add Team</button>
+    <AddEditTeam v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
 
@@ -36,6 +36,7 @@
 import AddEditTeam from '@/components/moderator/team/AddEditTeam.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import store from '@/store/index'
 
 export default {
   name: 'TeamsManager',
@@ -44,16 +45,14 @@ export default {
   },
   data () {
     return {
-      visible: false,
       isEditing: false,
-      value: {},
+      value: undefined,
       sortBy: 'name',
     }
   },
   computed: { 
     teams () { 
-      const list = this.$store.getters.getTeams 
-        // console.log('sortBy', this.sortBy, list)
+      const list = store.getters.getTeams
         if (this.sortBy === 'name') return sortListOfObjectsBy(list, 'name', false)
         if (this.sortBy === 'league') return sortListOfObjectsBy(list, 'league', false)
         if (this.sortBy === 'gender') return sortListOfObjectsBy(list, 'gender', false)
@@ -65,8 +64,7 @@ export default {
     sortListOfObjectsBy,
     submitForm,
     removeElement,
-    setState (value, visible = false, isEditing = false) {
-      this.visible = visible
+    setState (value, isEditing = false) {
       this.value = value
       this.isEditing = isEditing
     }
