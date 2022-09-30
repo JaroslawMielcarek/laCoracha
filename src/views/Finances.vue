@@ -16,7 +16,7 @@
           <p class="no-data">No players to display</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
-          <div class='action column'><button class='btn color' @click="setState(player, true)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(player)">Edit</button></div>
           <p class='column id'>{{player.memberID || '-'}}</p>
           <p class='column name'>{{player.nick.value || '-'}}</p>
           <p class='column gender'>{{player.isFemale ? 'Mujer' : 'Hombre'}}</p>
@@ -24,7 +24,7 @@
           <p class='column balance'>{{player.balance}}</p>
         </div>
       </div>
-      <PlayerPayments v-if="visible" :value="value" @clear="setState({}, false)" @updated="fetchPlayers" :key="value"/>
+      <PlayerPayments v-if="value" :value="value" @clearForm="setState(undefined)" @submitForm="(acction, value) => { submitForm(acction, value, setState(undefined)); fetchPlayers}"/>
     </div>
     <CollectivePaymentActions />
     <SponsorsManager/>
@@ -35,7 +35,7 @@
 import PlayerPayments from '@/components/payment/PlayerPayments.vue'
 import CollectivePaymentActions from '@/components/admin/finances/CollectivePaymentActions.vue'
 import SponsorsManager from '@/components/admin/finances/SponsorsManager.vue'
-import { setNotification } from '@/services/util/universal.js'
+import { setNotification, submitForm } from '@/services/util/universal.js'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import AdminService from '@/services/admin.service.js'
 
@@ -48,8 +48,7 @@ export default {
   },
   data () {
     return {
-      visible: false,
-      value: {},
+      value: undefined,
       isEditing: true,
       sortBy: 'memberID',
       playersList: []
@@ -77,8 +76,8 @@ export default {
   },
   methods: {
     setNotification,
-    setState (value, visible = false) {
-      this.visible = visible
+    submitForm,
+    setState (value) {
       this.value = value
     },
     fetchPlayers () {

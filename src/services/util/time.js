@@ -22,7 +22,7 @@ export function isoDateToDayMonthYear (date) {
 export function getDayOfWeek (date) {
  return WEEK_DAYS[new Date(date).getDay()]
 }
-export function getMonthName (date) {
+export function getMonthNameByNumber (date) {
   return MONTHS[new Date(date).getMonth()]
 }
 export function areEqualDates (firstDate, secondDate) {

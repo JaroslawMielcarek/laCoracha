@@ -1,39 +1,37 @@
 <template>
   <div class='add_edit'>
-    <CustomAlert v-if="errorList" :text="errorList" @confirm="this.errors = []" />
     <h5>Miembro: {{ playerID }} - pagos</h5>
     <div class='month'>
       <h5 class='name'>Nuevo mes</h5>
       <input class='row' type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="newMonth.monthYear" @change="checkIfMonthExist" />
+      <p v-for="error in errors" class='error' :key="error">{{error}}</p>
       <button class='btn white full-width' @click="addMonth" :disabled="!newMonth.monthYear">Agregar</button>
     </div>
     <div class='months row' v-if='player.payments'>
       <div class='month' v-for="month in player.payments" :key="month">
-        <h5 class='name'>{{ getMonthName(month.monthYear) }}</h5>
+        <h5 class='name'>{{ getMonthNameByNumber(month.monthYear) }}</h5>
         <PaymentTemplate v-if="month.payments" v-model:value="month.payments" @removePayment="(index) => removePayment(month, index)" />
         <button class='btn white full-width' @click="addPayment(month)">Agregar pago</button>
       </div>
     </div>
     <div class='row flex-row'>
       <button class='btn color full-width' @click="submitForm">Actualizar</button>
-      <p class='btn text' @click="clearForm">Claro</p>
+      <p class='btn text' @click="this.$emit('clearForm')">Claro</p>
     </div>
   </div>
 </template>
 
 <script>
 import PaymentTemplate from '@/components/payment/PaymentTemplate.vue'
-import CustomAlert from '@/components/CustomAlert.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
-import { getMonthName } from '@/services/util/time.js'
+import { getMonthNameByNumber } from '@/services/util/time.js'
 
 export default {
   name: 'PlayerPerformance',
   components: {
     PaymentTemplate,
-    CustomAlert
   },
-  emits: ['clear', 'updated'],
+  emits: ['clearForm', 'submitForm'],
   props: {
     value: {
       type: Object,
@@ -53,12 +51,10 @@ export default {
   computed: {
     playerID () { return this.value.memberID },
     payments () { return this.sortListOfObjectsBy(this.value.payments, 'monthYear', true) },
-    errorList () { return this.errors.join('\n') },
-    months () { return this.$store.getters.getMonths }
   },
   methods: {
     sortListOfObjectsBy,
-    getMonthName,
+    getMonthNameByNumber,
     checkIfMonthExist () {
       if (this.payments.find(m => m.monthYear === this.newMonth.monthYear)) {
         this.errors.push('Mes existe! por favor edítalo')
@@ -73,15 +69,8 @@ export default {
         payments: []
       }
     },
-    addPayment (month) {
-      month.payments.push({ type: '', qty: 0, isPaid: '' })
-    },
-    removePayment (month, practiceIndex) {
-      month.payments.splice(practiceIndex, 1)
-    },
-    clearForm () {
-      this.$emit('clear')
-    },
+    addPayment (month) { month.payments.push({ type: '', qty: 0, isPaid: '' }) },
+    removePayment (month, practiceIndex) { month.payments.splice(practiceIndex, 1) },
     checkForm () {
       for (const month of this.payments) {
         for (const payment of month.payments) {
@@ -98,15 +87,8 @@ export default {
 
       const { _id, payments } = this.player
       const player = { _id, payments }
-      this.$store.dispatch('updatePlayer', player)
-        .then(response => {
-          this.errors = [response]
-          this.clearForm()
-          this.$emit('updated')
-        })
-        .catch(error => {
-          this.errors = error
-        })
+
+      return this.$emit('submitForm', 'updatePlayer', player)
     }
   }
 }

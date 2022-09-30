@@ -34,7 +34,7 @@
           <div class='column blocks'>
             <div class='date'>
               <p class='day'>{{new Date(match.dateTime.date).getDate()}}</p>
-              <p class='month'>{{ this.$store.getters.getMonths[new Date(match.dateTime.date).getMonth()] }}</p>
+              <p class='month'>{{ getMonthNameByNumber(match.dateTime.date).substring(0,3) }}</p>
               <p class='year'>{{new Date(match.dateTime.date).getFullYear()}}</p>
             </div>
             <p class='time'>{{ match.dateTime.time }}</p>
@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultMatch">Add Match</button>
+    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultMatch">Add Match</button>
     <AddEditMatch v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
@@ -53,9 +53,10 @@
 <script>
 import AddEditMatch from '@/components/moderator/match/AddEditMatch.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
-import { isoDateToDayMonthYear } from '@/services/util/time.js'
+import { isoDateToDayMonthYear, getMonthNameByNumber } from '@/services/util/time.js'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import store from '@/store/index'
 
 export default {
   name: 'CalendarManager',
@@ -72,18 +73,19 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchMatches')
+    store.dispatch('fetchMatches')
   },
   computed: {
     matches () {
-      if (this.showBy === 'semana') return this.$store.getters.getMatchesOf('week')
-      if (this.showBy === 'mes') return this.$store.getters.getMatchesOf('month')
-      if (this.showBy === 'temporada') return this.$store.getters.getMatchesOf('season')
-      return this.$store.getters.getMatches
+      if (this.showBy === 'semana') return store.getters.getMatchesOf('week')
+      if (this.showBy === 'mes') return store.getters.getMatchesOf('month')
+      if (this.showBy === 'temporada') return store.getters.getMatchesOf('season')
+      return store.getters.getMatches
     }
   },
   methods: {
     isoDateToDayMonthYear,
+    getMonthNameByNumber,
     sortListOfObjectsBy,
     setNotification,
     submitForm,

@@ -1,6 +1,5 @@
 export const settings = {
   state: () => ({
-    MONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     OPEN_HOUR: '09:00',
     CLOSE_HOUR: '22:00',
     MIN_PLAYER_HEIGHT: 1.20,
@@ -75,9 +74,6 @@ export const settings = {
     }
   },
   getters: {
-    getMonths (state) {
-      return state.MONTHS
-    },
     getOpenHour (state) {
       return state.OPEN_HOUR
     },
