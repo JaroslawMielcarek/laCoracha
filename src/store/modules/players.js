@@ -80,48 +80,66 @@ const DEFAULT_PLAYER = {
 
 export const players = {
   state: () => ({
-    players: []
+    players: [],
+    isLoading: false,
+    failed: false,
+    errorMessage: ''
   }),
   actions: {
-    removePlayer ({ commit, dispatch }, data) {
-      return ModeratorService.remove('User', {_id: data._id})
-        .then(response => {
-          dispatch('fetchPlayers')
-          return Promise.resolve(response.message)
-        })
-        .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
-        })
-    },
     updatePlayer ({ commit, dispatch }, data) {
+      commit('setLoading', true)
       return ModeratorService.update('User', data)
         .then(response => {
           dispatch('fetchPlayers')
           return Promise.resolve(response.message)
         })
         .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
+        })
+    },
+    removePlayer ({ commit, dispatch }, data) {
+      commit('setLoading', true)
+      return ModeratorService.remove('User', {_id: data._id})
+        .then(response => {
+          dispatch('fetchPlayers')
+          return Promise.resolve(response.message)
+        })
+        .catch(error => {
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
         })
     },
     fetchPlayers: ({ commit }) => {
+      commit('setLoading', true)
       ModeratorService.getAll('Players')
         .then(response => { commit('setPlayersSuccess', response) })
-        .catch(error => {
-          commit('setPlayersFailure')
-        })
+        .catch(error => { commit('setPlayersFailure', error) })
     }
   },
   mutations: {
+    setLoading: (state, val) => { state.isLoading = val },
     setPlayersSuccess (state, players) {
       state.players = [...players]
-      // state.failed = false
+      state.failed = false
+      state.isLoading = false
+      state.errorMessage = ''
       console.log('setPlayersSuccess')
     },
     setPlayersFailure (state) {
       state.players = []
-      // state.failed = true
+      state.failed = true
+      state.isLoading = false
+      
+      if (!error.response) {
+        state.errorMessage = 'Hay un problema para conectarse a la base de datos'
+      } else if (error.response) {
+        console.log('Error', error.response)
+      } else {
+        console.log('setSponsorsFailure')
+      }
       console.log('setPlayersFailure')
     }
   },
@@ -130,5 +148,9 @@ export const players = {
     getPlayersIDs (state) { return state.players.map(p => p.memberID) },
     getPlayerPreferedPositions: (state) => (_id) => { return state.players.filter(p => p._id === _id).positionsPlayed || [] },
     getDefaultPlayer () { return DEFAULT_PLAYER },
+
+    getPlayersErrorMessage: (state) => state.errorMessage,
+    getPlayersLoadingState: (state) => state.isLoading,
+    getPlayersFailState: (state) => state.failed
   }
 }

@@ -12,15 +12,15 @@ const DEFAULT_TEAM = {
 export const teams = {
   state: () => ({
     teams: [],
+    isLoading: false,
     failed: false,
     errorMessage: ''
   }),
   actions: {
     addTeam ({ commit, dispatch }, data) {
+      commit('setLoading', true)
       return ModeratorService.create('Team', data)
         .then(response => {
-          // dispatch('updateStates', { root: true })
-          // dispatch('fetchTeams')
           dispatch('fetchTeams')
           dispatch('fetchPlayers')
           return Promise.resolve(response.message)
@@ -31,6 +31,7 @@ export const teams = {
         })
     },
     updateTeam ({ commit, dispatch }, data) {
+      commit('setLoading', true)
       return ModeratorService.update('Team', data)
         .then(response => {
           // dispatch('updateStates', { root: true })
@@ -44,10 +45,9 @@ export const teams = {
         })
     },
     removeTeam ({ commit, dispatch }, data) {
-
-      return ModeratorService.remove('Team', {_id: '3013993453'})
+      commit('setLoading', true)
+      return ModeratorService.remove('Team', {_id: data._id})
         .then(response => {
-          // dispatch('updateStates', { root: true })
           dispatch('fetchTeams')
           dispatch('fetchPlayers')
           return Promise.resolve(response.message)
@@ -58,29 +58,25 @@ export const teams = {
         })
     },
     fetchTeams: ({ commit, dispatch }) => {
+      commit('setLoading', true)
       PublicService.getAll('Teams')
-        .then(response => {
-          commit('setTeamsSuccess', response)
-          // return Promise.resolve(response.data)
-        })
-        .catch(error => {
-          commit('setTeamsFailure', error)
-          // return Promise.reject(error)
-        })
+        .then(response => { commit('setTeamsSuccess', response) })
+        .catch(error => { commit('setTeamsFailure', error) })
     }
   },
   mutations: {
+    setLoading: (state, val) => { state.isLoading = val },
     setTeamsSuccess: (state, teams) => {
       state.teams = teams
-      
       state.failed = false
+      state.isLoading = false
       state.errorMessage = ''
-
       console.log('setTeamsSuccess')
     },
     setTeamsFailure: (state, error) => {
       state.teams = []
       state.failed = true
+      state.isLoading = false
 
       if (!error.response) {
         state.errorMessage = 'Hay un problema para conectarse a la base de datos'
@@ -94,7 +90,10 @@ export const teams = {
   getters: {
     getTeams: (state) => { return state.teams },
     getTeamsNames: (state) => { return state.teams.map(t => t.name) },
-    getTeamsErrorMessage: (state) => { return state.errorMessage },
     getDefaultTeam () { return DEFAULT_TEAM },
+
+    getTeamsErrorMessage: (state) => state.errorMessage,
+    getTeamsLoadingState: (state) => state.isLoading,
+    getTeamsFailState: (state) => state.failed
   }
 }

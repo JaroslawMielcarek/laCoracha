@@ -11,51 +11,55 @@ const DEFAULT_PRACTICE = {
 
 export const practices = {
   state: () => ({
-    practices: []
+    practices: [],
+    isLoading: false,
+    failed: false,
+    errorMessage: ''
   }),
   actions: {
     subscribeForPractice: ({ commit, dispatch }, data) => {
+      commit('setLoading', true)
       return UserService.subscribe('Practice', data)
         .then(response => {
           dispatch('fetchPractices')
           return Promise.resolve(response.message)
-          // dispatch('updateStates', { root: true })
         })
         .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
         })
     },
     addPractice: ({ commit, dispatch }, data) => {
+      commit('setLoading', true)
       return ModeratorService.create('Practice', data)
         .then(response => {
-          console.log('addPractice response', response)
-          // dispatch('updateStates', { root: true })
           dispatch('fetchPractices')
           dispatch('fetchPlayers')
           return Promise.resolve(response.message)
         })
         .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
         })
-      // commit('addPractice', data)
     },
     updatePractice: ({ commit, dispatch }, data) => {
+      commit('setLoading', true)
       return ModeratorService.update('Practice', data)
         .then(response => {
-          console.log('updatePractice response', response)
           dispatch('fetchPractices')
           dispatch('fetchPlayers')
           return Promise.resolve(response.message)
         })
         .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
         })
-      // commit('updatePractice', data)
     },
     removePractice: ({ commit, dispatch }, data) => {
+      commit('setLoading', true)
       return ModeratorService.remove('Practice', {_id: data._id})
         .then(response => {
           dispatch('fetchPractices')
@@ -63,43 +67,52 @@ export const practices = {
           return Promise.resolve(response.message)
         })
         .catch(error => {
-          if (error.response.data && error.response.data.message) return Promise.reject(error.response.data.message)
-          return Promise.reject(error)
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
         })
-      // commit('removePractice', data)
     },
     fetchPractices: ({ commit }) => {
       UserService.getAll('Practices')
-        .then(response => {
-          commit('setPracticesSuccess', response)
-          // return Promise.resolve(response.data)
-        })
-        .catch(error => {
-          console.log('FetchPractices error', error.response.data.message)
-          commit('setPracticesFailure')
-          // return Promise.reject(error)
-        })
+        .then(response => { commit('setPracticesSuccess', response) })
+        .catch(error => { commit('setPracticesFailure', error) })
     }
   },
   mutations: {
+    setLoading: (state, val) => { state.isLoading = val },
     setPracticesSuccess: (state, practices) => {
       state.practices = practices
-      // state.failed = false
+      state.failed = false
+      state.isLoading = false
+      state.errorMessage = ''
       console.log('setPracticesSuccess')
     },
     setPracticesFailure: (state) => {
       state.practices = []
-      // state.failed = true
+      state.failed = true
+      state.isLoading = false
+      
+      if (!error.response) {
+        state.errorMessage = 'Hay un problema para conectarse a la base de datos'
+      } else if (error.response) {
+        console.log('Error', error.response)
+      } else {
+        console.log('setSponsorsFailure')
+      }
       console.log('setPracticesFailure')
     }
   },
   getters: {
     getPracticesOf: (state) => (timeRange) => {
-      if (!state.practices.length || !timeRange) return []
-      
-      return sortByDate(getByTimeRange(state.practices, timeRange), 'dateTime', true)
+      return (!state.practices.length || !timeRange) 
+        ? []
+        : sortByDate(getByTimeRange(state.practices, timeRange), 'dateTime', true)
     },
     getDefaultPractice: () => { return DEFAULT_PRACTICE },
-    getPractices: (state) => { return sortByDate(state.practices, 'dateTime', true) }
+    getPractices: (state) => { return sortByDate(state.practices, 'dateTime', true) },
+
+    getPracticesErrorMessage: (state) => state.errorMessage,
+    getPracticesLoadingState: (state) => state.isLoading,
+    getPracticesFailState: (state) => state.failed
   }
 }

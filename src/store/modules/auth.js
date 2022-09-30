@@ -68,43 +68,19 @@ export const auth = {
       state.user = null
     },
     logout (state) {
-      console.log('logout state')
       state.status.loggedIn = false
       state.user = null
     },
-    registerSuccess (state) {
-      state.status.loggedIn = false
-    },
-    registerFailure (state) {
-      state.status.loggedIn = false
-    },
-    updateUserBasicInfo (state, values) {
-      state.user = { ...state.user, ...values }
-    }
+    registerSuccess (state) { state.status.loggedIn = false },
+    registerFailure (state) { state.status.loggedIn = false },
+    updateUserBasicInfo (state, values) { state.user = { ...state.user, ...values } }
   },
   getters: {
-    getStatus (state) {
-      return state.status.loggedIn
-    },
-    getUsername (state) {
-      if (state.user) return state.user.username
-      return 'Not logged in'
-    },
-    getUser (state) {
-      if (state.user) return state.user
-      return {}
-    },
-    getUserID (state) {
-      if (state.user) return state.user.id
-      return null
-    },
-    getUserRoles (state) {
-      if (state.user) return state.user.roles
-      return null
-    },
-    getUserGender (state) {
-      if (state.user) return state.user.isFemale
-      return false
-    }
+    getStatus (state) { return state.status.loggedIn },
+    getUsername (state) { return (state.user) ? state.user.username : 'Not logged in' },
+    getUser (state) { return (state.user) ? state.user : null },
+    getUserID (state) { return (state.user) ? state.user.id : null },
+    getUserRoles (state) { return (state.user) ? state.user.roles : null },
+    getUserGender (state) { return (state.user) ? state.user.isFemale : false }
   }
 }
