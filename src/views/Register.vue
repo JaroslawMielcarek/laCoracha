@@ -7,7 +7,7 @@
       <CustomInput
         type='text'
         pattern="^[A-Za-z][A-Za-z0-9_]{6,29}$"
-        hint="alfabet, numbers and underscore allowed. min 6 char"
+        hint="Alfabeto, números y guiones bajos permitidos. min 6 caracteres"
         v-model:value='user.username'
         placeholder='locoPoco'
         :required="true"
@@ -18,7 +18,7 @@
       <CustomInput
         type='password'
         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-        hint="Capital letter, letter, number, special character and min 8 characters"
+        hint="Mayúscula, letra, número, carácter especial y min 8 caracteres"
         v-model:value='user.password'
         placeholder='Algo123$'
         :required="true"
@@ -40,7 +40,7 @@
       <CustomInput
         type='text'
         pattern="^[0-9]{3}$"
-        hint="Your 3 digit club number"
+        hint="3 dígitos de numero en club"
         v-model:value='user.memberID'
         placeholder='123'
         :required="true"

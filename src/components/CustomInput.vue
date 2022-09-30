@@ -58,7 +58,7 @@ export default {
       const tO = setTimeout(() => {
         this.error = { message: '', showHint: false }
         clearTimeout(tO)
-      }, 3000)
+      }, 6000)
     },
     validate (event) {
       const re = new RegExp(this.pattern)
