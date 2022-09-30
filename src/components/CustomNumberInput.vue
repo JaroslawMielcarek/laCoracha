@@ -1,6 +1,6 @@
 <template>
   <div class='numberInput'>
-    <button class='btn decrease' :disabled="value <= min" @click="validate(parseFloat(value) - parseFloat(step))">-</button>
+    <button class='btn decrease' :disabled="value <= min" @click.prevent="validate(parseFloat(value) - parseFloat(step))">-</button>
     <input
       class='value'
       type="number"
@@ -11,7 +11,7 @@
       :inputmode="inputmode"
       @blur="validate($event.target.value)"
       />
-    <button class='btn increase' :disabled="value >= max" @click="validate(parseFloat(value) + parseFloat(step))">+</button>
+    <button class='btn increase' :disabled="value >= max" @click.prevent="validate(parseFloat(value) + parseFloat(step))">+</button>
   </div>
   <p v-if="error.message" class='text_small error'>{{error.message}}</p>
   <p v-if="error.showHint" class='text_small hint'><b>Hint: </b>{{hint}}</p>
