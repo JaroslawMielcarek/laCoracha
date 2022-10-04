@@ -301,7 +301,7 @@ textarea {
     display: inline-block;
     border: none;
     color: $dangerous;
-    margin: 0;
+    margin: 0 2ch;
   }
 
   &.danger {
@@ -519,6 +519,7 @@ form.wrapper {
     align-items: center;
     margin: 0;
     font-size: 0.9rem;
+    text-align: center;
 
     &.blocks {
       flex-direction: column;

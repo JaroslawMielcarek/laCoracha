@@ -1,21 +1,21 @@
 <template>
-  <h4>Sponsors</h4>
+  <h4>Patrocinadores</h4>
   <div class='grid row'>
     <div class='list-head'>
       <p class='column'></p>
-      <p class='column'>Name</p>
-      <p class='column contribution'>Contr.</p>
-      <p class='column'>Main</p>
-      <p class='column link'>Link</p>
+      <p class='column'>Nombre</p>
+      <p class='column contribution'></p>
+      <p class='column'>Principal</p>
+      <p class='column link'>Enlace</p>
       <p class='column'>Logo</p>
       <p class='column'></p>
     </div>
     <div class='list large'>
       <div class='list-row' v-if="!sponsors.length">
-        <p class="no-data">No sponsors to display</p>
+        <p class="no-data">Sin patrocinador para mostrar</p>
       </div>
       <div class='list-row' v-for="sponsor in sponsors" :key="sponsor">
-        <div class='action column'><button class='btn color' @click="setState(sponsor, true)">Edit</button></div>
+        <div class='action column'><button class='btn color' @click="setState(sponsor, true)">Editar</button></div>
         <p class='column'>{{sponsor.name}}</p>
         <p class='column contribution'>{{sponsor.contribution}}</p>
         <p class='column'>{{sponsor.isMain? 'Sí' : 'No'}}</p>
@@ -25,9 +25,15 @@
       </div>
     </div>
   </div>
-  <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultSponsor">Add Sponsor</button>
-  <AddEditSponsor v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
+  <div class='row' v-if="isLoading">
+    <p class='extra__message'>Loading..</p>
+  </div>
+  <div class='row' v-else>
+    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultSponsor">Agregar patrocinador</button>
+    <AddEditSponsor v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
+  </div>
 </template>
+
 <script>
 
 import AddEditSponsor from './AddEditSponsor.vue';
@@ -43,7 +49,10 @@ export default {
       value: undefined,
     }
   },
-  computed: { sponsors () { return this.$store.getters.getSponsors } },
+  computed: { 
+    sponsors () { return this.$store.getters.getSponsors },
+    isLoading () { return this.$store.getters.getSponsorsLoadingState }
+  },
   methods: {
     setNotification,
     submitForm,
@@ -63,8 +72,11 @@ export default {
   grid-template-columns: 60px 1fr 6ch 4ch 1fr 4ch 40px;
 }
 .contribution::after {
-      content: '€';
-      width: 1ch;
-      margin-left: 2px;
-} 
+  content: '€';
+  width: 1ch;
+  margin-left: 2px;
+}
+.row .btn {
+  width: 100%;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class='add_edit'>
-    <h5>Miembro: {{ playerID }} - pagos</h5>
+    <h5>Miembro: {{ playerID }}</h5>
     <div class='month'>
       <h5 class='name'>Nuevo mes</h5>
       <input class='row' type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="newMonth.monthYear" @change="checkIfMonthExist" />
@@ -14,7 +14,7 @@
         <button class='btn white full-width' @click="addPayment(month)">Agregar pago</button>
       </div>
     </div>
-    <div class='row flex-row'>
+    <div class='flex-row'>
       <button class='btn color full-width' @click="submitForm">Actualizar</button>
       <p class='btn text' @click="this.$emit('clearForm')">Claro</p>
     </div>
@@ -114,7 +114,6 @@ export default {
     margin: 0.1em 0 .3em;
   }
 }
-
 @media (min-width: 600px) {
 
 }

@@ -37,8 +37,12 @@ export default {
   padding: 4px;
   .remove {
     margin-left: 8px;
-    padding-left: 0.6em;
-    padding-right: 0.6em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+  }
+
+  .select {
+    max-width: 25%;
   }
 }
 @media (min-width: 600px) {
