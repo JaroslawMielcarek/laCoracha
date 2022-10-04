@@ -1,22 +1,22 @@
 <template>
   <div class='container'>
-    <h1>Finances Area</h1>
-    <p class='extra__message'>Here are finances settings</p>
+    <h1>Área de Finanzas</h1>
+    <p class='extra__message'>Aquí están los ajustes de finanzas. Haga clic sobre (ID o Nick o Equipo o Saldo) para ordenar por esos valores</p>
     <div class='grid row'>
       <div class='list-head'>
         <p class='column'></p>
         <p class='column sort' @click="sortBy = 'memberID'">ID</p>
         <p class='column sort' @click="sortBy = 'name'">Nick</p>
-        <p class='column'>Gender</p>
-        <p class='column sort' @click="sortBy = 'team'">Team</p>
+        <p class='column'>Género</p>
+        <p class='column sort' @click="sortBy = 'team'">Equipo</p>
         <p class='column sort' @click="sortBy = 'balance'">€ Balance</p>
       </div>
       <div class='list large'>
         <div class='list-row' v-if="!players.length">
-          <p class="no-data">No players to display</p>
+          <p class="no-data">No hay jugadores para mostrar</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
-          <div class='action column'><button class='btn color' @click="setState(player)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(player)">Editar</button></div>
           <p class='column id'>{{player.memberID || '-'}}</p>
           <p class='column name'>{{player.nick.value || '-'}}</p>
           <p class='column gender'>{{player.isFemale ? 'Mujer' : 'Hombre'}}</p>

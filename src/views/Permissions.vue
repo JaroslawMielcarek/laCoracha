@@ -1,20 +1,20 @@
 <template>
   <div class='container'>
-    <h1>Permissions Area</h1>
-    <p class='extra__message'>Here are permissions settings</p>
+    <h1>Área de permisos</h1>
+    <p class='extra__message'>Aquí están las configuraciones de permisos.</p>
     <div class='row'>
-      <h5>Permission</h5>
+      <h5>Permisos de usuario</h5>
       <div class='list-head'>
         <p class='column'></p>
         <p class='column sort' @click="sortBy = 'memberID'">ID</p>
         <p class='column sort' @click="sortBy = 'name'">Nick</p>
-        <p class='column'>Gender</p>
-        <p class='column sort' @click="sortBy = 'team'">Team</p>
+        <p class='column'>Género</p>
+        <p class='column sort' @click="sortBy = 'team'">Equipo</p>
         <p class='column sort' @click="sortBy = 'roles'">Roles</p>
       </div>
       <div class='list large'>
         <div class='list-row' v-if="!players.length">
-          <p class="no-data">No players to display</p>
+          <p class="no-data">No hay jugadores para mostrar</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
           <UserPermissions :value="player" @updateUserPermision="updateUserPermision"/>
@@ -22,14 +22,14 @@
       </div>
     </div>
     <div class='row memberID'>
-      <h5>MemberID availability</h5>
+      <h5>MemberID disponibilidad</h5>
       <div class='row'>
-        <button class='btn color' @click="createNextMemberID(nextAvailableID)">Add next available memberID {{nextAvailableID}}</button>
+        <button class='btn color' @click="createNextMemberID(nextAvailableID)">Añadir siguiente disponible memberID: {{nextAvailableID}}</button>
       </div>
-      <p class='extra__message'>Select memberID to remove. It will also remove player connected to this ID</p>
+      <p class='extra__message'>Seleccione memberID para eliminar. También eliminará al jugador conectado a esta memberID.</p>
       <div class='row'>
         <CustomSelectInput v-model:value="memberIDtoDelete" :options="['none',...membersIDsList]" placeholder="memberID to remove" :key="membersIDsList"/>
-        <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Remove memberID {{memberIDtoDelete}}</button>
+        <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Eliminar memberID {{memberIDtoDelete}}</button>
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@ export default {
 .list-head,
 .list-row {
   // max 375px 220 = 150 / 2 = 75
-  grid-template-columns: 60px 30px minmax(60px, 1fr) 60px 1fr 100px;
+  grid-template-columns: 80px 30px minmax(60px, 1fr) 60px 1fr 100px;
 
   .id,
   .name,

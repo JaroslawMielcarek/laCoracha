@@ -16,7 +16,8 @@
       />
     </div>
     <div class='list' v-else>
-      <p v-if='fetchError' class='no-data'>{{ fetchError }}</p>
+      <p v-if='isLoading' class='no-data'>Loading...</p>
+      <p v-else-if='fetchError' class='no-data'>{{ fetchError }}</p>
       <p v-else class='no-data'>Puedes descansar, no hacemos nada en {{showBy === 'mes' ? 'este mes' : 'esta '+ showBy}}.</p>
     </div>
     <div class="legend__container">
@@ -54,6 +55,7 @@ export default {
     currWeekMatches () { return this.matches('week') },
     currMonthMatches () { return this.matches('month') },
     currSeasonMatches () { return this.matches('season') },
+    isLoading () { return this.$store.getters.getMatchesLoadingState },
     fetchError () { return this.$store.getters.getMatchesErrorMessage }
   },
   mounted () {

@@ -276,7 +276,7 @@ textarea {
   display: inline-block;
   border: none;
   color: #d64f4f;
-  margin: 0;
+  margin: 0 2ch;
 }
 .btn.danger {
   background-color: #d64f4f;
@@ -443,6 +443,7 @@ form.wrapper .title {
   align-items: center;
   margin: 0;
   font-size: 0.9rem;
+  text-align: center;
 }
 .list-head .column.blocks,
 .list-row .column.blocks {
@@ -499,9 +500,6 @@ form.wrapper .title {
     font-size: 1.25rem;
     margin: 1.2rem 0 1.1rem;
     color: rgba(76, 0, 237, 0.3);
-  }
-  .btn {
-    padding: 0.4em 1em;
   }
   .add_edit {
     max-width: 600px;

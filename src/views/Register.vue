@@ -47,7 +47,8 @@
         key='memberID'/>
     </div>
     <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-    <button type='submit' class='btn white full-width'>Crear Cuenta</button>
+    <p v-if="isLoading">Loading..</p>
+    <button v-else type='submit' class='btn white full-width'>Crear Cuenta</button>
   </form>
 </template>
 
@@ -78,14 +79,20 @@ export default {
           this.$router.push({ path: '/login' })
         })
         .catch((error) => {
-          this.errorMessage = error.message
+          console.log('error', error)
+            Array.isArray(this.errorMsg) ? this.errorMessage = this.errorMsg : this.errorMessage.push(this.errorMsg)
           const t = setTimeout(() => { 
             this.errorMessage = []
             clearTimeout(t)
           }, 4000)
         })
     }
+  },
+  computed: {
+    isLoading () { return this.$store.getters.getAuthLoadingState },
+    errorMsg () { return this.$store.getters.getAuthErrorMessage }
   }
+  
 }
 </script>
 

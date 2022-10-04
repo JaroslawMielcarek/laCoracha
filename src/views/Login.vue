@@ -9,6 +9,7 @@
         placeholder='Usuario123'
         hint="Alfabeto, números y guiones bajos permitidos. min 6 caracteres"
         v-model:value='username'
+        :required="true"
         key='username' />
     </div>
     <div class='row'>
@@ -19,6 +20,7 @@
         placeholder='Contraseña'
         hint="Mayúscula, letra, número, carácter especial y min 8 caracteres"
         v-model:value='password'
+        :required="true"
         key='password'/>
     </div>
     <div class='row links'>
@@ -30,7 +32,8 @@
       </router-link>
     </div>
     <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-    <button type='submit' class='btn white full-width'>INICIA SESIÓN</button>
+    <p v-if="isLoading">Loading..</p>
+    <button v-else type='submit' class='btn white full-width'>INICIA SESIÓN</button>
   </form>
 </template>
 
@@ -51,22 +54,23 @@ export default {
   },
   methods: {
     login () {
-      if (!this.username || !this.password) this.errorMessage = 'Llenar formulario primero!'
-      else {
-        this.$store.dispatch('login', { username: this.username, password: this.password })
-          .then(() => {
-            if (this.$route.query.nextUrl) this.$router.push({ path: this.$route.query.nextUrl })
-            else this.$router.push({ path: '/' })
-          })
-          .catch((error) => {
-            this.errorMessage = error.message
-            const t = setTimeout(() => { 
-              this.errorMessage = []
-              clearTimeout(t)
-            }, 4000)
-          })
-      }
+      this.$store.dispatch('login', { username: this.username, password: this.password })
+        .then(() => {
+          if (this.$route.query.nextUrl) this.$router.push({ path: this.$route.query.nextUrl })
+          else this.$router.push({ path: '/' })
+        })
+        .catch((error) => {
+          Array.isArray(this.errorMsg) ? this.errorMessage = this.errorMsg : this.errorMessage.push(this.errorMsg)
+          const t = setTimeout(() => { 
+            this.errorMessage = []
+            clearTimeout(t)
+          }, 4000)
+        })
     }
+  },
+  computed: {
+    isLoading () { return this.$store.getters.getAuthLoadingState },
+    errorMsg () { return this.$store.getters.getAuthErrorMessage }
   }
 }
 </script>

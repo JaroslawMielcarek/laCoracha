@@ -1,14 +1,14 @@
 <template>
   <div class='action column'>
-    <button class='btn color' v-if='!isEditing' @click="isEditing = !isEditing">Edit</button>
-    <button class='btn red' v-else @click="save()">Save</button>
+    <button class='btn color' v-if='!isEditing' @click="isEditing = !isEditing">Editar</button>
+    <button class='btn red' v-else @click="save()">Guardar</button>
   </div>
   <p class='column id'>{{value.memberID || '-'}}</p>
   <p class='column name'>{{value.nick ? value.nick.value : '-'}}</p>
   <p class='column gender'>{{value.isFemale ? 'Mujer' : 'Hombre'}}</p>
   <p class='column team'>{{value.team || '-'}}</p>
   <p class='column roles' v-if="!isEditing">{{topPermision}}</p>
-  <CustomSelectInput v-else class='column roles' v-model:value="topPermision" :options="['user', 'moderator', 'admin']" placeholder="Top permision" />
+  <CustomSelectInput v-else class='column roles' v-model:value="topPermision" :options="['user', 'moderator', 'admin']" placeholder="Permiso superior" />
 </template>
 
 <script>

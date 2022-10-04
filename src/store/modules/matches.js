@@ -33,7 +33,7 @@ export const matches = {
   }),
   actions: {
     addMatch ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setMatchLoading', true)
       return ModeratorService.create('Match', data)
         .then(response => {
           dispatch('fetchMatches')
@@ -46,7 +46,7 @@ export const matches = {
         })
     },
     removeMatch ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setMatchLoading', true)
       return ModeratorService.remove('Match', {_id: data._id})
         .then(response => {
           dispatch('fetchMatches')
@@ -59,7 +59,7 @@ export const matches = {
         })
     },
     updateMatch ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setMatchLoading', true)
       return ModeratorService.update('Match', data)
         .then(response => {
           dispatch('fetchMatches')
@@ -72,14 +72,14 @@ export const matches = {
         })
     },
     fetchMatches: ({ commit }) => {
-      commit('setLoading', true)
+      commit('setMatchLoading', true)
       return PublicService.getAll('Matches')
         .then(response => { commit('setMatchesSuccess', response) })
         .catch(error => { commit('setMatchesFailure', error) })
     }
   },
   mutations: {
-    setLoading: (state, val) => { state.isLoading = val },
+    setMatchLoading: (state, val) => { state.isLoading = val },
     setMatchesSuccess (state, matches) {
       state.matches = matches
       state.failed = false

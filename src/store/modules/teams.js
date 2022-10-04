@@ -18,7 +18,7 @@ export const teams = {
   }),
   actions: {
     addTeam ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setTeamsLoading', true)
       return ModeratorService.create('Team', data)
         .then(response => {
           dispatch('fetchTeams')
@@ -31,7 +31,7 @@ export const teams = {
         })
     },
     updateTeam ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setTeamsLoading', true)
       return ModeratorService.update('Team', data)
         .then(response => {
           // dispatch('updateStates', { root: true })
@@ -45,7 +45,7 @@ export const teams = {
         })
     },
     removeTeam ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setTeamsLoading', true)
       return ModeratorService.remove('Team', {_id: data._id})
         .then(response => {
           dispatch('fetchTeams')
@@ -58,14 +58,14 @@ export const teams = {
         })
     },
     fetchTeams: ({ commit, dispatch }) => {
-      commit('setLoading', true)
+      commit('setTeamsLoading', true)
       PublicService.getAll('Teams')
         .then(response => { commit('setTeamsSuccess', response) })
         .catch(error => { commit('setTeamsFailure', error) })
     }
   },
   mutations: {
-    setLoading: (state, val) => { state.isLoading = val },
+    setTeamsLoading: (state, val) => { state.isLoading = val },
     setTeamsSuccess: (state, teams) => {
       state.teams = teams
       state.failed = false

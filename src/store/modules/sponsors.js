@@ -17,7 +17,7 @@ export const sponsors = {
   }),
   actions: {
     addSponsor ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setSponsorsLoading', true)
       return AdminService.create('Sponsor', data)
         .then(response => {
           dispatch('fetchSponsors')
@@ -30,7 +30,7 @@ export const sponsors = {
         })
     },
     removeSponsor ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setSponsorsLoading', true)
       return AdminService.remove('Sponsor', data)
         .then(response => {
           dispatch('fetchSponsors')
@@ -43,7 +43,7 @@ export const sponsors = {
         })
     },
     updateSponsor ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setSponsorsLoading', true)
       return AdminService.update('Sponsor', data)
         .then(response => {
           dispatch('fetchSponsors')
@@ -56,13 +56,14 @@ export const sponsors = {
         })
     },
     fetchSponsors: ({ commit, dispatch }) => {
+      commit('setSponsorsLoading', true)
       return AdminService.getAll('Sponsors')
         .then(response => { commit('setSponsorsSuccess', response) })
         .catch(error => { commit('setSponsorsFailure', error) })
     }
   },
   mutations: {
-    setLoading: (state, val) => { state.isLoading = val },
+    setSponsorsLoading: (state, val) => { state.isLoading = val },
     setSponsorsSuccess (state, sponsors) {
       state.sponsors = sponsors
       state.failed = false

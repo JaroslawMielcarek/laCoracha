@@ -87,7 +87,7 @@ export const players = {
   }),
   actions: {
     updatePlayer ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setPlayersLoading', true)
       return ModeratorService.update('User', data)
         .then(response => {
           dispatch('fetchPlayers')
@@ -100,7 +100,7 @@ export const players = {
         })
     },
     removePlayer ({ commit, dispatch }, data) {
-      commit('setLoading', true)
+      commit('setPlayersLoading', true)
       return ModeratorService.remove('User', {_id: data._id})
         .then(response => {
           dispatch('fetchPlayers')
@@ -113,14 +113,14 @@ export const players = {
         })
     },
     fetchPlayers: ({ commit }) => {
-      commit('setLoading', true)
+      commit('setPlayersLoading', true)
       ModeratorService.getAll('Players')
         .then(response => { commit('setPlayersSuccess', response) })
         .catch(error => { commit('setPlayersFailure', error) })
     }
   },
   mutations: {
-    setLoading: (state, val) => { state.isLoading = val },
+    setPlayersLoading: (state, val) => { state.isLoading = val },
     setPlayersSuccess (state, players) {
       state.players = [...players]
       state.failed = false

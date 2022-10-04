@@ -18,7 +18,7 @@ export const practices = {
   }),
   actions: {
     subscribeForPractice: ({ commit, dispatch }, data) => {
-      commit('setLoading', true)
+      commit('setPracticesLoading', true)
       return UserService.subscribe('Practice', data)
         .then(response => {
           dispatch('fetchPractices')
@@ -31,7 +31,7 @@ export const practices = {
         })
     },
     addPractice: ({ commit, dispatch }, data) => {
-      commit('setLoading', true)
+      commit('setPracticesLoading', true)
       return ModeratorService.create('Practice', data)
         .then(response => {
           dispatch('fetchPractices')
@@ -45,7 +45,7 @@ export const practices = {
         })
     },
     updatePractice: ({ commit, dispatch }, data) => {
-      commit('setLoading', true)
+      commit('setPracticesLoading', true)
       return ModeratorService.update('Practice', data)
         .then(response => {
           dispatch('fetchPractices')
@@ -59,7 +59,7 @@ export const practices = {
         })
     },
     removePractice: ({ commit, dispatch }, data) => {
-      commit('setLoading', true)
+      commit('setPracticesLoading', true)
       return ModeratorService.remove('Practice', {_id: data._id})
         .then(response => {
           dispatch('fetchPractices')
@@ -73,13 +73,14 @@ export const practices = {
         })
     },
     fetchPractices: ({ commit }) => {
+      commit('setPracticesLoading', true)
       UserService.getAll('Practices')
         .then(response => { commit('setPracticesSuccess', response) })
         .catch(error => { commit('setPracticesFailure', error) })
     }
   },
   mutations: {
-    setLoading: (state, val) => { state.isLoading = val },
+    setPracticesLoading: (state, val) => { state.isLoading = val },
     setPracticesSuccess: (state, practices) => {
       state.practices = practices
       state.failed = false
