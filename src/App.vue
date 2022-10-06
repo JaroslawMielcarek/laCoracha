@@ -6,7 +6,7 @@
       </transition>
     </router-view>
   </div>
-  <TabMenu />
+  <TabMenu/>
   <Menu></Menu>
   <CustomNotification />
 </template>

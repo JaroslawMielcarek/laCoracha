@@ -310,7 +310,7 @@ form.wrapper .title {
   display: block;
   margin-bottom: 0.5em;
   font-style: italic;
-  color: rgba(76, 0, 237, 0.3);
+  color: rgba(76, 0, 237, 0.6);
 }
 .extra__message.inline__extra {
   display: inline-block;
@@ -523,5 +523,30 @@ form.wrapper .title {
 .date .month::after {
     content: "/";
     width: 1ch;
+  }
+}
+@media (min-width: 992px) {
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.2rem;
+    font-size: 1.1rem;
+  }
+  h1 {
+    font-size: 3.552rem;
+  }
+  h2 {
+    font-size: 2.941rem;
+  }
+  h3 {
+    font-size: 2.453rem;
+  }
+  h4 {
+    font-size: 2.063rem;
+    margin: 1.5rem 0 1.2rem;
+  }
+  h5 {
+    font-size: 1.75rem;
+    margin: 1.2rem 0 1.1rem;
+    color: rgba(76, 0, 237, 0.3);
   }
 }/*# sourceMappingURL=styles.css.map */

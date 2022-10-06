@@ -1,11 +1,20 @@
 <template>
-<div class = 'banner__wrapper'>
-    <router-link to='/' class='tab home__banner'>
-        <div class='avatar'>
-            <img src='@/assets/images/home.svg' alt="home"/>
+  <div class = 'banner__wrapper'>
+    <div class="hamburger__banner tab" @click='isToggled = !isToggled'>
+        <div :class="['hamburger',{open: isToggled}]">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </router-link>
-    <div :class ="['tab', 'user__banner', {open: isOpen, logged: isLogged}]">
+    </div>
+    <div :class="['home__banner', {visible: isVisible}]">
+        <router-link to='/' class='tab'>
+            <div class='avatar'>
+                <img src='@/assets/images/home.svg' alt="home"/>
+            </div>
+        </router-link>
+    </div>
+    <div :class ="['login__banner', 'tab', {visible: isVisible, open: isOpen, logged: isLogged}]">
         <CustomToolTip :text="isLogged ? 'You can log out' : ' You can log in'" direction='right'/>
         <div className = 'avatar'
             @click=" toggleIsOpen() " >
@@ -14,140 +23,244 @@
         <router-link to='/' v-if="isLogged"><button class='btn white' @click=" logout()"> logout </button></router-link>
         <router-link to='/login' v-else><button class= 'btn color' @click=" login()"> login </button></router-link>
     </div>
-    <router-link to='/settings' v-if="isLogged" class='tab settings__banner'>
-        <CustomToolTip text='Revisa tu perfil' direction='right' :delay=1500 />
-        <div class='avatar'>
-            <img src='@/assets/images/edit-profile.svg' alt="profile"/>
-        </div>
-    </router-link>
-    <router-link to='/practice' v-if="isLogged" class = 'tab settings__banner'>
-        <CustomToolTip text='Quedadas' direction='right' :delay=1500 />
-        <div class='avatar'>
-            <img src='@/assets/images/calendar.svg' alt="calendar"/>
-        </div>
-    </router-link>
-    <router-link to='/moderator' v-if="isLogged && isModerator" class='tab moderator__banner'>
+    <div :class="['user__banner', {visible: isVisible}]">
+      <router-link to='/settings' v-if="isLogged" class='tab'>
+          <CustomToolTip text='Revisa tu perfil' direction='right' :delay=1500 />
+          <div class='avatar'>
+              <img src='@/assets/images/edit-profile.svg' alt="profile"/>
+          </div>
+      </router-link>
+      <router-link to='/practice' v-if="isLogged" class = 'tab'>
+          <CustomToolTip text='Quedadas' direction='right' :delay=1500 />
+          <div class='avatar'>
+              <img src='@/assets/images/calendar.svg' alt="calendar"/>
+          </div>
+      </router-link>
+    </div>
+    <div :class="['moderator__banner', {visible: isVisible}]">
+      <router-link to='/moderator' v-if="isLogged && isModerator" class='tab'>
         <CustomToolTip text='Moderator poder' direction='right' :delay=1500 />
         <div class='avatar'>
             <img src='@/assets/images/settings.svg' alt="settings"/>
         </div>
-    </router-link>
-    <router-link to='/finances' v-if="isLogged && isAdmin" class='tab settings__banner'>
-        <CustomToolTip text='Condiciones financieras' direction='right' :delay=1500 />
-        <div class='avatar'>
-            <img src='@/assets/images/dolar.svg' alt="settings"/>
-        </div>
-    </router-link>
-    <router-link to='/permissions' v-if="isLogged && isAdmin" class='tab settings__banner'>
-        <CustomToolTip text='Permisos otorgados a los usuarios' direction='right' :delay=1500 />
-        <div class='avatar'>
-            <img src='@/assets/images/permission.svg' alt="settings"/>
-        </div>
-    </router-link>
-</div>
+      </router-link>
+    </div>
+    <div :class="['admin__banner', {visible: isVisible}]">
+      <router-link to='/finances' v-if="isLogged && isAdmin" class="tab" >
+          <CustomToolTip text='Condiciones financieras' direction='right' :delay=1500 />
+          <div class='avatar'>
+              <img src='@/assets/images/dolar.svg' alt="finances"/>
+          </div>
+      </router-link>
+      <router-link to='/permissions' v-if="isLogged && isAdmin" class='tab'>
+          <CustomToolTip text='Permisos otorgados a los usuarios' direction='right' :delay=1500 />
+          <div class='avatar'>
+              <img src='@/assets/images/permission.svg' alt="permissions"/>
+          </div>
+      </router-link>
+    </div>
+  </div>
 </template>
+  
+<script setup>
 
-<script>
-import CustomToolTip from '@/components/CustomToolTip.vue'
+  import CustomToolTip from '@/components/CustomToolTip.vue'
+  import {useStore} from 'vuex'
+  import {ref, computed, onMounted, onUnmounted, watch} from 'vue'
+  import { useRouter } from 'vue-router';
 
-export default {
-  name: 'TabMenu',
-  components: {
-    CustomToolTip
-  },
-  data () {
-    return {
-      isOpen: false
-    }
-  },
-  methods: {
-    toggleIsOpen () {
-      this.isOpen = !this.isOpen
-      if (this.isOpen) {
-        const timeOut = setTimeout(() => {
-          this.isOpen = false
-          clearTimeout(timeOut)
-        }, 3600)
-      }
-    },
-    logout () {
-      console.log('Logout')
-      this.$router.push({ path: '/' })
-      this.$store.dispatch('logout')
-      this.toggleIsOpen()
-    },
-    login () {
-      this.toggleIsOpen()
-    }
-  },
-  computed: {
-    isLogged () { return this.$store.getters.getStatus },
-    userRoles () { return this.$store.getters.getUserRoles },
-    isModerator () { return this.userRoles && this.userRoles.includes('ROLE_MODERATOR') },
-    isAdmin () { return this.userRoles && this.userRoles.includes('ROLE_ADMIN') },
-    isFemale () { return this.$store.getters.getUserGender },
-    getAvatar () { return this.isLogged && this.isFemale ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') }
+  const store = useStore()
+  const router = useRouter()
+
+  const userRoles = computed( () => store.getters.getUserRoles )
+  const isModerator = computed( () => userRoles.value && userRoles.value.includes('ROLE_MODERATOR') )
+  const isAdmin = computed( () => userRoles.value && userRoles.value.includes('ROLE_ADMIN') )
+  const isFemale = computed( () => store.getters.getUserGender )
+  
+  // Avatar
+  const isLogged = computed( () => store.getters.getStatus )
+  const getAvatar = computed( () => isLogged.value && isFemale.value ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') )
+  
+  // Login banner
+  const isOpen = ref(false)
+
+  function toggleIsOpen () {
+    isOpen.value = !isOpen.value
+    if (!isOpen.value) return null
+
+    const timeOut = setTimeout(() => {
+      isOpen.value = false
+      clearTimeout(timeOut)
+    }, 3600)
   }
-}
-</script>
 
-<style lang="scss" scoped>
-@import '@/colors.scss';
+  function logout () {
+    router.push({ path: '/' })
+    store.dispatch('logout')
+    toggleIsOpen()
+  }
 
-.banner__wrapper{
+  function login () { toggleIsOpen() }
+
+  // Visibility of the tab menu
+  onMounted( () => {
+    window.addEventListener('resize', setWindowSize)
+    isAlwaysOn(isToggled.value)
+  })
+  onUnmounted( () => window.removeEventListener('resize', setWindowSize))
+
+  const isToggled = ref(false)
+  const isVisible = ref(true)
+  const wHeight = ref(window.innerHeight)
+  const wWidth = ref(window.innerWidth)
+
+  watch(isToggled, (val) => isAlwaysOn(val) )
+
+  function setWindowSize () {
+    wHeight.value = window.innerHeight
+    wWidth.value = window.innerWidth
+    isAlwaysOn(isToggled.value)
+  }
+
+  function isAlwaysOn (val) {
+    isVisible.value = ( wHeight.value < 992 && wWidth.value < 600 ) || ( wHeight.value < 600 && wWidth.value < 992 )  ? val : true 
+  }
+
+  </script>
+  
+  <style lang="scss" scoped>
+  @import '@/colors.scss';
+  
+  $tab_height: 44px;
+  $gap_between_category: 16px;
+  $gap_between_elements: 2px;
+
+  .banner__wrapper{
     position: fixed;
+    display: grid;
     z-index: 100;
-    left: 100vw; // right: 0;
-    top: 20px;
-}
-.tab{
+    left: calc(100vw - 48px);
+    top: $tab_height + $gap_between_category + 20px;
+    
+    // select all children
+    & > * {
+      grid-area: -1/-1
+    }
+    & > *:not(.hamburger__banner) {
+      opacity: 0;
+      transition: .6s ease-in-out;
+    }
+    .visible {
+      opacity: 1;
+    }
+  }
+  .hamburger {
+    width: 32px;
+    height: 32px;
+    padding: 7px 4px;
+    margin: 0 8px;
+    span{
+      display: block;
+      width: 24px;
+      height: 4px;
+      margin-bottom: 3px;
+      position: relative;
+      
+      background: rgba($blueDark, .8);
+      border-radius: 3px;
+      
+      z-index: 1;
+      
+      transform-origin: 0px 0px;
+      transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+                  background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+                  opacity 0.55s ease;
+    }
+
+    span:first-child{ transform-origin: 0% 0%; }
+
+    span:nth-last-child(2){ transform-origin: 0% 100%; }
+    &.open span{
+      opacity: 1;
+      transform: rotate(-45deg) translate(0px, 3px);
+    }
+    &.open span:nth-last-child(2){
+      opacity: 0;
+      transform: rotate(0deg) scale(0.2, 0.2);
+    }
+    &.open span:nth-last-child(3){
+      transform: rotate(45deg) translate(3px, -4px);
+    }
+  }
+  .visible {
+    &.login__banner {
+      transform: translate3d(0, $tab_height + $gap_between_elements, 0)
+    }
+    &.user__banner {
+      transform: translate3d(0, ($tab_height * 2) + ($gap_between_category * 1), 0)
+    }
+    &.moderator__banner {
+      transform: translate3d(0, ($tab_height * 4) + ($gap_between_category * 2), 0)
+    }
+    &.admin__banner {
+      transform: translate3d(0, ($tab_height * 5) + ($gap_between_category * 3), 0)
+    }
+  }
+    
+  // $menu-items: 3;
+  // @for $i from 1 through $menu-items{
+  //   .visible.user__banner .tab:nth-child(#{$i}),
+  //   .visible.admin__banner .tab:nth-child(#{$i}){
+  //     transition-duration:90ms+(100ms*$i);
+  //     transform:translate3d(0, ($gap_between_elements)*($i - 1),0);
+  //   }
+  // }
+  .tab{
     display: flex;
     flex-direction: row;
-    margin-bottom: 4px;
     align-items: center;
     background-color: $white;
     box-shadow: 2px 2px 10px rgba($blueDark, .2);
-    border: 1px solid #000000;
+    border: 1px solid $black;
     border-right: none;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     padding: 4px 0;
-    position: relative;
     width: 158px;
-    left: -48px;
+    height: $tab_height;
     transition: .6s ease-in-out;
+    margin-bottom: $gap_between_elements;
+    &.hamburger__banner {
+      transform: translate3d(0, -($tab_height + $gap_between_category), 0);
+      &:hover .hamburger * { background: $white }
+    }
     &:last-child{
-        margin-bottom: 0;
+      margin-bottom: 0;
     }
     &:hover,
     &.router-link-active {
-        background-color: rgba($blueDark, .8);
+      background-color: rgba($blueDark, .8);
     }
     &.logged {
-        &:hover {
-            background-color: rgba($blueDark, .8);
-        }
-        .btn:hover {
-            border: 1px solid $black;
-        }
+      &:hover {
+        background-color: rgba($blueDark, .8);
+      }
+      .btn:hover {
+        border: 1px solid $black;
+      }
     }
-}
-.user__banner{
+  }
+  .login__banner{
     &.open{
-        left: -158px;
+      transform: translate3d(-110px, $tab_height + $gap_between_elements, 0);
+      left: -158px;
     }
     &.logged{
-        background-color: $blueDark;
-        border-color: $white;
+      background-color: $blueDark;
+      border-color: $white;
     }
-}
-.settings__banner {
-    width: 48px;
-}
-.moderator__banner {
-    margin-top: 24px;
-}
-.avatar{
+  }
+  .avatar{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -167,11 +280,45 @@ export default {
     &:focus {
         transform: scale(1.1);
     }
-}
-.btn{
+  }
+  .btn{
     width: 100px;
     margin-right: 10px;
     font-size: small;
     transition: all ease-in-out .2s;
-}
-</style>
+  }
+
+  @media screen and (max-device-width: 992px)  {
+    $gap_between_category: 10px;
+    $tab_height: 38px;
+    .banner__wrapper {
+      top: $tab_height + $gap_between_category + 20;
+    }
+    .tab {
+      height: $tab_height;
+    }
+    .visible {
+      &.login__banner {
+        transform: translate3d(0, $tab_height + $gap_between_elements, 0)
+      }
+      &.user__banner {
+        transform: translate3d(0, ($tab_height * 2) + ($gap_between_category * 1), 0)
+      }
+      &.moderator__banner {
+        transform: translate3d(0, ($tab_height * 4) + ($gap_between_category * 2), 0)
+      }
+      &.admin__banner {
+        transform: translate3d(0, ($tab_height * 5) + ($gap_between_category * 3), 0)
+      }
+    }
+  }
+
+  @media screen and (min-width: 992px),
+        screen and (min-height: 992px) {
+
+    .hamburger__banner {
+      display: none;
+    }
+  }
+  </style>
+  
