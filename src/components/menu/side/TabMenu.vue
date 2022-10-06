@@ -299,16 +299,19 @@
     }
     .visible {
       &.login__banner {
-        transform: translate3d(0, $tab_height + $gap_between_elements, 0)
+        transform: translate3d(0, $tab_height + $gap_between_elements, 0);
+        &.open {
+          transform: translate3d(-110px, $tab_height + $gap_between_elements, 0);
+        }
       }
       &.user__banner {
-        transform: translate3d(0, ($tab_height * 2) + ($gap_between_category * 1), 0)
+        transform: translate3d(0, ($tab_height * 2) + ($gap_between_category * 1), 0);
       }
       &.moderator__banner {
-        transform: translate3d(0, ($tab_height * 4) + ($gap_between_category * 2), 0)
+        transform: translate3d(0, ($tab_height * 4) + ($gap_between_category * 2), 0);
       }
       &.admin__banner {
-        transform: translate3d(0, ($tab_height * 5) + ($gap_between_category * 3), 0)
+        transform: translate3d(0, ($tab_height * 5) + ($gap_between_category * 3), 0);
       }
     }
   }
