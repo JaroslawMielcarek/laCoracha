@@ -16,6 +16,9 @@
       />
     </div>
   </div>
+  <div class="row">
+    <button v-if="playerPref.length" class='btn white full-width' @click="reset">Reset</button>
+  </div>
 </template>
 
 <script>
@@ -31,6 +34,9 @@ export default {
           return defPos === prefPos // return the ones with different value than choosen
         })
       })
+    },
+    reset () {
+      this.$store.dispatch('updateUserBasicInfo', { _id: this.user._id, preferedPositions: []})
     }
   },
   computed: {

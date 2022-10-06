@@ -42,7 +42,6 @@ export default {
     this.fetchSponsors()
   },
   computed: {
-    // mainSponsors (){ return this.sponsorsList.filter(s => s.isMain) },
     sponsors () {
       const spon = {
         main: [],
@@ -52,7 +51,6 @@ export default {
         if(s.isMain) return spon.main.push(s)
         spon.side.push(s)
       })
-      console.log('spon', spon)
       return spon
     }
   },
@@ -61,7 +59,6 @@ export default {
     fetchSponsors () {
       PublicService.getAll('Sponsors')
         .then(response => {
-          console.log('reposnose', response)
           this.sponsorsList = response
         })
         .catch(error => {

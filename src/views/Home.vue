@@ -106,18 +106,29 @@ export default {
   opacity: .2;
   position: absolute;
   z-index:-1;
+  width: 90vw;
+  height: auto;
 }
 
 .description{
   margin-bottom: 40px;
+}
+
+@media only screen
+and (orientation: landscape){
+  #hero {
+    height: 100vh;
+  }
+  .logo {
+    width: 60vw;
+  }
 }
 @media only screen
 and (min-device-width: 600px)
 and (orientation: portrait){
   // doesnt work
   .logo{
-    width: 256px;
-    height: 256px;
+    width: 60vw;
   }
 }
 @media only screen
@@ -142,7 +153,6 @@ and (min-device-width: 992px){
   .logo{
     opacity: .1;
     width: 80vh;
-    height: 80vh;
   }
   #hero{
     height: 100vh;
