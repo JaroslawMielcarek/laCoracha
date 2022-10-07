@@ -61,7 +61,8 @@ export const settings = {
         name: 'just-voley',
         teams: ['a', 'b']
       }
-    ]
+    ],
+    MAX_PLAYERS_IN_TEAM: 16,
   }),
   actions: {
   },
@@ -103,6 +104,7 @@ export const settings = {
     },
     getRegisterdClubs (state) {
       return state.registered_teams.map(t => t.name)
-    }
+    },
+    getMaxPlayersInTeam (state) { return state.MAX_PLAYERS_IN_TEAM }
   }
 }

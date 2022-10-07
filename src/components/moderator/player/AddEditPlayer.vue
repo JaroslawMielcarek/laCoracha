@@ -1,14 +1,19 @@
 <template>
   <form class='add_edit' @submit.prevent="submitForm">
-    <h4>{{ isEditing ? 'Edit' : 'Add new'}} Player</h4>
+    <h4>{{ isEditing ? 'Actualizar' : 'Añadir nuevo'}} Jugador</h4>
     <div class='row grid-row'>
       <div class='column'>
-        <h5>Basics</h5>
-        <CustomInput v-model:value="entry.memberID" placeholder='ID' :required='true' @update:value="checkIfExist"/>
-        <CustomInput v-model:value="entry.nick.value" placeholder='Name' />
-        <CustomInput v-model:value="entry.number.value" pattern='^[0-9]*$' hint='Only numbers allowed' placeholder='Number'/>
-        <p class='mujer'>Mujer: <input v-model="entry.isFemale" type='checkbox' id='mujer'/></p>
-        <p class='team'>Team: <span class='value'>{{ entry.team ? entry.team : "Doesn't belong to any"}}</span></p>
+        <h5>Lo esencial</h5>
+        <div class='row'>
+          <CustomInput v-model:value="entry.memberID" placeholder='ID' :required='true' @update:value="checkIfExist"/>
+          <CustomInput v-model:value="entry.nick.value" placeholder='Nick' />
+          <CustomInput v-model:value="entry.number.value" pattern='^[0-9]*$' hint='Solo números permitidos' placeholder='Numero'/>
+        </div>
+        <div class='row toggle'>
+          <label class='mujer label__inline'>Mujer:</label>
+          <ToggleSlider  :checked="entry.isFemale" @toggled="entry.isFemale = !entry.isFemale"/>
+        </div>
+        <p class='team'>Equipo: <span class='value'>{{ entry.team ? entry.team : "No pertenece a ninguno"}}</span></p>
       </div>
       <div class='column'>
         <PlayerPractices v-if="entry.practices" v-model:value="entry.practices" />
@@ -23,7 +28,7 @@
 
     <PlayerPerformance v-if="entry.team" v-model:value="entry.inTeamPerformance" />
     <div class='row flex-row'>
-      <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
+      <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
       <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
     </div>
   </form>
@@ -35,6 +40,7 @@ import PlayerPerformance from '@/components/moderator/player/PlayerPerformance.v
 import PlayerPractices from '@/components/moderator/player/PlayerPractices.vue'
 import { isEmptyObject } from '@/services/util/object.js'
 import CustomUploadFile from '@/components/CustomUploadFile.vue'
+import ToggleSlider from '@/components/ToggleSlider.vue'
 import ImagePrevWithRemoveVue from '@/components/ImagePrevWithRemove.vue'
 
 export default {
@@ -44,7 +50,8 @@ export default {
     PlayerPerformance,
     PlayerPractices,
     CustomUploadFile,
-    ImagePrevWithRemoveVue
+    ImagePrevWithRemoveVue,
+    ToggleSlider
   },
   emits: ['clearForm', 'submitForm'],
   props: {
@@ -89,7 +96,7 @@ export default {
       const existingValues = this.$store.getters.getPlayersIDs
       const result = existingValues.find(t => t.toString().toLowerCase() === value.toString().toLowerCase())
       if (result) {
-        alert('ID already exist. Please edit insted')
+        alert('El ID ya existe. Por favor, edite en su lugar')
         this.entry.id = ''
       }
     },
@@ -114,5 +121,12 @@ export default {
 .grid-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+.mujer {
+  margin-right: 1ch;
+}
+.toggle {
+  display: flex;
+  align-items: center;
 }
 </style>

@@ -1,23 +1,23 @@
 <template>
   <div class='container full-width'>
-    <h3>Players</h3>
-    <p class='extra__message'>Manage Club players</p>
+    <h3>Jugadores</h3>
+    <p class='extra__message'>Administrar jugadores del club</p>
     <div class='grid'>
       <div class='list-head'>
         <p class='column'></p>
         <p class='column sort' @click="sortBy = 'memberID'">ID</p>
         <p class='column sort' @click="sortBy = 'name'">Nick</p>
         <p class='column'>No.</p>
-        <p class='column'>Gender</p>
-        <p class='column sort' @click="sortBy = 'team'">Team</p>
+        <p class='column'>Género</p>
+        <p class='column sort' @click="sortBy = 'team'">Equipo</p>
         <p class='column'></p>
       </div>
       <div class='list large'>
         <div class='list-row' v-if="!players.length">
-          <p class="no-data">No players to display</p>
+          <p class="no-data">No hay jugadores para mostrar</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
-          <div class='action column'><button class='btn color' @click="setState(player, true)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(player, true)">Editar</button></div>
           <p class='column id'>{{player.memberID || 'no data'}}</p>
           <p class='column name'>{{player.nick ? player.nick.value : ''}}</p>
           <p class='column number'>{{player.number? player.number.value : ''}}</p>

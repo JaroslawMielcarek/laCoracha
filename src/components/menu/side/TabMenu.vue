@@ -123,7 +123,7 @@
   }
 
   function isAlwaysOn (val) {
-    isVisible.value = ( wHeight.value < 992 && wWidth.value < 600 ) || ( wHeight.value < 600 && wWidth.value < 992 )  ? val : true 
+    isVisible.value = ( wHeight.value < 992 && wWidth.value < 992 ) || ( wHeight.value < 992 && wWidth.value < 992 )  ? val : true 
   }
 
   </script>
@@ -288,7 +288,7 @@
     transition: all ease-in-out .2s;
   }
 
-  @media screen and (max-device-width: 992px)  {
+  @media screen and (max-height: 992px)  {
     $gap_between_category: 10px;
     $tab_height: 38px;
     .banner__wrapper {
@@ -296,6 +296,7 @@
     }
     .tab {
       height: $tab_height;
+      padding: 3px 0;
     }
     .visible {
       &.login__banner {

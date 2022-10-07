@@ -1,8 +1,8 @@
 <template>
 <div class='row'>
   <div class='filter'>
-    <span>Show: </span>
-    <SelectInput :options="['ALL','EXT', 'OP', 'CO', 'LIB','CE']" v-model:value="showBy" placeholder="choose"/>
+    <span>Mostrar: </span>
+    <SelectInput :options="['Todo','EXT', 'OP', 'CO', 'LIB','CE']" v-model:value="showBy" placeholder="Eligue"/>
   </div>
   <div class='player_list'>
     <div v-for="player in players" :key="player._id">
@@ -10,7 +10,7 @@
         <p class='player_id'>{{player.memberID}}</p>
         <p class='player_name'>{{player.nick.value}}</p>
         <div class='prefPosition' v-if="player.preferedPositions">
-          <p>Preference</p>
+          <p>Preferencia</p>
           <span v-for="position in player.preferedPositions" :key="position">{{ position.choosen }}</span>
         </div>
         <div class='practice_stats' v-if="player.practices && player.practices.attended">
@@ -41,13 +41,13 @@ export default {
   },
   data () {
     return {
-      showBy: 'ALL'
+      showBy: 'Todo'
     }
   },
   computed: {
     players () {
       const list = this.$store.getters.getPlayers
-      if (this.showBy === 'ALL') return list
+      if (this.showBy === 'Todo') return list
 
       return list.filter(player => {
         if (player.preferedPositions && player.preferedPositions.find(el => el.choosen === this.showBy)) return player

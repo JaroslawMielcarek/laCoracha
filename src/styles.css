@@ -549,4 +549,7 @@ form.wrapper .title {
     margin: 1.2rem 0 1.1rem;
     color: rgba(76, 0, 237, 0.3);
   }
+  .container.full-width {
+    padding-right: 50px;
+  }
 }/*# sourceMappingURL=styles.css.map */

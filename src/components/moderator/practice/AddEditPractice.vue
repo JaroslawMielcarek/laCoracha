@@ -1,21 +1,21 @@
 <template>
   <form class='add_edit' @submit.prevent="submitForm">
-    <h4>{{ isEditing ? 'Edit' : 'Add new'}} Practice</h4>
+    <h4>{{ isEditing ? 'Actualizar' : 'Añadir nueva'}} Quedada</h4>
     <div class='row'>
-      <span>Date and Time:</span>
+      <span>Fecha y Hora:</span>
       <CustomDateTimeInput v-model="entry.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
-      <span>Players Limit:</span>
-      <CustomSelectInput v-model:value="entry.playersLimit" :options="['6', '12', '18', '24']" placeholder="Players Limit" :required="true"/>
+      <span>Límite de jugadores:</span>
+      <CustomSelectInput v-model:value="entry.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
     </div>
     <PracticePlayersList :playersSubscribed="entry.players" :key="playersList" @addPlayer="addPlayer($event)" @removePlayer="removePlayer($event)"/>
     <div class='row legend__container'>
-      <p class='extra__message'>Legend</p>
+      <p class='extra__message'>Leyenda</p>
       <span class='legend single'>1 strike</span>
       <span class='legend doble'>2 strike</span>
       <span class='legend triple'>3 strike</span>
     </div>
     <div class='row flex-row'>
-      <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
+      <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
       <p class='btn text' @click="clearForm">Clear</p>
     </div>
   </form>
@@ -71,7 +71,7 @@ export default {
       const existingPractices = this.$store.getters.getPractices
       const result = existingPractices.find(t => t.dateTime.date === value.date && t.dateTime.time === value.time)
       if (result) {
-        alert('Practice already exist. Please edit instead')
+        alert('La quedada ya existe. Por favor, edite en su lugar')
         this.entry.dateTime = { date: '', time: '' }
       }
     },

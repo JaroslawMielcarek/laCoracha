@@ -520,7 +520,9 @@ form.wrapper {
     margin: 0;
     font-size: 0.9rem;
     text-align: center;
-
+    &.overLimit {
+      color: $dangerous;
+    }
     &.blocks {
       flex-direction: column;
     }
@@ -660,6 +662,11 @@ form.wrapper {
     font-size: 1.75rem;
     margin: 1.2rem 0 1.1rem;
     color: rgba($blueDark, .3);
+  }
+  .container {
+    &.full-width {
+      padding-right: 50px;
+    }
   }
 
 }

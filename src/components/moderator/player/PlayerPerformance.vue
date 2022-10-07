@@ -1,6 +1,6 @@
 <template>
   <div class='row'>
-    <h5>In Team Performance</h5>
+    <h5>El rendimiento</h5>
     <div class = 'list-head'>
       <p class = 'column category'></p>
       <p class = 'column total'>Total</p>

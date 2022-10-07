@@ -1,26 +1,26 @@
 <template>
   <div class='container full-width'>
     <h3>Calendar</h3>
-    <p class='extra__message'>Manage Club matches</p>
+    <p class='extra__message'>Administrar el calendario de partidos</p>
     <div>
-      <span>Show: </span>
-      <CustomSelectInput v-model:value="showBy" :options="['all', 'week', 'month', 'season']" placeholder="time frame" />
+      <span>Mostrar: </span>
+      <CustomSelectInput v-model:value="showBy" :options="['Todo', 'Semana', 'Mes', 'Temporada']" placeholder="Eligue periodo" />
     </div>
     <div class='grid row'>
       <div class='list-head'>
         <p class='column'></p>
         <p class='column'>Local</p>
         <p class='column'>Visitor</p>
-        <p class='column'>Date</p>
-        <p class='column'>Location</p>
-        <p class='column'>Type</p>
+        <p class='column'>Fecha</p>
+        <p class='column'>Ubicación</p>
+        <p class='column'>Tipo</p>
       </div>
       <div class='list'>
         <div class='list-row' v-if="!matches.length">
-          <p class="no-data">No matches to display</p>
+          <p class="no-data">No hay partidos para mostrar</p>
         </div>
         <div class='list-row' v-for="match in matches" :key="match">
-          <div class='action column'><button class='btn color' @click="setState(match, true)">Edit</button></div>
+          <div class='action column'><button class='btn color' @click="setState(match, true)">Editar</button></div>
           <div class='column blocks'>
             <p class='title'>{{match.homeTeam.clubName}}</p>
             <p class='team'>{{match.homeTeam.teamName}}</p>
@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultMatch">Add Match</button>
+    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultMatch">Agregar Partido</button>
     <AddEditMatch v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
@@ -67,7 +67,7 @@ export default {
     return {
       value: undefined,
       isEditing: false,
-      showBy: 'all',
+      showBy: 'Todo',
       sortBy: 'date',
     }
   },
@@ -76,9 +76,9 @@ export default {
   },
   computed: {
     matches () {
-      if (this.showBy === 'semana') return this.$store.getters.getMatchesOf('week')
-      if (this.showBy === 'mes') return this.$store.getters.getMatchesOf('month')
-      if (this.showBy === 'temporada') return this.$store.getters.getMatchesOf('season')
+      if (this.showBy === 'Semana') return this.$store.getters.getMatchesOf('week')
+      if (this.showBy === 'Mes') return this.$store.getters.getMatchesOf('month')
+      if (this.showBy === 'Temporada') return this.$store.getters.getMatchesOf('season')
       return this.$store.getters.getMatches
     }
   },

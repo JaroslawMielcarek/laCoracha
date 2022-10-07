@@ -1,17 +1,16 @@
 <template>
   <form class='add_edit' @submit.prevent="submitForm">
-    <h4 v-if="!isEditing">Add new Team</h4>
-    <h4 v-else>Edit {{entry.name}} Team</h4>
+    <h4>{{ isEditing ? 'Actualizar' : 'Añadir nuevo'}} Equipo</h4>
     <ImagePrevWithRemoveVue v-if="entry.logo" :image="entry.logo" @removeLogo="entry.logo=undefined"/>
     <div v-else>
       <CustomUploadFile text="LOGO" :file="entry.logo" :sizeLimit="200000" @fileChoosed="(val) => entry.logo = val"/>
       <p class='extra__message'>max: 250x250px or 200kb </p>
     </div>
     <div class='row'>
-      <CustomInput v-if="!isEditing" v-model:value="entry.name" placeholder='name' :required='true' @update:value="checkIfExist"/>
-      <CustomInput v-model:value="entry.league" placeholder='league'/>
-      <CustomSelectInput class='component' v-model:value="entry.gender" :options="['Female', 'Male', 'Mix']" placeholder="Select Gender"  :required='true'/>
-      <textarea class='component' v-model="entry.description" placeholder="Add team description"></textarea>
+      <CustomInput v-if="!isEditing" v-model:value="entry.name" placeholder='Nombre' :required='true' @update:value="checkIfExist"/>
+      <CustomInput v-model:value="entry.league" placeholder='Liga'/>
+      <CustomSelectInput class='component' v-model:value="entry.gender" :options="['Female', 'Male', 'Mix']" placeholder="Eligue Género"  :required='true'/>
+      <textarea class='component' v-model="entry.description" placeholder="Añadir descriptión del equipo"></textarea>
 
       <div class='list'>
         <template v-for="player in players" :key="player">
@@ -20,7 +19,7 @@
       </div>
     </div>
     <div class='row flex-row'>
-      <button type='submit' class='btn color'>{{isEditing ? 'Update' : 'Add'}}</button>
+      <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
       <p class='btn text' @click="clearForm">Clear</p>
     </div>
   </form>
@@ -83,7 +82,7 @@ export default {
       const existingTeams = this.$store.getters.getTeamsNames
       const result = existingTeams.find(t => t === value)
       if (result) {
-        alert('Team already exist. Please edit insted')
+        alert('El equipo ya existe. Por favor, edite en su lugar')
         this.entry.name = ''
       }
     },
