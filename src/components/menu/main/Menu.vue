@@ -17,7 +17,7 @@
       </span>
     </div>
     <div class="buttons buttons--right">
-        <a class="icon location" href='https://goo.gl/maps/17W6u6RBikHYzubV7'>
+        <a class="icon location" href='locations'>
           <img src="@/assets/icons/googlePin.svg" alt = "googlePin icon" />
         </a>
         <a class="icon contact" href='https://wa.me/393497492300'>

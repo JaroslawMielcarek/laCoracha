@@ -8,6 +8,7 @@ import Moderator from '../views/Moderator.vue'
 import Finances from '../views/Finances.vue'
 import Permissions from '../views/Permissions.vue'
 import Practice from '../views/Practice.vue'
+import Locations from '../views/Locations.vue'
 import Join from '../views/Join.vue'
 import Reset from '../views/Reset.vue'
 import Forgot from '../views/Forgot.vue'
@@ -31,7 +32,11 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   // component: () => import(/* webpackChunkName: "about" */ '../views/404.vue')
   // },
-
+  {
+    path: '/locations',
+    name: 'Locations',
+    component: Locations
+  },
   {
     path: '/:teamName',
     component: Team,
@@ -120,7 +125,8 @@ const router = createRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+
+  // const requiresRole = to.meta ? to.meta.requiresRole : false
   const requiresRole = to.meta.requiresRole
 
   if (requiresRole) {
