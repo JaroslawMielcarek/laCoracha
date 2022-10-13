@@ -17,9 +17,9 @@
       </span>
     </div>
     <div class="buttons buttons--right">
-        <a class="icon location" href='locations'>
-          <img src="@/assets/icons/googlePin.svg" alt = "googlePin icon" />
-        </a>
+      <router-link to="/locations" class="icon location">
+        <img src="@/assets/icons/googlePin.svg" alt = "googlePin icon" />
+      </router-link>
         <a class="icon contact" href='https://wa.me/393497492300'>
           <img src="@/assets/icons/whatsapp.svg" alt = "whatsapp icon" />
         </a>

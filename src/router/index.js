@@ -19,8 +19,8 @@ import { Buffer } from 'buffer'
 
 const routes = [
   {
-    path: '/',
     name: 'Home',
+    path: '/',
     component: Home
   },
   // {
@@ -33,8 +33,8 @@ const routes = [
   //   // component: () => import(/* webpackChunkName: "about" */ '../views/404.vue')
   // },
   {
-    path: '/locations',
     name: 'Locations',
+    path: '/locations',
     component: Locations
   },
   {
