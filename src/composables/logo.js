@@ -2,5 +2,5 @@
 export function getLogo(object){
 
   if (!object.logo || !object.logo.data || !object.logo.contentType) return require('@/assets/images/teams/default.svg')
-  return `data:image/${object.logo.contentType};base64,${object.logo.data.toString('base64')}`
+  return `data:${object.logo.contentType};base64,${object.logo.data.toString('base64')}`
 }
