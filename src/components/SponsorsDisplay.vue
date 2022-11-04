@@ -6,7 +6,7 @@
     <template v-for="sponsor in sponsors.main" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
         <div class="logo__wrapper" v-if="sponsor.logo">
-          <img :src="`data:image/${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
+          <img :src="`data:${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
         </div>
         <p class="name">{{sponsor.name}}</p>
       </a>
@@ -16,7 +16,7 @@
     <template v-for="sponsor in sponsors.side" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
         <div class="logo__wrapper" v-if="sponsor.logo">
-          <img :src="`data:image/${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
+          <img :src="`data:${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/>
         </div>
           <p class="name">{{sponsor.name}}</p>
       </a>
