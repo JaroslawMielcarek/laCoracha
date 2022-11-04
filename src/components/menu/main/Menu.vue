@@ -1,6 +1,6 @@
 <template>
   <div class="menu-bar">
-    <TeamList :isOpen="isTeamsListOpen" @toggleMenu="isTeamsListOpen = !isTeamsListOpen"/>
+    <TeamList :isOpen="isTeamsListOpen" @toggleMenu="toggleTeamsList"/>
     <div class="buttons buttons--left">
       <a class="icon facebook" href='https://m.facebook.com/people/La-Coracha-Perfil/100013615204865/'>
         <img src="@/assets/icons/facebook.svg" alt = "facebook icon" />

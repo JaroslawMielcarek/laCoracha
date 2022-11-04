@@ -8,7 +8,7 @@
       <h3 v-else class='team__name'>No hay equipos</h3>
     </div>
     <template v-for="team in teams" :key="team">
-      <router-link :to="team.name" @click="this.setChoosenName(team.name) " :class="[ 'teamsList__item']" :style="{ height: setHeight(team.name) + 'px' }">
+      <router-link :to="team.name" @click="setChoosenName(team.name)" :class="[ 'teamsList__item']" :style="{ height: setHeight(team.name) + 'px' }">
         <img class='team__logo' :src="getLogo(team)" alt='logo of team'/>
         <div class='team__details'>
           <h3 class='team__name'> {{ team.name }} </h3>
