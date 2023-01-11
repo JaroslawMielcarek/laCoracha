@@ -45,56 +45,39 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultMatch">Agregar Partido</button>
+    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultMatch">Agregar Partido</button>
     <AddEditMatch v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
 
-<script>
+<script setup>
 import AddEditMatch from '@/components/moderator/match/AddEditMatch.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
-import { isoDateToDayMonthYear, getMonthNameByNumber } from '@/services/util/time.js'
-import { sortListOfObjectsBy } from '@/services/util/object.js'
+import { getMonthNameByNumber } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import {ref, computed, onMounted} from 'vue'
+import {useStore} from 'vuex'
 
-export default {
-  name: 'CalendarManager',
-  components: {
-    AddEditMatch,
-    CustomSelectInput,
-  },
-  data () {
-    return {
-      value: undefined,
-      isEditing: false,
-      showBy: 'Todo',
-      sortBy: 'date',
-    }
-  },
-  created () {
-    this.$store.dispatch('fetchMatches')
-  },
-  computed: {
-    matches () {
-      if (this.showBy === 'Semana') return this.$store.getters.getMatchesOf('week')
-      if (this.showBy === 'Mes') return this.$store.getters.getMatchesOf('month')
-      if (this.showBy === 'Temporada') return this.$store.getters.getMatchesOf('season')
-      return this.$store.getters.getMatches
-    }
-  },
-  methods: {
-    isoDateToDayMonthYear,
-    getMonthNameByNumber,
-    sortListOfObjectsBy,
-    setNotification,
-    submitForm,
-    removeElement,
-    setState (value, isEditing = false) {
-      this.value = value
-      this.isEditing = isEditing
-    },
-  }
+const isEditing = ref(false)
+const value = ref(undefined)
+const showBy = ref('Todo')
+
+const store = useStore()
+
+onMounted( () => { store.dispatch('fetchPlayers')})
+
+const matches = computed( () => {
+  if (showBy.value === 'Semana') return store.getters.getMatchesOf('week')
+  if (showBy.value === 'Mes') return store.getters.getMatchesOf('month')
+  if (showBy.value === 'Temporada') return store.getters.getMatchesOf('season')
+  return store.getters.getMatches
+})
+
+function setState(val, isEdit = false) {
+  value.value = val
+  isEditing.value = isEdit
 }
+
 </script>
 
 <style lang="scss" scoped>

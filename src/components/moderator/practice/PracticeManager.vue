@@ -34,48 +34,34 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import AddEditPractice from '@/components/moderator/practice/AddEditPractice.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import { isoDateToDayMonthYear, getDayOfWeek } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement} from '@/services/util/universal.js'
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
 
-export default {
-  name: 'PracticeManager',
-  components: {
-    AddEditPractice,
-    CustomSelectInput,
-  },
-  data () {
-    return {
-      isEditing: false,
-      value: undefined,
-      showBy: 'Todo',
-    }
-  },
-  created(){
-    this.$store.dispatch('fetchPractices')
-  },
-  computed: {
-    practices () {
-      if (this.showBy === 'Semana') return this.$store.getters.getPracticesOf('week')
-      if (this.showBy === 'Mes') return this.$store.getters.getPracticesOf('month')
-      if (this.showBy === 'Temporada') return this.$store.getters.getPracticesOf('season')
-      return this.$store.getters.getPractices
-    }
-  },
-  methods: {
-    isoDateToDayMonthYear,
-    getDayOfWeek,
-    setNotification,
-    submitForm, 
-    removeElement,
-    setState (value, isEditing = false) {
-      this.value = value
-      this.isEditing = isEditing
-    }
-  }
+const isEditing = ref(false)
+const value = ref(undefined)
+const showBy = ref('Todo')
+
+const store = useStore()
+
+onMounted( () => { store.dispatch('fetchPractices') })
+
+const practices = computed( () => {
+  if (showBy.value === 'Semana') return store.getters.getPracticesOf('week')
+  if (showBy.value === 'Mes') return store.getters.getPracticesOf('month')
+  if (showBy.value === 'Temporada') return store.getters.getPracticesOf('season')
+  return store.getters.getPractices
+})
+
+function setState(val, isEdit = false) {
+  value.value = val
+  isEditing.value = isEdit
 }
+
 </script>
 
 <style lang="scss" scoped>
