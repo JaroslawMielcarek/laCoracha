@@ -1,7 +1,7 @@
 <template>
   <select class='select' :value="value" @change="this.$emit('update:value', $event.target.value)" :disabled="disabled" :required="required">
     <option value="" disabled selected>{{ placeholder }}</option>
-    <option v-for="option in options" :key="option">{{ option }}</option>
+    <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
   </select>
 </template>
 
