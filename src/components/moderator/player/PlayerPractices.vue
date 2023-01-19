@@ -9,28 +9,12 @@
 
 </template>
 
-<script>
+<script setup>
+import { computed, defineProps } from 'vue'
 import PlusMinus from '@/components/PlusMinus.vue'
 
-export default {
-  name: 'PlayerPerformance',
-  components: {
-    PlusMinus
-  },
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    }
-  },
-  computed: {
-    strikes () {
-      return this.value.strikes
-    }
-  },
-  methods: {
-  }
-}
+const props = defineProps({ value: {type: Object, default: undefined} })
+const strikes = computed( () => props.value.strikes )
 </script>
 
 <style lang="scss" scoped>

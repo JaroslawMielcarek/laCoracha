@@ -19,22 +19,20 @@
         <PlayerPractices v-if="entry.practices" v-model:value="entry.practices" />
       </div>
     </div>
-
     <ImagePrevWithRemoveVue v-if="entry.photo && entry.photo.value" :image="file" @removeLogo="entry.photo.value=undefined"/>
-    <div v-else>
-      <CustomUploadFile text="Photo" :file="file" :sizeLimit="200000" @fileChoosed="(val) => entry.photo.value = val"/>
-      <p class='extra__message'>max: 250x250px or 200kb </p>
-    </div>
+    <CustomUploadFile v-else text="Photo" :file="file" :sizeLimit="200000" @fileChoosed="(val) => entry.photo.value = val"/>
 
     <PlayerPerformance v-if="entry.team" v-model:value="entry.inTeamPerformance" />
     <div class='row flex-row'>
-      <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
-      <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
+      <button type='submit' class='btn color'>{{ isEditing ? 'Actualizar' : 'Añadir' }}</button>
+      <p class='btn text' @click="emit('clearForm')">Clear</p>
     </div>
   </form>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, watch, computed, defineEmits, defineProps } from 'vue'
 import CustomInput from '@/components/CustomInput.vue'
 import PlayerPerformance from '@/components/moderator/player/PlayerPerformance.vue'
 import PlayerPractices from '@/components/moderator/player/PlayerPractices.vue'
@@ -43,67 +41,43 @@ import CustomUploadFile from '@/components/CustomUploadFile.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import ImagePrevWithRemoveVue from '@/components/ImagePrevWithRemove.vue'
 
-export default {
-  name: 'AddEditPlayer',
-  components: {
-    CustomInput,
-    PlayerPerformance,
-    PlayerPractices,
-    CustomUploadFile,
-    ImagePrevWithRemoveVue,
-    ToggleSlider
-  },
-  emits: ['clearForm', 'submitForm'],
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    },
-    isEditing: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      entry: isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPlayer))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  watch: {
-    value () {
-      this.entry = isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  computed: {
-    player () { return this.entry },
-    file () { return this.entry.photo ? this.entry.photo.value : {} }
-  },
-  methods: {
-    isEmptyObject,
-    setInTeamPerformancePercents (player) {
-      // We take old player object and we update current player object
-      // prevPercent with old percent
-      for (const [name, prop] of Object.entries(player.inTeamPerformance)) {
-        prop.prevPercent = this.value.inTeamPerformance[name].percent
-      }
-      return player
-    },
-    checkIfExist (value) {
-      const existingValues = this.$store.getters.getPlayersIDs
-      const result = existingValues.find(t => t.toString().toLowerCase() === value.toString().toLowerCase())
-      if (result) {
-        alert('El ID ya existe. Por favor, edite en su lugar')
-        this.entry.id = ''
-      }
-    },
-    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updatePlayer' : 'addPlayer', this.setInTeamPerformancePercents(this.entry)) }
+const store = useStore()
+const emit = defineEmits(['clearForm', 'submitForm'])
+const props = defineProps({ value: {type: Object, default: undefined}, isEditing: {type: Boolean, default: false} })
+
+const entry = ref(
+  isEmptyObject(props.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultPlayer))
+    : JSON.parse(JSON.stringify(props.value))
+)
+watch(props, (newValue) => {
+  entry.value = isEmptyObject(newValue.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultTeam))
+    : JSON.parse(JSON.stringify(newValue.value))
+})
+
+const file = computed( () =>  entry.value.photo && entry.value.photo.value ? entry.value.photo.value : {} )
+
+function setInTeamPerformancePercents (player) {
+  // We take old player object and we update current player object
+  // prevPercent with old percent
+  for (const [name, prop] of Object.entries(player.inTeamPerformance)) {
+    prop.prevPercent = props.value.inTeamPerformance[name].percent
+  }
+  return player
+}
+function checkIfExist (value) {
+  const existingValues = store.getters.getPlayersIDs
+  const result = existingValues.find(t => t.toString().toLowerCase() === value.toString().toLowerCase())
+  if (result) {
+    alert('El ID ya existe. Por favor, edite en su lugar')
+    entry.value.id = ''
   }
 }
+function submitForm () { return emit('submitForm', props.isEditing ? 'updatePlayer' : 'addPlayer', setInTeamPerformancePercents(entry.value)) }
+
 </script>
+
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .team {

@@ -7,16 +7,16 @@
   <div class='player_list'>
     <div v-for="player in players" :key="player._id">
       <div :class="['player_toggle', checkStrikes(player), checkIfSubscribed(player) ? 'checked' : '']"  @click="togglePlayer(player)">
-        <p class='player_id'>{{player.memberID}}</p>
-        <p class='player_name'>{{player.nick.value}}</p>
+        <p class='player_id'>{{ player.memberID }}</p>
+        <p class='player_name'>{{ player.nick.value }}</p>
         <div class='prefPosition' v-if="player.preferedPositions">
           <p>Preferencia</p>
           <span v-for="position in player.preferedPositions" :key="position">{{ position.choosen }}</span>
         </div>
         <div class='practice_stats' v-if="player.practices && player.practices.attended">
           <div class='practice_positions' v-for="(value, position) in player.practices.positionsPlayed" :key="position">
-            <span class='position_bar' :style="{ height: calcHeight(value, player.practices.attended) + 'px'}"/>
-            <p>{{position}}</p>
+            <span class='position_bar' :style="{ height: calcHeight(value, player.practices.attended) + 'px' }"/>
+            <p>{{ position }}</p>
           </div>
         </div>
       </div>
@@ -24,68 +24,62 @@
   </div>
 </div>
 </template>
-<script>
+
+<script setup>
+import { useStore } from 'vuex'
+import { ref, computed, defineEmits, defineProps } from 'vue'
 import SelectInput from '@/components/CustomSelectInput.vue'
 
-export default {
-  name: 'PracticePlayerList',
-  emits: ['addPlayer', 'removePlayer'],
-  components: {
-    SelectInput
-  },
-  props: {
-    playersSubscribed: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data () {
-    return {
-      showBy: 'Todo'
-    }
-  },
-  computed: {
-    players () {
-      const list = this.$store.getters.getPlayers
-      if (this.showBy === 'Todo') return list
+const store = useStore()
+const emit = defineEmits(['addPlayer', 'removePlayer'])
+const props = defineProps({
+  playersSubscribed: {type: Array, default: []}
+})
 
-      return list.filter(player => {
-        if (player.preferedPositions && player.preferedPositions.find(el => el.choosen === this.showBy)) return player
+const showBy = ref('Todo')
+
+const players = computed( () => {
+  const list = store.getters.getPlayers
+  return (showBy.value === 'Todo')
+    ? list
+    : list.filter(player => {
+        if (player.preferedPositions && player.preferedPositions.find(el => el.choosen === showBy.value)) return player
       })
-    }
-  },
-  methods: {
-    calcHeight (value, total) {
-      if (total === 0) return 0
-      // 20 is max-height of 20px
-      return (parseFloat((value * 100) / total).toFixed(0) * 0.01) * 20
-    },
+})
 
-    togglePlayer (player) {
-      // conditions to check before send
-      // no: prefered positions
-      const { _id, nick, preferedPositions } = player
-      const basicInfPlayer = { _id: _id, nick: nick.permisionGranted ? nick.value : '', preferedPositions }
-      if (this.checkIfSubscribed(player)) this.$emit('removePlayer', basicInfPlayer)
-      else this.$emit('addPlayer', basicInfPlayer)
-    },
-
-    checkIfSubscribed (player) {
-      if (!this.playersSubscribed.length) return false
-      return this.playersSubscribed.find(p => p._id === player._id)
-    },
-
-    checkStrikes (player) {
-      if (player.practices && player.practices.strikes) {
-        if (player.practices.strikes.qty === 1) return 'single-strike'
-        if (player.practices.strikes.qty === 2) return 'double-strike'
-        if (player.practices.strikes.qty === 3) return 'tripple-strike'
-      }
-      return ''
-    }
-  }
+function calcHeight (value, total) {
+  return (!total)
+    ? 0
+    : (parseFloat((value * 100) / total).toFixed(0) * 0.01) * 20 // 20 is max-height of 20px
 }
+
+function togglePlayer (player) {
+  // conditions to check before send
+  // no: prefered positions
+  const { _id, nick, preferedPositions } = player
+  const basicInfPlayer = { _id: _id, nick: nick.permisionGranted ? nick.value : '', preferedPositions }
+  checkIfSubscribed(player)
+    ? emit('removePlayer', basicInfPlayer)
+    : emit('addPlayer', basicInfPlayer)
+}
+
+function checkIfSubscribed (player) {
+  return (!props.playersSubscribed.length)
+    ? false
+    : props.playersSubscribed.find(p => p._id === player._id)
+}
+
+function checkStrikes (player) {
+  if (player.practices && player.practices.strikes) {
+    if (player.practices.strikes.qty === 1) return 'single-strike'
+    if (player.practices.strikes.qty === 2) return 'double-strike'
+    if (player.practices.strikes.qty === 3) return 'tripple-strike'
+  }
+  return ''
+}
+
 </script>
+
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .position_bar {

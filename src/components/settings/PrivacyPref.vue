@@ -10,33 +10,29 @@
   </ul>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 
-export default {
-  name: 'PrivacyPref',
-  components: {
-    ToggleSlider
-  },
-  methods: {
-    dispatch (propName, value) {
-      this.$store.dispatch('updateUserBasicInfo', { _id: this.userData._id, [propName]: { ...this.userData[propName], permisionGranted: value } })
-    },
-    translateToSpanish (name) {
-      const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
-      return names[name] || name
-    }
-  },
-  computed: {
-    privacyDescriptions () { return this.$store.getters.getPrivacyDescriptions },
-    userData () { return this.$store.getters.getUser },
-    basicInformationes () {
-      if (!this.userData) return {}
-      const { nick, position, number, height, dominantHand, photo } = this.userData
-      return { nick, position, number, height, dominantHand, photo }
-    }
-  }
+const store = useStore()
+
+const privacyDescriptions = store.getters.getPrivacyDescriptions
+const userData = store.getters.getUser
+
+const basicInformationes = computed( () => {
+  if (!userData) return {}
+  const { nick, position, number, height, dominantHand, photo } =userData
+  return { nick, position, number, height, dominantHand, photo }
+})
+function dispatch (propName, value) {
+  store.dispatch('updateUserBasicInfo', { _id: userData._id, [propName]: { ...userData[propName], permisionGranted: value } })
 }
+function translateToSpanish (name) {
+  const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
+  return names[name] || name
+}
+
 </script>
 
 <style lang="scss" scoped>

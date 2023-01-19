@@ -18,57 +18,45 @@
         </div>
         <div class='list-row' v-for="team in teams" :key="team">
           <p class='column'><button class='btn color' @click="setState(team, true)">Editar</button></p>
-          <p class='column'>{{team.name}}</p>
-          <p class='column'>{{team.league}}</p>
-          <p class='column'>{{team.gender}}</p>
-          <p class='column'>{{team.logo? 'Sí' : 'No'}}</p>
-          <p :class="['column',{overLimit: team.players.length > maxPlayers}]"><b>{{team.players.length}}</b>/{{maxPlayers}}</p>
+          <p class='column'>{{ team.name }}</p>
+          <p class='column'>{{ team.league }}</p>
+          <p class='column'>{{ team.gender }}</p>
+          <p class='column'>{{ team.logo? 'Sí' : 'No' }}</p>
+          <p :class="['column',{overLimit: team.players.length > maxPlayers}]"><b>{{ team.players.length }}</b>/{{ maxPlayers }}</p>
           <p class='column'><button class='btn danger' @click="removeElement('Team', team)">x</button></p>
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultTeam">Agregar Equipo</button>
-    <AddEditTeam v-else :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))"/>
+    <button v-if="!tempTeam" class='btn white' @click="tempTeam = store.getters.getDefaultTeam">Agregar Equipo</button>
+    <AddEditTeam v-else :value="tempTeam" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))"/>
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, computed, watch, defineEmits, defineProps } from 'vue'
 import AddEditTeam from '@/components/moderator/team/AddEditTeam.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
 
-export default {
-  name: 'TeamsManager',
-  components: {
-    AddEditTeam,
-  },
-  data () {
-    return {
-      isEditing: false,
-      value: undefined,
-      sortBy: 'name',
-    }
-  },
-  computed: { 
-    teams () { 
-      const list = this.$store.getters.getTeams
-        if (this.sortBy === 'name') return sortListOfObjectsBy(list, 'name', false)
-        if (this.sortBy === 'league') return sortListOfObjectsBy(list, 'league', false)
-        if (this.sortBy === 'gender') return sortListOfObjectsBy(list, 'gender', false)
-        return list
-    },
-    maxPlayers () { return this.$store.getters.getMaxPlayersInTeam }
-  },
-  methods: {
-    setNotification,
-    sortListOfObjectsBy,
-    submitForm,
-    removeElement,
-    setState (value, isEditing = false) {
-      this.value = value
-      this.isEditing = isEditing
-    }
-  }
+const store = useStore()
+
+const isEditing = ref(false)
+const tempTeam = ref(undefined)
+const sortBy = ref('name')
+
+const teams = computed( () => {
+  const list = store.getters.getTeams
+  if (sortBy === 'name') return sortListOfObjectsBy(list, 'name', false)
+  if (sortBy === 'league') return sortListOfObjectsBy(list, 'league', false)
+  if (sortBy === 'gender') return sortListOfObjectsBy(list, 'gender', false)
+  return list
+})
+const maxPlayers = computed( () => store.getters.getMaxPlayersInTeam )
+
+function setState (newValue, isEdit = false) {
+  tempTeam.value = newValue
+  isEditing.value = isEdit
 }
 </script>
 

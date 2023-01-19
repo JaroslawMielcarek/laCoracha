@@ -18,11 +18,11 @@
         </div>
         <div class='list-row' v-for="player in players" :key="player">
           <div class='action column'><button class='btn color' @click="setState(player, true)">Editar</button></div>
-          <p class='column id'>{{player.memberID || 'no data'}}</p>
-          <p class='column name'>{{player.nick ? player.nick.value : ''}}</p>
-          <p class='column number'>{{player.number? player.number.value : ''}}</p>
-          <p class='column gender'>{{player.isFemale ? 'Mujer' : 'Hombre'}}</p>
-          <p class='column team'>{{player.team}}</p>
+          <p class='column id'>{{ player.memberID || 'no data' }}</p>
+          <p class='column name'>{{ player.nick ? player.nick.value : '' }}</p>
+          <p class='column number'>{{ player.number? player.number.value : '' }}</p>
+          <p class='column gender'>{{ player.isFemale ? 'Mujer' : 'Hombre' }}</p>
+          <p class='column team'>{{ player.team }}</p>
           <div class='action column'><button class='btn danger' @click="removeElement('Player', player)">x</button></div>
         </div>
       </div>
@@ -31,46 +31,33 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted } from 'vue'
 import AddEditPlayer from '@/components/moderator/player/AddEditPlayer.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
 
-export default {
-  name: 'PlayersManager',
-  components: {
-    AddEditPlayer,
-  },
-  data () {
-    return {
-      isEditing: false,
-      value: undefined,
-      sortBy: 'memberID',
-    }
-  },
-  created(){
-    this.$store.dispatch('fetchPlayers')
-  },
-  computed: {
-    players () {
-      const list = this.$store.getters.getPlayers
-      if (this.sortBy === 'memberID') return sortListOfObjectsBy(list, 'memberID', false)
-      if (this.sortBy === 'team') return sortListOfObjectsBy(list, 'team', false)
-      if (this.sortBy === 'name') return sortListOfObjectsBy(list, 'nick', false)
-      return list
-    }
-  },
-  methods: {
-    sortListOfObjectsBy,
-    setNotification,
-    submitForm, 
-    removeElement,
-    setState (value, isEditing = false) {
-      this.value = value
-      this.isEditing = isEditing
-    }
-  }
+const isEditing = ref(false)
+const value = ref(undefined)
+const sortBy = ref('memberID')
+const store = useStore()
+
+onMounted( () => { store.dispatch('fetchPlayers')})
+
+const players = computed( () => {
+  const list = store.getters.getPlayers
+  if (sortBy.value === 'memberID') return sortListOfObjectsBy(list, 'memberID', false)
+  if (sortBy.value === 'team') return sortListOfObjectsBy(list, 'team', false)
+  if (sortBy.value === 'name') return sortListOfObjectsBy(list, 'nick', false)
+  return list
+})
+
+function setState(val, isEdit = false) {
+  value.value = val
+  isEditing.value = isEdit
 }
+
 </script>
 
 <style lang="scss" scoped>

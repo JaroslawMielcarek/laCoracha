@@ -28,40 +28,27 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted } from 'vue'
 import Match from './Match.vue'
 import SelectInput from '@/components/CustomSelectInput.vue'
 
-export default {
-  name: 'ClubCalendar',
-  components: {
-    Match,
-    SelectInput
-  },
-  data () {
-    return {
-      showBy: 'semana'
-    }
-  },
-  methods: {
-    matches (showBy) {
-      if (showBy === 'semana') return this.$store.getters.getMatchesOf('week')
-      if (showBy === 'mes') return this.$store.getters.getMatchesOf('month')
-      if (showBy === 'temporada') return this.$store.getters.getMatchesOf('season')
-      return this.$store.getters.getMatches
-    }
-  },
-  computed: {
-    currWeekMatches () { return this.matches('week') },
-    currMonthMatches () { return this.matches('month') },
-    currSeasonMatches () { return this.matches('season') },
-    isLoading () { return this.$store.getters.getMatchesLoadingState },
-    fetchError () { return this.$store.getters.getMatchesErrorMessage }
-  },
-  mounted () {
-    this.$store.dispatch('fetchMatches')
-  }
+const store = useStore()
+const showBy = ref('semana')
+
+function matches (showBy) {
+  if (showBy === 'semana') return store.getters.getMatchesOf('week')
+  if (showBy === 'mes') return store.getters.getMatchesOf('month')
+  if (showBy === 'temporada') return store.getters.getMatchesOf('season')
+  return store.getters.getMatches
 }
+
+const isLoading = computed(() => { return store.getters.getMatchesLoadingState })
+const fetchError = computed(() => { return store.getters.getMatchesErrorMessage })
+
+onMounted( () => { store.dispatch('fetchMatches') })
+
 </script>
 
 <style lang="scss" scoped>

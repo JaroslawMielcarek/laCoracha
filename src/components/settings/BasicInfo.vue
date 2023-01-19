@@ -47,47 +47,43 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomNumberInput from '@/components/CustomNumberInput.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 
-export default {
-  components: {
-    CustomInput,
-    CustomNumberInput,
-    CustomSelectInput
-  },
-  methods: {
-    dispatch (propName, value) {
-      this.$store.dispatch('updateUserBasicInfo', { _id: this.userData._id, [propName]: { ...this.userData[propName], value: value } })
-    }
-  },
-  computed: {
-    userData () { return this.$store.getters.getUser },
-    nick: {
-      get () { return this.userData.nick ? this.userData.nick.value : '' },
-      set (value) { this.dispatch('nick', value) }
-    },
-    position: {
-      get () { return this.userData.position ? this.userData.position.value : '' },
-      set (value) { this.dispatch('position', value) }
-    },
-    number: {
-      get () { return this.userData.number ? this.userData.number.value : '' },
-      set (value) { this.dispatch('number', parseInt(value)) }
-    },
-    height: {
-      get () { return this.userData.height ? this.userData.height.value : '' },
-      set (value) { this.dispatch('height', parseFloat(value).toFixed(2)) }
-    },
-    dominantHand: {
-      get () { return this.userData.dominantHand ? this.userData.dominantHand.value : '' },
-      set (value) { this.dispatch('dominantHand', value) }
-    }
-  }
+const store = useStore()
+const userData = store.getters.getUser
+    
+const nick = computed({
+      get () { return userData.nick ? userData.nick.value : '' },
+      set (value) { dispatch('nick', value) }
+    })
+const position = computed({
+      get () { return userData.position ? userData.position.value : '' },
+      set (value) { dispatch('position', value) }
+    })
+const number = computed({
+      get () { return userData.number ? userData.number.value : '' },
+      set (value) { dispatch('number', parseInt(value)) }
+    })
+const height = computed({
+      get () { return userData.height ? userData.height.value : '' },
+      set (value) { dispatch('height', parseFloat(value).toFixed(2)) }
+    })
+const dominantHand = computed({
+      get () { return userData.dominantHand ? userData.dominantHand.value : '' },
+      set (value) { dispatch('dominantHand', value) }
+    })
+
+function dispatch (propName, value) { 
+  store.dispatch('updateUserBasicInfo', { _id: userData._id, [propName]: { ...userData[propName], value: value } })
 }
+
 </script>
+
 <style lang="scss" scoped>
 
 </style>

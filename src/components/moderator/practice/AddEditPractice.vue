@@ -1,6 +1,6 @@
 <template>
   <form class='add_edit' @submit.prevent="submitForm">
-    <h4>{{ isEditing ? 'Actualizar' : 'Añadir nueva'}} Quedada</h4>
+    <h4>{{ isEditing ? 'Actualizar' : 'Añadir nueva' }} Quedada</h4>
     <div class='row'>
       <span>Fecha y Hora:</span>
       <CustomDateTimeInput v-model="entry.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
@@ -15,73 +15,54 @@
       <span class='legend triple'>3 strike</span>
     </div>
     <div class='row flex-row'>
-      <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
-      <p class='btn text' @click="clearForm">Clear</p>
+      <button type='submit' class='btn color'>{{ isEditing ? 'Actualizar' : 'Añadir' }}</button>
+      <p class='btn text' @click="emit('clearForm', {}) ">Clear</p>
     </div>
   </form>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, computed, watch} from 'vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import CustomDateTimeInput from '@/components/CustomDateTimeInput.vue'
 import { isEmptyObject } from '@/services/util/object.js'
 import PracticePlayersList from '@/components/moderator/practice/PracticePlayersList.vue'
 
-export default {
-  name: 'AddEditPractice',
-  components: {
-    CustomSelectInput,
-    CustomDateTimeInput,
-    PracticePlayersList
-  },
-  emits: ['clearForm', 'submitForm'],
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    },
-    isEditing: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      entry: isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPractice))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  watch: {
-    value () {
-      this.entry = isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultPractice))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  computed: {
-    practice () { return this.entry },
-    playersLimit () { return this.entry.playersLimit },
-    subscribedPlayers () { return this.entry.players },
-    playersList () { return this.$store.getters.getPlayers }
-  },
-  methods: {
-    isEmptyObject,
-    checkIfExist (value) {
-      const existingPractices = this.$store.getters.getPractices
-      const result = existingPractices.find(t => t.dateTime.date === value.date && t.dateTime.time === value.time)
-      if (result) {
-        alert('La quedada ya existe. Por favor, edite en su lugar')
-        this.entry.dateTime = { date: '', time: '' }
-      }
-    },
-    addPlayer (player) { this.entry.players.push(player) },
-    removePlayer (player) { this.entry.players = this.entry.players.filter(p => p._id !== player._id) },
-    clearForm () { this.$emit('clearForm', JSON.parse(JSON.stringify({}))) },
-    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updatePractice' : 'addPractice', this.entry) }
+const store = useStore()
+const emit = defineEmits(['clearForm', 'submitForm'])
+const props = defineProps({
+  value: {type: Object, default: undefined},
+  isEditing: {type: Boolean, default: false}
+})
+
+const entry = ref(
+  isEmptyObject(props.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultPractice))
+    : JSON.parse(JSON.stringify(props.value))
+)
+watch(props, (newValue) => {
+  entry.value = isEmptyObject(newValue.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultPractice))
+    : JSON.parse(JSON.stringify(newValue.value))
+})
+
+const playersList = computed(() => store.getters.getPlayers)
+
+function checkIfExist (value) {
+  const existingPractices = store.getters.getPractices
+  const result = existingPractices.find(t => t.dateTime.date === value.date && t.dateTime.time === value.time)
+  if (result) {
+    alert('La quedada ya existe. Por favor, edite en su lugar')
+    entry.value.dateTime = { date: '', time: '' }
   }
 }
+function addPlayer (player) { entry.value.players.push(player) }
+function removePlayer (player) { entry.value.players = entry.value.players.filter(p => p._id !== player._id) }
+function submitForm () { return emit('submitForm', props.isEditing ? 'updatePractice' : 'addPractice', entry.value) }
+    
 </script>
+
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .legend__container {

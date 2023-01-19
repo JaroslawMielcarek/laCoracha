@@ -63,70 +63,69 @@
 </template>
   
 <script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter } from 'vue-router';
+import CustomToolTip from '@/components/CustomToolTip.vue'
 
-  import CustomToolTip from '@/components/CustomToolTip.vue'
-  import {useStore} from 'vuex'
-  import {ref, computed, onMounted, onUnmounted, watch} from 'vue'
-  import { useRouter } from 'vue-router';
+const store = useStore()
+const router = useRouter()
 
-  const store = useStore()
-  const router = useRouter()
+const userRoles = computed( () => store.getters.getUserRoles )
+const isModerator = computed( () => userRoles.value && userRoles.value.includes('ROLE_MODERATOR') )
+const isAdmin = computed( () => userRoles.value && userRoles.value.includes('ROLE_ADMIN') )
+const isFemale = computed( () => store.getters.getUserGender )
 
-  const userRoles = computed( () => store.getters.getUserRoles )
-  const isModerator = computed( () => userRoles.value && userRoles.value.includes('ROLE_MODERATOR') )
-  const isAdmin = computed( () => userRoles.value && userRoles.value.includes('ROLE_ADMIN') )
-  const isFemale = computed( () => store.getters.getUserGender )
-  
-  // Avatar
-  const isLogged = computed( () => store.getters.getStatus )
-  const getAvatar = computed( () => isLogged.value && isFemale.value ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') )
-  
-  // Login banner
-  const isOpen = ref(false)
+// Avatar
+const isLogged = computed( () => store.getters.getStatus )
+const getAvatar = computed( () => isLogged.value && isFemale.value ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') )
 
-  function toggleIsOpen () {
-    isOpen.value = !isOpen.value
-    if (!isOpen.value) return null
+// Login banner
+const isOpen = ref(false)
 
-    const timeOut = setTimeout(() => {
-      isOpen.value = false
-      clearTimeout(timeOut)
-    }, 3600)
-  }
+function toggleIsOpen () {
+  isOpen.value = !isOpen.value
+  if (!isOpen.value) return null
 
-  function logout () {
-    router.push({ path: '/' })
-    store.dispatch('logout')
-    toggleIsOpen()
-  }
+  const timeOut = setTimeout(() => {
+    isOpen.value = false
+    clearTimeout(timeOut)
+  }, 3600)
+}
 
-  function login () { toggleIsOpen() }
+function logout () {
+  router.push({ path: '/' })
+  store.dispatch('logout')
+  toggleIsOpen()
+}
 
-  // Visibility of the tab menu
-  onMounted( () => {
-    window.addEventListener('resize', setWindowSize)
-    isAlwaysOn(isToggled.value)
-  })
-  onUnmounted( () => window.removeEventListener('resize', setWindowSize))
+function login () { toggleIsOpen() }
 
-  const isToggled = ref(false)
-  const isVisible = ref(true)
-  const wHeight = ref(window.innerHeight)
-  const wWidth = ref(window.innerWidth)
+// Visibility of the tab menu
+onMounted( () => {
+  window.addEventListener('resize', setWindowSize)
+  isAlwaysOn(isToggled.value)
+})
+onUnmounted( () => window.removeEventListener('resize', setWindowSize))
 
-  watch(isToggled, (val) => isAlwaysOn(val) )
+const isToggled = ref(false)
+const isVisible = ref(true)
+const wHeight = ref(window.innerHeight)
+const wWidth = ref(window.innerWidth)
 
-  function setWindowSize () {
-    wHeight.value = window.innerHeight
-    wWidth.value = window.innerWidth
-    isAlwaysOn(isToggled.value)
-  }
+watch(isToggled, (val) => isAlwaysOn(val) )
 
-  function isAlwaysOn (val) {
-    isVisible.value = ( wHeight.value < 992 && wWidth.value < 992 ) || ( wHeight.value < 992 && wWidth.value < 992 )  ? val : true 
-  }
+function setWindowSize () {
+  wHeight.value = window.innerHeight
+  wWidth.value = window.innerWidth
+  isAlwaysOn(isToggled.value)
+}
 
-  </script>
+function isAlwaysOn (val) {
+  isVisible.value = ( wHeight.value < 992 && wWidth.value < 992 ) || ( wHeight.value < 992 && wWidth.value < 992 )  ? val : true 
+}
+
+</script>
   
   <style lang="scss" scoped>
   @import '@/colors.scss';

@@ -17,7 +17,7 @@
           <p class="no-data">No hay jugadores para mostrar</p>
         </div>
         <div class='list-row' v-for="player in players" :key="player">
-          <UserPermissions :value="player" @updateUserPermision="updateUserPermision"/>
+          <UserPermissions :user="player" @updateUserPermision="updateUserPermision"/>
         </div>
       </div>
     </div>

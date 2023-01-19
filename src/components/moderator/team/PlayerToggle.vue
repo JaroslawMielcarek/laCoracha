@@ -1,27 +1,23 @@
 <template>
   <div class="player_toggle">
-    <input class='player_checkbox' type='checkbox' :id='this.id' :checked="onList"/>
-    <label class='label' @click="this.$emit('togglePlayer', this.id)">
-      <p class='player_name'>{{nick}}</p>
-      <p class='player_id'>{{memberID}}</p>
+    <input class='player_checkbox' type='checkbox' :id='id' :checked="props.onList"/>
+    <label class='label' @click="emit('togglePlayer', id)">
+      <p class='player_name'>{{ nick }}</p>
+      <p class='player_id'>{{ memberID }}</p>
     </label>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PlayerToggle',
-  emits: ['togglePlayer'],
-  props: {
-    player: Object,
-    onList: Boolean
-  },
-  computed: {
-    id(){ return this.player._id},
-    nick(){ return this.player.nick.value || ''},
-    memberID(){ return this.player.memberID }
-  }
-}
+<script setup>
+import { computed, defineEmits, defineProps } from 'vue'
+
+const emit = defineEmits(['togglePlayer'])
+const props = defineProps({ player: Object, onList: Boolean })
+
+const id = computed(() => props.player._id)
+const nick = computed(() => props.player.nick.value || '')
+const memberID = computed(() => props.player.memberID)
+
 </script>
 <style lang="scss" scoped>
 @import '@/colors.scss';

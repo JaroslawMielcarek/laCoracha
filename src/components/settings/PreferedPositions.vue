@@ -21,39 +21,33 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PreferedPositions',
-  methods: {
-    addNewChooiseRow (index, value) {
-      this.$store.dispatch('updateUserBasicInfo', { _id: this.user._id, preferedPositions: [...this.playerPref.slice(0, index), { choosen: value }] })
-    },
-    generateAvailablePositions (list) {
-      return this.$store.getters.getDefaultPositions.filter(defPos => {
-        return !list.some(prefPos => {
-          return defPos === prefPos // return the ones with different value than choosen
-        })
-      })
-    },
-    reset () {
-      this.$store.dispatch('updateUserBasicInfo', { _id: this.user._id, preferedPositions: []})
-    }
-  },
-  computed: {
-    user () { return this.$store.getters.getUser },
-    playerPref () { return this.user.preferedPositions ? this.user.preferedPositions : [] },
-    generate () {
-      const temp = []
-      const arr = this.playerPref.map(rank => {
-        const tt = { availablePos: this.generateAvailablePositions(temp), choosen: rank.choosen }
-        temp.push(rank.choosen)
-        return tt
-      })
-      if (temp.length <= 4) arr.push({ availablePos: this.generateAvailablePositions(temp), choosen: '' })
-      return arr
-    }
-  }
+<script setup>
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+
+const store = useStore()
+const user = store.getters.getUser
+
+const playerPref = computed( () => user.preferedPositions ? user.preferedPositions : [] )
+const generate = computed( () => {
+  const temp = []
+  const arr = playerPref.map(rank => {
+    const tt = { availablePos: generateAvailablePositions(temp), choosen: rank.choosen }
+    temp.push(rank.choosen)
+    return tt
+  })
+  if (temp.length <= 4) arr.push({ availablePos: generateAvailablePositions(temp), choosen: '' })
+  return arr
+})
+
+function addNewChooiseRow (index, value) {
+  store.dispatch('updateUserBasicInfo', { _id: user._id, preferedPositions: [...playerPref.slice(0, index), { choosen: value }] })
 }
+function generateAvailablePositions (list) {
+  return store.getters.getDefaultPositions.filter( defPos => !list.some(prefPos => defPos === prefPos) ) // return the ones with different value than choosen
+}
+function reset () { store.dispatch('updateUserBasicInfo', { _id: user._id, preferedPositions: [] }) }
+
 </script>
 
 <style lang="scss" scoped>

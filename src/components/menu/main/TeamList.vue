@@ -21,45 +21,42 @@
 </template>
 
 <script setup>
-  import {useStore} from 'vuex'
-  import {ref, computed, onMounted, onUnmounted} from 'vue'
-  import {getLogo} from '@/composables/logo.js'
+import { useStore } from 'vuex'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { getLogo } from '@/composables/logo.js'
 
-  const emits = defineEmits(['toggleMenu'])
-  const props = defineProps({
-    isOpen: {
-      type: Boolean,
-      default: false
-    }
-  })
+const emits = defineEmits(['toggleMenu'])
+const props = defineProps({
+  isOpen: {type: Boolean, default: false}
+})
 
-  const store = useStore()
-  const choosen = ref(undefined)
-  const teams = computed( () => store.getters.getTeams.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0 )) )
-  const fetchError = computed( () => store.getters.getTeamsErrorMessage )
-  
-  const windowHeight = ref(window.innerHeight)
+const store = useStore()
+const choosen = ref(undefined)
+const teams = computed( () => store.getters.getTeams.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0 )) )
+const fetchError = computed( () => store.getters.getTeamsErrorMessage )
 
-  function resiseHandler () { windowHeight.value = window.innerHeight }
+const windowHeight = ref(window.innerHeight)
 
-  onMounted( () => window.addEventListener('resize', resiseHandler))
-  onUnmounted( () => window.removeEventListener('resize', resiseHandler))
+function resiseHandler () { windowHeight.value = window.innerHeight }
 
-  function setHeight (currentItem = '') {
-    if(!choosen.value) return (windowHeight.value - 44)/(teams.value.length + 1) //return `calc((100vh - 44px)/${teams.value.length + 1})`
-    if(currentItem === choosen.value) return windowHeight.value //'100vh'
-    return 0
-  }
+onMounted( () => window.addEventListener('resize', resiseHandler))
+onUnmounted( () => window.removeEventListener('resize', resiseHandler))
 
-  function setChoosenName (value) {
-    choosen.value = value
-    setTimeout(() => { 
-      emits('toggleMenu')
-      setTimeout(() => {
-        choosen.value = undefined
-      }, 1000)
-    }, 2000)
-  }
+function setHeight (currentItem = '') {
+  if(!choosen.value) return (windowHeight.value - 44)/(teams.value.length + 1) //return `calc((100vh - 44px)/${teams.value.length + 1})`
+  if(currentItem === choosen.value) return windowHeight.value //'100vh'
+  return 0
+}
+
+function setChoosenName (value) {
+  choosen.value = value
+  setTimeout(() => { 
+    emits('toggleMenu')
+    setTimeout(() => {
+      choosen.value = undefined
+    }, 1000)
+  }, 2000)
+}
 </script>
 
 <style lang="scss">

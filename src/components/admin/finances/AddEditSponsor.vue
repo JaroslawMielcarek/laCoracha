@@ -1,7 +1,7 @@
 <template>
   <form class='add_edit' @submit.prevent="submitForm">
     <h4 v-if="!isEditing">Añadir nuevo Patrocinador</h4>
-    <h4 v-else>Editar {{entry.name}} Patrocinador</h4>
+    <h4 v-else>Editar {{ entry.name }} Patrocinador</h4>
     <div class='row' v-if="!isEditing">
       <label>Nombre:</label>
       <CustomInput v-model:value="entry.name" placeholder='Nombre de patrocinador' :required='true' @update:value="checkIfExist"/>
@@ -22,20 +22,21 @@
       <ImagePrevWithRemoveVue v-if="entry.logo" :image="entry.logo" @removeLogo="entry.logo=undefined"/>
       <div v-else>
         <CustomUploadFile text="LOGO" :file="entry.logo" :sizeLimit="200000" @fileChoosed="(val) => entry.logo = val"/>
-        <p class='extra__message'>max: 250x250px or 200kb </p>
       </div>
     </div>
     <div class='row' v-if="isLoading">
       <p class='extra__message'>Loading..</p>
     </div>
     <div class='flex-row' v-else>
-      <button type='submit' class='btn color full-width'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
-      <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
+      <button type='submit' class='btn color full-width'>{{ isEditing ? 'Actualizar' : 'Añadir' }}</button>
+      <p class='btn text' @click="emit('clearForm')">Clear</p>
     </div>
   </form>
 </template>
 
-<script>
+<script setup>
+import {useStore} from 'vuex'
+import {ref, computed, watch, defineEmits, defineProps} from 'vue'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomNumberInput from '@/components/CustomNumberInput.vue'
 import ImagePrevWithRemoveVue from '@/components/ImagePrevWithRemove.vue'
@@ -43,60 +44,36 @@ import CustomUploadFile from '@/components/CustomUploadFile.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import { isEmptyObject } from '@/services/util/object.js'
 
+const emit = defineEmits(['clearForm', 'submitForm'])
+const props = defineProps({
+  value: {type: Object, default: undefined}, 
+  isEditing: {type: Boolean, default: false} 
+})
+const store = useStore()
 
-export default {
-  components: {
-    CustomInput,
-    CustomNumberInput,
-    ImagePrevWithRemoveVue,
-    CustomUploadFile,
-    ToggleSlider
-  },
-  emits: ['clearForm', 'submitForm'],
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    },
-    isEditing: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      entry: isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultSponsor))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  watch: {
-    value () {
-      isEmptyObject(this.value)
-        ? this.entry = JSON.parse(JSON.stringify(this.$store.getters.getDefaultTeam))
-        : this.entry = JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  computed: {
-    sponsor () { return this.entry },
-    isLoading () { return this.$store.getters.getSponsorsLoadingState }
-  },
-  methods: {
-    isEmptyObject,
-    checkIfExist (value) {
-      const existingTeams = this.$store.getters.getSponsorsNames
-      const result = existingTeams.find(s => s.toString().toLowerCase() === value.toLowerCase())
-      if (result) {
-        alert('El patrocinador ya existe. Por favor edite en lugar')
-        this.entry.name = ''
-      }
-    },
-    handleFileUpload ( event ) {
-      this.entry.file = event.target.files[0]
-    },
-    submitForm () { return this.$emit('submitForm', (this.isEditing) ? 'updateSponsor' : 'addSponsor', this.entry) }
+const entry = ref(
+  isEmptyObject(props.value) 
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultSponsor))
+    : JSON.parse(JSON.stringify(props.value))
+)
+
+const isLoading = computed( () => store.getters.getSponsorsLoadingState )
+watch(props, (newValue) => {
+  entry.value = isEmptyObject(newValue.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultTeam))
+    : JSON.parse(JSON.stringify(newValue.value))
+})
+
+function checkIfExist (value) {
+  const existingTeams = store.getters.getSponsorsNames
+  const result = existingTeams.find(s => s.toString().toLowerCase() === value.toLowerCase())
+  if (result) {
+    alert('El patrocinador ya existe. Por favor edite en lugar')
+    entry.value.name = ''
   }
 }
+function submitForm () { return emit('submitForm', (props.isEditing) ? 'updateSponsor' : 'addSponsor', entry.value) }
+
 </script>
 
 <style lang="scss" scoped>

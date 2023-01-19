@@ -20,48 +20,30 @@
       </div>
     </div>
   </div>
-
 </template>
 
-<script>
+<script setup>
+import { computed, defineEmits, defineProps } from 'vue'
 import PlusMinus from '@/components/PlusMinus.vue'
 
-export default {
-  name: 'PlayerPerformance',
-  components: {
-    PlusMinus
-  },
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    }
-  },
-  computed: {
-    gamePerformance: {
-      get () { return this.value },
-      set (newValue) { this.$emit('update:value', newValue) }
-    }
-  },
-  methods: {
-    total (obj) {
-      return obj.good + obj.bad
-    },
-    percent (obj) {
-      return obj.good ? parseFloat(obj.good / this.total(obj) * 100).toFixed(1) : 0
-    },
-    change (obj) {
-      obj.percent = this.percent(obj)
+const emit = defineEmits('update:value')
+const props = defineProps({ value: {type: Object, default: undefined} })
+const gamePerformance = computed({
+  get () {return props.value},
+  set (newValue) { emit('update:value', newValue)}
+})
+function total (obj) { return obj.good + obj.bad }
+function percent (obj) { return obj.good ? parseFloat(obj.good / total(obj) * 100).toFixed(1) : 0 }
+function change (obj) {
+  obj.percent = percent(obj)
 
-      if (obj.percent > obj.prevPercent) {
-        return 'improved'
-      }
-      if (obj.percent < obj.prevPercent) {
-        return 'worsen'
-      }
-      return 'no-change'
-    }
+  if (obj.percent > obj.prevPercent) {
+    return 'improved'
   }
+  if (obj.percent < obj.prevPercent) {
+    return 'worsen'
+  }
+  return 'no-change'
 }
 </script>
 

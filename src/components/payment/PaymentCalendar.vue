@@ -1,7 +1,7 @@
 <template>
   <div class='yearHeader'>
     <span :class="['prev', 'year', { disabled: currYear <= minYear } ]" @click=" currYear -= 1 ">&lt;</span>
-    <h4 class='year'>{{currYear}}</h4>
+    <h4 class='year'>{{ currYear }}</h4>
     <span :class="['next', 'year', { disabled: currYear >= maxYear } ]" @click=" currYear += 1 ">&gt;</span>
   </div>
   <p v-if="!payments.length" class='no-data'>¡No hay historial de pagos en este período!</p>
@@ -9,40 +9,33 @@
     <div class='month' v-for="element in payments" :key="element">
       <h5 class='name'>{{ getMonthNameByNumber(element.monthYear) }}</h5>
       <div :class="['payment', {paid: payment.isPaid !== 'no'}]" v-for="payment in element.payments" :key="payment">
-        <p class='type'>{{payment.type}}:</p>
-        <p class='qty'>{{payment.qty}}</p>
+        <p class='type'>{{ payment.type }}:</p>
+        <p class='qty'>{{ payment.qty }}</p>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref } from 'vue'
 import { getMonthNameByNumber } from '@/services/util/time.js'
-export default {
-  name: 'PaymentCalendar',
-  components: {
-  },
-  data () {
-    return {
-      currYear: new Date().getFullYear()
-    }
-  },
-  methods: {
-    getMonthNameByNumber
-  },
-  computed: {
-    maxYear () { return new Date().getFullYear() + 2 },
-    minYear () { return new Date().getFullYear() - 5 },
-    userData () { return this.$store.getters.getUser },
-    payments () {
-      if (!this.userData) return []
-      const list = this.userData.payments || []
-      return list.filter(p => {
-        const paymentYear = new Date(p.monthYear).getFullYear()
-        if (paymentYear === this.currYear) return p
-      })
-    }
-  }
+
+const store = useStore()
+
+const currYear = ref(new Date().getFullYear())
+const maxYear = new Date().getFullYear() + 2
+const minYear = new Date().getFullYear() - 5
+const userData = store.getters.getUser
+
+function payments() {
+  if (!userData || userData.payments) return []
+
+  const list = userData.payments
+  return list.filter(p => {
+    const paymentYear = new Date(p.monthYear).getFullYear()
+    if (paymentYear === currYear) return p
+  })
 }
 </script>
 

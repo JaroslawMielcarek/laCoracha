@@ -1,7 +1,7 @@
 <template>
   <div class='practiceDetails'>
     <span class="close" @click="handleClose" />
-    <h3 class='header'><span class='small'>{{ getDate }}</span>{{ getDayOfWeek(date) }}<span class='small'>{{ time }}</span>
+    <h3 class='header'><span class='small'>{{ getDayOfMonth }}</span>{{ getDayOfWeek(date) }}<span class='small'>{{ time }}</span>
     </h3>
     <div class='row'>
       <h5 class="subHeader">Jugadores suscritos:</h5>
@@ -26,90 +26,59 @@
         </div>
       </div>
     </div>
-    <p v-if="error.length" class='error'>{{error}}</p>
+    <p v-if="error.length" class='error'>{{ error }}</p>
     <button :class="['btn', 'full-width', isParticipating ? 'red' : 'color' ]" :disabled="!checkIfPracticeAvailable(practiceDetails, currentUser, isParticipating)" @click="toggleParticipation">{{ this.isParticipating ? 'Abandonar' : 'Unirse' }}</button>
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, watch, computed } from 'vue'
 import { getDayOfWeek } from '@/services/util/time.js'
 import { checkIfPracticeAvailable, isInQueue } from '@/services/util/practice.js'
 import { setNotification } from '@/services/util/universal'
 
-export default {
-  emits: ['closeDetails'],
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    },
-    isParticipating: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      error: ''
-    }
-  },
-  methods: {
-    getDayOfWeek,
-    isInQueue,
-    checkIfPracticeAvailable,
-    handleClose () {
-      this.$emit('closeDetails', JSON.parse(JSON.stringify({})))
-    },
-    toggleParticipation () {
-      const practice = this.value
-      const { _id, nick, practices, preferedPositions } = this.currentUser
-      
-      if(!preferedPositions || !preferedPositions.length) return this.error = 'Primero elige tus posiciones preferidas'
+const store = useStore()
+const emit = defineEmits(['closeDetails'])
+const props = defineProps({ value: {type: Object, default: undefined}, isParticipating: {type: Boolean, default: false} })
+const currentUser = store.getters.getUser
 
-      this.$store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick: nick.value, practices, preferedPositions } })
-        .then(response => { 
-          setNotification({
-            name: 'subscribeForPractice response',
-            text: response,
-            typeOfNotification: 'success'
-          })
-          this.error = response 
-        })
-        .catch(err => { 
-          setNotification({
-            name: 'subscribeForPractice error',
-            text: err,
-            typeOfNotification: 'danger'
-          })
-        })
-    }
-  },
-  watch: {
-    error () {
-      if (this.error) {
-        const t = setTimeout(() => { this.error = ''; clearTimeout(t) }, 3000)
-      }
-    }
-  },
-  computed: {
-    currentUser () {
-      return this.$store.getters.getUser
-    },
-    practiceDetails () {
-      return this.value
-    },
-    date () {
-      return this.practiceDetails.dateTime.date
-    },
-    getDate () {
-      return new Date(this.date).getDate()
-    },
-    time () {
-      return this.practiceDetails.dateTime.time
-    }
-  }
+const error = ref('')
+
+const practiceDetails = computed( () => props.value )
+const date = computed( () => practiceDetails.dateTime.date )
+const getDayOfMonth = computed( () => new Date(date).getDate() )
+const time = computed( () => practiceDetails.dateTime.time )
+
+function handleClose () { emit('closeDetails', {}) }
+function toggleParticipation () {
+  const practice = props.value
+  const { _id, nick, practices, preferedPositions } = currentUser.value
+  
+  if (!preferedPositions || !preferedPositions.length) return error.value = 'Primero elige tus posiciones preferidas'
+
+  store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick: nick.value, practices, preferedPositions } })
+    .then(response => { 
+      setNotification({
+        name: 'subscribeForPractice response',
+        text: response,
+        typeOfNotification: 'success'
+      })
+      error.value = response 
+    })
+    .catch(err => { 
+      setNotification({
+        name: 'subscribeForPractice error',
+        text: err,
+        typeOfNotification: 'danger'
+      })
+    })
 }
+
+watch(error, (newValue) => { const t = setTimeout(() => { error.value = ''; clearTimeout(t) }, 3000) })
+
 </script>
+
 <style lang="scss" scoped>
 @import '@/colors.scss';
 
