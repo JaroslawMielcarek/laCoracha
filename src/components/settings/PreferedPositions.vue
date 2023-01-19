@@ -31,7 +31,7 @@ const user = store.getters.getUser
 const playerPref = computed( () => user.preferedPositions ? user.preferedPositions : [] )
 const generate = computed( () => {
   const temp = []
-  const arr = playerPref.map(rank => {
+  const arr = playerPref.value.map(rank => {
     const tt = { availablePos: generateAvailablePositions(temp), choosen: rank.choosen }
     temp.push(rank.choosen)
     return tt
@@ -41,7 +41,7 @@ const generate = computed( () => {
 })
 
 function addNewChooiseRow (index, value) {
-  store.dispatch('updateUserBasicInfo', { _id: user._id, preferedPositions: [...playerPref.slice(0, index), { choosen: value }] })
+  store.dispatch('updateUserBasicInfo', { _id: user._id, preferedPositions: [...playerPref.value.slice(0, index), { choosen: value }] })
 }
 function generateAvailablePositions (list) {
   return store.getters.getDefaultPositions.filter( defPos => !list.some(prefPos => defPos === prefPos) ) // return the ones with different value than choosen
