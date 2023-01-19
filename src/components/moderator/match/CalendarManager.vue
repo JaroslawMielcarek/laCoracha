@@ -45,21 +45,52 @@
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultMatch">Agregar Partido</button>
-    <AddEditMatch v-if="value" :value="value" :isEditing="isEditing" @clearForm="setState(undefined)" @submitForm="(acction,value) => submitForm(acction, value, setState(undefined))"/>
+    <button v-if="!choosedValue" class='btn white' @click="choosedValue = store.getters.getDefaultMatch">Agregar Partido</button>
+    <AddEditData v-else category="Partido" :isEditing="isEditing" @submitForm="submitForm( isEditing ? 'updateMatch' : 'addMatch', setInTeamPerformancePercents(choosedValue.value), setState(undefined))" @closeForm="setState(undefined)">
+      <div>
+        <div class='team'>
+          <h5>Local</h5>
+          <CustomInput v-model:value="choosedValue.homeTeam.clubName" placeholder='Club' :required='true'/>
+          <CustomInput v-model:value="choosedValue.homeTeam.teamName" placeholder='Equipo'/>
+          <CustomSelectInput v-model:value="choosedValue.homeTeam.teamGender" :options="['Female', 'Male', 'Mix']" placeholder="Género" />
+          <CustomSelectInput v-model:value="choosedValue.homeTeam.wonSets" :options="['0','1','2','3']" placeholder='Sets ganados' />
+        </div>
+        <div class='team'>
+          <h5>Visitor</h5>
+          <CustomInput v-model:value="choosedValue.guestTeam.clubName" placeholder='Club' :required='true'/>
+          <CustomInput v-model:value="choosedValue.guestTeam.teamName" placeholder='Equipo'/>
+          <CustomSelectInput v-model:value="choosedValue.guestTeam.teamGender" :options="['Female', 'Male', 'Mix']" placeholder="Género" />
+          <CustomSelectInput v-model:value="choosedValue.guestTeam.wonSets" :options="['0','1','2','3']" placeholder='Sets ganados' />
+        </div>
+      </div>
+      <div class='details'>
+        <div class='row'>
+          <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }"/>
+          <CustomInput v-model:value="choosedValue.location" placeholder='Ubicación' :required='true'/>
+          <CustomInput v-model:value="choosedValue.league" placeholder='League'/>
+        </div>
+        <div class='row toggle'>
+          <ToggleSlider  :checked="choosedValue.friendly" @toggled="choosedValue.friendly = !choosedValue.friendly"/>
+          <label class='label__inline'>Amistoso</label>
+        </div>
+      </div>
+    </AddEditData>
   </div>
 </template>
 
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
-import AddEditMatch from '@/components/moderator/match/AddEditMatch.vue'
+import CustomDateTimeInput from '@/components/CustomDateTimeInput.vue'
+import CustomInput from '@/components/CustomInput.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
+import ToggleSlider from '@/components/ToggleSlider.vue'
 import { getMonthNameByNumber } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import AddEditData from '../AddEditData.vue'
 
 const isEditing = ref(false)
-const value = ref(undefined)
+const choosedValue = ref(undefined)
 const showBy = ref('Todo')
 
 const store = useStore()
@@ -74,10 +105,11 @@ const matches = computed( () => {
 })
 
 function setState(val, isEdit = false) {
-  value.value = val
+  !val
+    ? choosedValue.value = undefined
+    : choosedValue.value = JSON.parse(JSON.stringify(val)) //deep copy
   isEditing.value = isEdit
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -113,6 +145,27 @@ function setState(val, isEdit = false) {
 .time,
 .type {
   font-weight: 300;
+}
+
+.team {
+  display: inline-block;
+  width: min-content;
+  vertical-align: middle;
+  text-align: center;
+  margin-right: 10px;
+  &:last-of-type{
+    margin-right: 0;
+  }
+  input, select {
+    margin-bottom: .5rem;
+  }
+}
+.details {
+  margin: 20px auto;
+}
+.toggle {
+  display: flex;
+  align-items: center;
 }
 
 @media (min-width: 600px) {
