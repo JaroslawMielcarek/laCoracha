@@ -1,24 +1,5 @@
-# vue-project
+Front-end of the volleyball club located in Malaga, Spain
 
-## Project setup
-```
-npm install
-```
+One of the way to practice HTML/CSS/JS with vue framework.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Suggestions and corrections (with explanations) are welcome.
