@@ -39,8 +39,6 @@
     </div>
     <PracticeCalendarDetails v-if="practiceDetails" :value="practiceDetails" :isParticipating="checkIfParticipating(practiceDetails)" @closeDetails="handleClose()" />
   </div>
-  {{ practiceID }}
-  {{ practiceDetails }}
 </template>
 
 <script setup>
