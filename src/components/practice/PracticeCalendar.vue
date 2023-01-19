@@ -37,13 +37,13 @@
           <p class='legend current__day'>Hoy</p>
       </div>
     </div>
-    <PracticeCalendarDetails v-if="practiceID" :value="practiceDetails" :isParticipating="checkIfParticipating(practiceDetails)" @closeDetails="handleClose()" />
+    <PracticeCalendarDetails v-if="practiceDetails" :value="practiceDetails" :isParticipating="checkIfParticipating(practiceDetails)" @closeDetails="handleClose()" />
   </div>
 </template>
 
 <script setup>
 import { useStore } from 'vuex'
-import { ref, onMounted, computed } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { getDayOfWeek, getMonthNameByNumber, areEqualDates, isoDateToDayMonthYear } from '@/services/util/time.js'
 import { isInQueue } from '@/services/util/practice.js'
 import PracticeCalendarDetails from '@/components/practice/PracticeCalendarDetails.vue'
