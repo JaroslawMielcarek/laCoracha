@@ -27,7 +27,7 @@
       </div>
     </div>
     <p v-if="error.length" class='error'>{{ error }}</p>
-    <button :class="['btn', 'full-width', isParticipating ? 'red' : 'color' ]" :disabled="!checkIfPracticeAvailable(practiceDetails, currentUser, isParticipating)" @click="toggleParticipation">{{ this.isParticipating ? 'Abandonar' : 'Unirse' }}</button>
+    <button :class="['btn', 'full-width', isParticipating ? 'red' : 'color' ]" :disabled="!checkIfPracticeAvailable(practiceDetails, currentUser, isParticipating)" @click="toggleParticipation">{{ isParticipating ? 'Abandonar' : 'Unirse' }}</button>
   </div>
 </template>
 
@@ -46,14 +46,14 @@ const currentUser = store.getters.getUser
 const error = ref('')
 
 const practiceDetails = computed( () => props.value )
-const date = computed( () => practiceDetails.dateTime.date )
-const getDayOfMonth = computed( () => new Date(date).getDate() )
-const time = computed( () => practiceDetails.dateTime.time )
+const date = computed( () => practiceDetails.value.dateTime.date )
+const getDayOfMonth = computed( () => new Date(date.value).getDate() )
+const time = computed( () => practiceDetails.value.dateTime.time )
 
 function handleClose () { emit('closeDetails', {}) }
 function toggleParticipation () {
   const practice = props.value
-  const { _id, nick, practices, preferedPositions } = currentUser.value
+  const { _id, nick, practices, preferedPositions } = currentUser
   
   if (!preferedPositions || !preferedPositions.length) return error.value = 'Primero elige tus posiciones preferidas'
 

@@ -16,7 +16,9 @@ export function submitForm (acction, value, callback) {
         text: response,
         typeOfNotification: 'success'
       })
-      callback
+    })
+    .then( () => {
+      callback()
     })
     .catch(error => {
       setNotification({
