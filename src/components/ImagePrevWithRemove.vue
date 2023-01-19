@@ -1,30 +1,24 @@
 <template>
   <div class='team__logo-container'>
-      <img class='team__logo' :src="getSrc()" alt='logo of team'/>
-      <button class='btn danger' @click="this.$emit('removeLogo')">x</button>
-    </div>
+    <img class='team__logo' :src="getSrc()" alt='logo of team'/>
+    <button class='btn danger' @click="emit('removeLogo')">x</button>
+  </div>
 </template>
 
-<script>
-  export default{
-    props: {
-      image: Object
-    },
-    methods: {
-      getSrc() {
-        if(!(this.image instanceof File) ) {
-          if( !this.image.contentType || !this.image.data) return ''
-          return `data:image/${this.image.contentType || ''};base64,${this.image.data.toString('base64') || ''}`
-        }
-        return URL.createObjectURL(this.image)
-      }
-    }
-  }
+<script setup>
+import { ref, watch, defineEmits, defineProps } from 'vue'
+const emit = defineEmits(['removeLogo'])
+const props = defineProps({ image: Object })
+
+function getSrc() {
+  if (props.image instanceof File) return URL.createObjectURL(props.image)
+  if( !props.image.contentType || !props.image.data) return ''
+  return `data:image/${props.image.contentType || ''};base64,${props.image.data.toString('base64') || ''}`
+}
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-
 
 .team__logo-container {
   position: relative;

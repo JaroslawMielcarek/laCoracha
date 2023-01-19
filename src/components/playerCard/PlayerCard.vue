@@ -23,42 +23,26 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, defineEmits, defineProps } from 'vue'
 import PerformanceDonutGraph from './PerformanceDonutGraph'
 
-export default {
-  name: 'PlayerCard',
-  components: {
-    PerformanceDonutGraph
-  },
-  emits: ['expandHeight'],
-  props: {
-    value: {
-      type: Object,
-      default () { return {} }
-    },
-    pos: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      details: false
-    }
-  },
-  computed: {
-    fileDirection () { return this.value.isFemale ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg') }
-  },
-  methods: {
-    toggleDetails () { this.details = !this.details },
-    getPhoto(value){ 
-      return value ? `data:image/${value.contentType || ''};base64,${value.data.toString('base64') || ''}` : require('@/assets/images/player-full-body.png')}
-  },
-  watch: {
-    details(){ this.$emit('expandHeight', this.details) }
-  }
+const emit = defineEmits(['expandHeight'])
+const props = defineProps({ value: {type: Object, default: {}}, pos: {type: String, default: ''} })
+
+const details = ref(false)
+
+const fileDirection = props.value.isFemale ? require('@/assets/images/profileWoman.svg') : require('@/assets/images/profileMan.svg')
+
+function toggleDetails () { details.value = !details.value }
+function getPhoto(value) { 
+  return value 
+    ? `data:image/${value.contentType || ''};base64,${value.data.toString('base64') || ''}` 
+    : require('@/assets/images/player-full-body.png')
 }
+
+watch(details, () => { emit('expandHeight', details.value)})
+
 </script>
 <style lang="scss" scoped>
 @import '@/colors.scss';

@@ -25,50 +25,48 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
 import { generateHoursArray } from '@/services/util/time.js'
 
-export default {
-  name: 'PreferedHours',
-  methods: {
-    generateHoursArray,
-    dispatch (day, propName, value) {
-      this.$store.dispatch('setPreferedHours', { day: day, values: { [propName]: value } })
-    },
-    setEndHour (dayName, startHour) {
-      if (startHour === '') this.dispatch(dayName, 'tillHour', '') // day.tillHour = ''
-      else if (startHour && !this.prefHours[dayName].tillHour) this.dispatch(dayName, 'tillHour', this.workingHours[dayName].endHour ? this.workingHours[dayName].endHour : this.$store.getters.getCloseHour)
-    },
-    calcStartHours (day) {
-      const maxHour = new Date(`2020-01-01T${this.calcMaxStartHour(day)}:00`)
-      const hour = new Date(`2020-01-01T${day.startHour ? day.startHour : this.$store.getters.getOpenHour}:00`)
-      return this.generateHoursArray(hour, maxHour, 30)
-    },
-    calcMaxStartHour (day) {
-      const endHour = day.endHour ? day.endHour.split(':') : this.$store.getters.getCloseHour.split(':')
-      return `${parseFloat(endHour[0]) - day.timeSlot}:${endHour[1]}`
-    },
-    calcEndHours (day, d, dayName) {
-      const maxHour = new Date(`2020-01-01T${day.endHour ? day.endHour : this.$store.getters.getCloseHour}:00`)
-      const hour = new Date(`2020-01-01T${d.fromHour ? this.generateFromPlusSlot(day, d, dayName) : this.calcMinEndHour(day)}:00`)
-      return this.generateHoursArray(hour, maxHour)
-    },
-    generateFromPlusSlot (day, d, dayName) {
-      const hour = `${parseInt(d.fromHour.split(':')[0]) + day.timeSlot}:${d.fromHour.split(':')[1]}`
-      if (d.tillHour && d.tillHour < hour) this.dispatch(dayName, 'tillHour', hour)
-      return hour
-    },
-    calcMinEndHour (day) {
-      const startHour = day.startHour ? day.startHour.split(':') : this.$store.getters.getOpenHour.split(':')
-      return `${parseFloat(startHour[0]) + day.timeSlot}:${startHour[1]}`
-    }
-  },
-  computed: {
-    prefHours () { return this.$store.getters.getPreferedHours },
-    workingHours () { return this.$store.getters.getWorkingHours }
-  }
+const store = useStore()
+
+const prefHours = store.getters.getPreferedHours
+const workingHours = store.getters.getWorkingHours 
+
+function dispatch (day, propName, value) {
+  store.dispatch('setPreferedHours', { day: day, values: { [propName]: value } })
 }
+function setEndHour (dayName, startHour) {
+  if (startHour === '') dispatch(dayName, 'tillHour', '') // day.tillHour = ''
+  else if (startHour && !prefHours[dayName].tillHour) dispatch(dayName, 'tillHour', workingHours[dayName].endHour ? workingHours[dayName].endHour : store.getters.getCloseHour)
+}
+function calcStartHours (day) {
+  const axHour = new Date(`2020-01-01T${calcMaxStartHour(day)}:00`)
+  const hour = new Date(`2020-01-01T${day.startHour ? day.startHour : store.getters.getOpenHour}:00`)
+  return generateHoursArray(hour, maxHour, 30)
+}
+function calcMaxStartHour (day) {
+  const endHour = day.endHour ? day.endHour.split(':') : store.getters.getCloseHour.split(':')
+  return `${parseFloat(endHour[0]) - day.timeSlot}:${endHour[1]}`
+}
+function calcEndHours (day, d, dayName) {
+  const maxHour = new Date(`2020-01-01T${day.endHour ? day.endHour : store.getters.getCloseHour}:00`)
+  const hour = new Date(`2020-01-01T${d.fromHour ? generateFromPlusSlot(day, d, dayName) : calcMinEndHour(day)}:00`)
+  return generateHoursArray(hour, maxHour)
+}
+function generateFromPlusSlot (day, d, dayName) {
+  const hour = `${parseInt(d.fromHour.split(':')[0]) + day.timeSlot}:${d.fromHour.split(':')[1]}`
+  if (d.tillHour && d.tillHour < hour) dispatch(dayName, 'tillHour', hour)
+  return hour
+}
+function calcMinEndHour (day) {
+  const startHour = day.startHour ? day.startHour.split(':') : store.getters.getOpenHour.split(':')
+  return `${parseFloat(startHour[0]) + day.timeSlot}:${startHour[1]}`
+}
+
 </script>
+
 <style lang="scss" scoped>
 .row {
   .day {

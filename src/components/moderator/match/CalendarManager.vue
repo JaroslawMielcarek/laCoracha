@@ -22,20 +22,20 @@
         <div class='list-row' v-for="match in matches" :key="match">
           <div class='action column'><button class='btn color' @click="setState(match, true)">Editar</button></div>
           <div class='column blocks'>
-            <p class='title'>{{match.homeTeam.clubName}}</p>
-            <p class='team'>{{match.homeTeam.teamName}}</p>
-            <p class='gender'>{{match.homeTeam.teamGender}}</p>
+            <p class='title'>{{ match.homeTeam.clubName }}</p>
+            <p class='team'>{{ match.homeTeam.teamName }}</p>
+            <p class='gender'>{{ match.homeTeam.teamGender }}</p>
           </div>
           <div class='column blocks'>
-            <p class='title'>{{match.guestTeam.clubName}}</p>
-            <p class='team'>{{match.guestTeam.teamName}}</p>
-            <p class='gender'>{{match.guestTeam.teamGender}}</p>
+            <p class='title'>{{ match.guestTeam.clubName }}</p>
+            <p class='team'>{{ match.guestTeam.teamName }}</p>
+            <p class='gender'>{{ match.guestTeam.teamGender }}</p>
           </div>
           <div class='column blocks'>
             <div class='date'>
-              <p class='day'>{{new Date(match.dateTime.date).getDate()}}</p>
+              <p class='day'>{{ new Date(match.dateTime.date).getDate() }}</p>
               <p class='month'>{{ getMonthNameByNumber(match.dateTime.date).substring(0,3) }}</p>
-              <p class='year'>{{new Date(match.dateTime.date).getFullYear()}}</p>
+              <p class='year'>{{ new Date(match.dateTime.date).getFullYear() }}</p>
             </div>
             <p class='time'>{{ match.dateTime.time }}</p>
           </div>
@@ -51,12 +51,12 @@
 </template>
 
 <script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted } from 'vue'
 import AddEditMatch from '@/components/moderator/match/AddEditMatch.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import { getMonthNameByNumber } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
-import {ref, computed, onMounted} from 'vue'
-import {useStore} from 'vuex'
 
 const isEditing = ref(false)
 const value = ref(undefined)
@@ -64,7 +64,7 @@ const showBy = ref('Todo')
 
 const store = useStore()
 
-onMounted( () => { store.dispatch('fetchPlayers')})
+onMounted( () => { store.dispatch('fetchMatches')})
 
 const matches = computed( () => {
   if (showBy.value === 'Semana') return store.getters.getMatchesOf('week')

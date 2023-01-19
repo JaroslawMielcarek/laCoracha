@@ -21,26 +21,26 @@
         </div>
         <div class='list-row' v-for="practice in practices" :key="practice">
           <p class='column'><button class='btn color' @click="setState(practice, true, true)">Editar</button></p>
-          <p class='column'>{{getDayOfWeek(practice.dateTime.date)}}</p>
-          <p class='column'>{{isoDateToDayMonthYear(practice.dateTime.date)}}</p>
-          <p class='column'>{{practice.dateTime.time}}</p>
-          <p :class="['column',{overLimit: practice.playersSubscribed > practice.playersLimit}]"><b>{{practice.playersSubscribed}}</b>/{{practice.playersLimit}}</p>
+          <p class='column'>{{ getDayOfWeek(practice.dateTime.date) }}</p>
+          <p class='column'>{{ isoDateToDayMonthYear(practice.dateTime.date) }}</p>
+          <p class='column'>{{ practice.dateTime.time }}</p>
+          <p :class="['column',{ overLimit: practice.playersSubscribed > practice.playersLimit }]"><b>{{ practice.playersSubscribed }}</b>/{{ practice.playersLimit }}</p>
           <p class='column'><button class='btn danger' @click="removeElement('Practice', practice)">x</button></p>
         </div>
       </div>
     </div>
-    <button v-if="!value" class='btn white' @click="value = this.$store.getters.getDefaultPractice">Agregar Quedada</button>
+    <button v-if="!value" class='btn white' @click="value = store.getters.getDefaultPractice">Agregar Quedada</button>
     <AddEditPractice v-else :value="value" :isEditing="isEditing" @submitForm="(acction, value) => submitForm(acction, value, setState(undefined))" @clearForm="setState(undefined)"/>
   </div>
 </template>
 
 <script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted } from 'vue'
 import AddEditPractice from '@/components/moderator/practice/AddEditPractice.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import { isoDateToDayMonthYear, getDayOfWeek } from '@/services/util/time.js'
 import { setNotification, submitForm, removeElement} from '@/services/util/universal.js'
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
 
 const isEditing = ref(false)
 const value = ref(undefined)

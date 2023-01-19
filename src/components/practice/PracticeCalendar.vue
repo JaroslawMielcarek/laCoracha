@@ -1,13 +1,13 @@
 <template>
   <div class='container'>
     <div class='strikes' v-if="checkStrikes">
-      <p>Tienes <b>{{checkStrikes.qty}}</b>/3 strikes!</p>
-      <p v-if="checkStrikes.lastStrike">Último strike obtenido en <b>{{isoDateToDayMonthYear(checkStrikes.lastStrike)}}</b></p>
+      <p>Tienes <b>{{ checkStrikes.qty }}</b>/3 strikes!</p>
+      <p v-if="checkStrikes.lastStrike">Último strike obtenido en <b>{{ isoDateToDayMonthYear(checkStrikes.lastStrike) }}</b></p>
     </div>
     <div class='card'>
-      <h3 class='month'>{{getMonthNameByNumber(new Date())}}</h3>
+      <h3 class='month'>{{ getMonthNameByNumber(new Date()) }}</h3>
       <div class='day__names'>
-        <div class='name' v-for='name in daysNames' :key="name">{{name}}</div>
+        <div class='name' v-for='name in daysNames' :key="name">{{ name }}</div>
       </div>
       <div class='calendar'>
         <div
@@ -24,8 +24,8 @@
           @click="togglePracticeDetails(day)"
           v-for="(day, index) in days"
           :key="day">
-          <p class='dayNumber'>{{day.day}}</p>
-          <span class='practiceTime' v-if="day.practice">{{day.practice.dateTime.time}}</span>
+          <p class='dayNumber'>{{ day.day }}</p>
+          <span class='practiceTime' v-if="day.practice">{{ day.practice.dateTime.time }}</span>
           <span class='ocupationPercent' v-if="day.practice" :style="{ top: checkOcupation(day.practice) + '%' } "/>
         </div>
       </div>
@@ -41,72 +41,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, onMounted, computed } from 'vue'
 import { getDayOfWeek, getMonthNameByNumber, areEqualDates, isoDateToDayMonthYear } from '@/services/util/time.js'
 import { isInQueue } from '@/services/util/practice.js'
 import PracticeCalendarDetails from '@/components/practice/PracticeCalendarDetails.vue'
-export default {
-  components: {
-    PracticeCalendarDetails
-  },
-  data () {
-    return {
-      practiceID: undefined,
-      daysNames: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
-      socket: null
-    }
-  },
-  created () {
-    this.$store.dispatch('fetchPractices')
-  },
-  methods: {
-    getDayOfWeek,
-    getMonthNameByNumber,
-    areEqualDates,
-    isInQueue,
-    isoDateToDayMonthYear,
-    checkOcupation (practice) { return 100 - practice.percentOcupied },
-    checkIfParticipating (practice) {
-      if (!practice) return false
-      return !!practice.players.find(p => p._id === this.currentUser._id)
-    },
-    handleClose () { this.practiceID = undefined },
-    togglePracticeDetails (day) { if (day.practice) this.practiceID = (this.practiceID) ? undefined : day.practice._id }
-  },
-  computed: {
-    practiceDetails () { return this.practicesAroundToday.find(p => p._id === this.practiceID) },
-    currentUser () { return this.$store.getters.getUser },
-    checkStrikes () {
-      const player = this.currentUser
-      if (!player || !player.practices) return false
-      return player.practices.strikes
-    },
-    practicesAroundToday () { return this.$store.getters.getTwoWeeksAround('practices') },
-    days () {
-      const list = []
-      const currDay = new Date(new Date().setHours(0, 0, 0, 0))
-      const tempDay = new Date(currDay).setDate(currDay.getDate() - 14)
-      const twoWeeksAfter = new Date(currDay).setDate(currDay.getDate() + 14)
-      const practiceList = this.practicesAroundToday
 
-      let loop = new Date(tempDay)
-      while (loop <= twoWeeksAfter) {
-        const practice = practiceList.find(p => areEqualDates(new Date(p.dateTime.date).setHours(0, 0, 0, 0), loop))
-        list.push({
-          day: new Date(loop).getDate(),
-          dayOfWeek: getDayOfWeek(loop),
-          month: new Date(loop).getMonth(),
-          practice: practice,
-          isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop)
-        })
-        const newDate = loop.setDate(loop.getDate() + 1)
-        loop = new Date(newDate)
-      }
-      return list
-    }
+const store = useStore()
+const practiceID = ref(undefined)
+const daysNames = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
+const currentUser = store.getters.getUser
+
+onMounted( () => store.dispatch('fetchPractices'))
+
+const practicesAroundToday = computed( () => store.getters.getTwoWeeksAround('practices'))
+const practiceDetails = computed( () => practicesAroundToday.value.find(p => p._id === practiceID.value) )
+const checkStrikes = computed( () => {
+  return (!currentUser || !currentUser.practices)
+    ? false
+    : currentUser.practices.strikes
+})
+const days = computed( () => {
+  const list = []
+  const currDay = new Date(new Date().setHours(0, 0, 0, 0))
+  const tempDay = new Date(currDay).setDate(currDay.getDate() - 14)
+  const twoWeeksAfter = new Date(currDay).setDate(currDay.getDate() + 14)
+
+  let loop = new Date(tempDay)
+  while (loop <= twoWeeksAfter) {
+    const practice = !practicesAroundToday.value ? undefined : practicesAroundToday.value.find(p => areEqualDates(new Date(p.dateTime.date).setHours(0, 0, 0, 0), loop))
+    list.push({
+      day: new Date(loop).getDate(),
+      dayOfWeek: getDayOfWeek(loop),
+      month: new Date(loop).getMonth(),
+      practice: practice,
+      isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop)
+    })
+    const newDate = loop.setDate(loop.getDate() + 1)
+    loop = new Date(newDate)
   }
-}
+  return list
+})
+
+function checkOcupation (practice) { return 100 - practice.percentOcupied }
+function checkIfParticipating (practice) { return (!practice) ? false : !!practice.players.find(p => p._id === currentUser._id) }
+function handleClose () { practiceID.value = undefined }
+function togglePracticeDetails (day) { if (day.practice) practiceID.value = (practiceID.value) ? undefined : day.practice._id }
+
 </script>
+
+
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .strikes {

@@ -23,68 +23,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 import { isoDateToDayMonthYear } from '@/services/util/time.js'
 
-export default {
-  props: {
-    league: {
-      type: String,
-      default: 'Not provided'
-    },
-    dateTime: {
-      type: Object,
-      default () { return { date: '', time: '' } }
-    },
-    location: {
-      type: String,
-      default: 'Not provided'
-    },
-    friendly: {
-      type: Boolean,
-      default: true
-    },
-    homeTeam: {
-      type: Object
-    },
-    guestTeam: {
-      type: Object
-    }
-  },
-  computed: {
-    isFinished () {
-      if (!this.dateTime.date) return false
-      const difference = (new Date(this.dateTime.date) - new Date()) / (1000 * 60 * 60 * 24)
-      return difference < 0
-    }
-  },
-  methods: {
-    isoDateToDayMonthYear,
-    getClubLogo (location) {
-      if (!this[`${location}Team`].clubName) return require('@/assets/images/teams/default.svg')
+const store = useStore()
+const props = defineProps({
+  league: {type: String, default: 'Not provided'},
+  dateTime: {type: Object, default: {date: '', time: ''}}, 
+  location: {type: String, default: 'Not provided'},
+  friendly: {type: Boolean, default: true}, 
+  homeTeam: {type: Object}, 
+  guestTeam: {type: Object}
+})
 
-      const fileName = this[`${location}Team`].clubName.toLowerCase().replaceAll(' ', '-')
-      // look in settings
-      const isRegistered = this.$store.getters.getRegisterdClubs.find(c => c === fileName)
-      return isRegistered ? require(`@/assets/images/teams/${fileName}.png`) : require('@/assets/images/teams/default.svg')
-    },
-    getClubName (location) { return this[`${location}Team`].clubName || 'Not specified' },
-    getTeamName (location) { return this[`${location}Team`].teamName || 'Not specified' },
-    getMatchDate () { return this.dateTime.date ? isoDateToDayMonthYear(this.dateTime.date) : 'Not Specified' },
-    getMatchTime () {
-      if (!this.dateTime.time) return 'Not specified'
-      const t = this.dateTime.time.split(':')
-      const hours = parseInt(t[0])
-      const minutes = parseInt(t[1])
-      return (hours === 0 && minutes === 0) ? '- - : - -' : this.dateTime.time
-    },
-    getSetsResult (location) {
-      if (this[`${location}Team`].wonSets === 0) return 0
-      if (!this[`${location}Team`].wonSets) return '-'
-      return this[`${location}Team`].wonSets
-    }
-  }
+const isFinished = computed( () => {
+  if (!props.dateTime.date) return false
+
+  const difference = (new Date(props.dateTime.date) - new Date()) / (1000 * 60 * 60 * 24)
+  return difference < 0
+})
+
+function getClubLogo (location) {
+  if (!props[`${location}Team`].clubName) return require('@/assets/images/teams/default.svg')
+
+  const fileName = props[`${location}Team`].clubName.toLowerCase().replaceAll(' ', '-')
+  // look in settings
+  const isRegistered = store.getters.getRegisterdClubs.find(c => c === fileName)
+  return isRegistered ? require(`@/assets/images/teams/${fileName}.png`) : require('@/assets/images/teams/default.svg')
 }
+
+function getClubName (location) { return props[`${location}Team`].clubName || 'Not specified' }
+
+function getTeamName (location) { return props[`${location}Team`].teamName || 'Not specified' }
+
+function getMatchDate () { return props.dateTime.date ? isoDateToDayMonthYear(props.dateTime.date) : 'Not Specified' }
+
+function getMatchTime () {
+  if (!props.dateTime.time) return 'Not specified'
+  const t = props.dateTime.time.split(':')
+  const hours = parseInt(t[0])
+  const minutes = parseInt(t[1])
+  return (hours === 0 && minutes === 0) ? '- - : - -' : props.dateTime.time
+}
+
+function getSetsResult (location) {
+  if (props[`${location}Team`].wonSets === 0) return 0
+  if (!props[`${location}Team`].wonSets) return '-'
+  return props[`${location}Team`].wonSets
+}
+
 </script>
 
 <style lang="scss" scoped>

@@ -9,55 +9,43 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {ref, onMounted} from 'vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import AdminService from '@/services/admin.service.js'
 import { setNotification } from '@/services/util/universal.js'
 
-export default {
-  name: 'PlayerPerformance',
-  components: {
-    ToggleSlider,
-  },
-  data () {
-    return {
-      automaticMonthlyPayment: false,
-    }
-  },
-  created () {
-    AdminService.status('MonthlyPayment')
-      .then(response => {
-        this.automaticMonthlyPayment = response
+const automaticMonthlyPayment = ref(false)
+
+onMounted( () => {
+  AdminService.status('MonthlyPayment')
+  .then(response => { automaticMonthlyPayment.value = response })
+  .catch(error => {
+    setNotification({
+      name: 'statusMonthlyPayment',
+      text: error.response.data.message,
+      typeOfNotification: 'danger'
+    })
+  })
+})
+
+function setMonthlyPayment () {
+  AdminService.setMonthlyPayment('', { automaticMonthlyPayment: !automaticMonthlyPayment.value })
+    .then(response => {
+      setNotification({
+        name: 'setMonthlyPayment',
+        text: response,
+        typeOfNotification: 'success'
       })
-      .catch(error => {
-        this.setNotification({
-          name: 'statusMonthlyPayment',
-          text: error.response.data.message,
-          typeOfNotification: 'danger'
-        })
+      automaticMonthlyPayment.value = !automaticMonthlyPayment
+    })
+    .catch(error => {
+      setNotification({
+        name: 'setMonthlyPayment',
+        text: error.response.data.message,
+        typeOfNotification: 'danger'
       })
-  },
-  methods: {
-    setNotification,
-    setMonthlyPayment () {
-      AdminService.setMonthlyPayment('', { automaticMonthlyPayment: !this.automaticMonthlyPayment })
-        .then(response => {
-          this.setNotification({
-            name: 'setMonthlyPayment',
-            text: response,
-            typeOfNotification: 'success'
-          })
-          this.automaticMonthlyPayment = !this.automaticMonthlyPayment
-        })
-        .catch(error => {
-          this.setNotification({
-            name: 'setMonthlyPayment',
-            text: error.response.data.message,
-            typeOfNotification: 'danger'
-          })
-        })
-    }
-  }
+    })
 }
 </script>
 

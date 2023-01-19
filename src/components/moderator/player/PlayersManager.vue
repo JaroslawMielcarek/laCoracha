@@ -18,11 +18,11 @@
         </div>
         <div class='list-row' v-for="player in players" :key="player">
           <div class='action column'><button class='btn color' @click="setState(player, true)">Editar</button></div>
-          <p class='column id'>{{player.memberID || 'no data'}}</p>
-          <p class='column name'>{{player.nick ? player.nick.value : ''}}</p>
-          <p class='column number'>{{player.number? player.number.value : ''}}</p>
-          <p class='column gender'>{{player.isFemale ? 'Mujer' : 'Hombre'}}</p>
-          <p class='column team'>{{player.team}}</p>
+          <p class='column id'>{{ player.memberID || 'no data' }}</p>
+          <p class='column name'>{{ player.nick ? player.nick.value : '' }}</p>
+          <p class='column number'>{{ player.number? player.number.value : '' }}</p>
+          <p class='column gender'>{{ player.isFemale ? 'Mujer' : 'Hombre' }}</p>
+          <p class='column team'>{{ player.team }}</p>
           <div class='action column'><button class='btn danger' @click="removeElement('Player', player)">x</button></div>
         </div>
       </div>
@@ -32,11 +32,11 @@
 </template>
 
 <script setup>
+import { useStore } from 'vuex'
+import { ref, computed, onMounted } from 'vue'
 import AddEditPlayer from '@/components/moderator/player/AddEditPlayer.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
-import {ref, computed, onMounted} from 'vue'
-import {useStore} from 'vuex'
 
 const isEditing = ref(false)
 const value = ref(undefined)

@@ -30,57 +30,39 @@
     </div>
     <div class='row flex-row'>
       <button type='submit' class='btn color'>{{isEditing ? 'Actualizar' : 'Añadir'}}</button>
-      <p class='btn text' @click="this.$emit('clearForm')">Clear</p>
+      <p class='btn text' @click="emit('clearForm')">Clear</p>
     </div>
   </form>
 </template>
 
-<script>
+<script setup>
+import { useStore } from 'vuex'
+import { ref, watch, defineEmits, defineProps } from 'vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import CustomDateTimeInput from '@/components/CustomDateTimeInput.vue'
 import CustomInput from '@/components/CustomInput.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import { isEmptyObject } from '@/services/util/object.js'
 
-export default {
-  name: 'AddMatch',
-  components: {
-    CustomSelectInput,
-    CustomDateTimeInput,
-    CustomInput,
-    ToggleSlider
-  },
-  emits: ['clearForm', 'submitForm'],
-  props: {
-    value: {
-      type: Object,
-      default () { return undefined }
-    },
-    isEditing: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      entry: isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultMatch))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  watch: {
-    value () {
-      this.entry = isEmptyObject(this.value)
-        ? JSON.parse(JSON.stringify(this.$store.getters.getDefaultMatch))
-        : JSON.parse(JSON.stringify(this.value))
-    }
-  },
-  methods: {
-    isEmptyObject,
-    submitForm () { return this.$emit('submitForm', this.isEditing ? 'updateMatch' : 'addMatch', this.entry) }
-  }
-}
+const store = useStore()
+const emit = defineEmits(['clearForm', 'submitForm'])
+const props = defineProps({ value: {type: Object, default: undefined}, isEditing: {type: Boolean, default: false} })
+
+const entry = ref(
+  isEmptyObject(props.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultMatch))
+    : JSON.parse(JSON.stringify(props.value))
+)
+watch(props, (newValue) => {
+  entry.value = isEmptyObject(newValue.value)
+    ? JSON.parse(JSON.stringify(store.getters.getDefaultMatch))
+    : JSON.parse(JSON.stringify(newValue.value))
+})
+
+function submitForm () { return emit('submitForm', isEditing.value ? 'updateMatch' : 'addMatch', entry.value) }
+
 </script>
+
 <style lang="scss" scoped>
 .team {
   display: inline-block;

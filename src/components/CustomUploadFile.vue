@@ -3,55 +3,36 @@
     <input type='file' @change="handleFileUpload" :accept="canAccept"/>
     <img src='@/assets/images/upload.svg'/>{{ !file || isEmptyObject(file) ? `UPLOAD ${text}` : file.name }}
   </label>
-  <p v-if="error" class='error'>{{error}}</p>
+  <p class='extra__message'>max: {{ sizeLimit/8000 }}kb</p>
+  <p v-if="error" class='error'>{{ error }}</p>
 </template>
 
-<script>
+<script setup>
+import { ref, defineEmits, defineProps } from 'vue'
 import { isEmptyObject } from '@/services/util/object.js'
-export default {
-  emits: ['fileChoosed'],
-  props: {
-    text: {
-      type: String,
-      default: 'FILE'
-    },
-    file: {
-      type: Object
-    },
-    sizeLimit: {
-      type: Number,
-      default: 200000
-    },
-    canAccept: {
-      type: String,
-      default: 'image/jpg, image/png'
-    }
-  },
-  data () {
-    return {
-      error: ''
-    }
-  },
-  methods: {
-    isEmptyObject,
-    handleFileUpload (event) {
-      const f = event.target.files[0]
 
-      if(f.size > this.sizeLimit) {
-        this.error = 'El archivo es demasiado pesado!'
-        return setTimeout(() => this.error = '', 3000)
-      }
+const emit = defineEmits(['fileChoosed'])
+const props = defineProps({
+  text: {type: String, default:'FILE'}, 
+  file: {type: Object}, 
+  sizeLimit: {type: Number, default: 200000}, 
+  canAccept: {type: String, default: 'image/jpg, image/png'}
+})
+const error = ref('')
 
-      const contentType = f.type
-      const reader = new FileReader()
-      let data = ''
-      reader.readAsDataURL(f)
-      reader.onload = () => {
-        data = (reader.result).split(',')[1]
-        this.$emit('fileChoosed', {data: data, contentType: contentType} )
-      }
-    }
-  },
+function handleFileUpload (event) {
+  const f = event.target.files[0]
+  if(f.size > props.sizeLimit) {
+    error.value = 'El archivo es demasiado pesado!'
+    return setTimeout(() => error.value = '', 3000)
+  }
+  const reader = new FileReader()
+  let data = ''
+  reader.readAsDataURL(f)
+  reader.onload = () => {
+    data = (reader.result).split(',')[1]
+    emit('fileChoosed', {data: data, contentType: f.type} )
+  }
 }
 </script>
 

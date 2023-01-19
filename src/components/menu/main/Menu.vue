@@ -28,15 +28,15 @@
 </template>
 
 <script setup>
+import { useStore } from 'vuex'
+import { ref, onMounted } from 'vue'
 import CustomToolTip from '@/components/CustomToolTip.vue'
 import TeamList from './TeamList.vue'
-import {ref, onMounted} from 'vue'
-import {useStore} from 'vuex'
 
 const store = useStore()
 const isTeamsListOpen = ref(false)
 
-onMounted( () => { store.dispatch('fetchTeams'); console.log('menu mounted')})
+onMounted( () => { store.dispatch('fetchTeams') })
 
 function toggleTeamsList () { isTeamsListOpen.value = !isTeamsListOpen.value }
 
