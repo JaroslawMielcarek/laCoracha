@@ -71,7 +71,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.numberInput { display: inline-block; }
+.numberInput { 
+  display: inline-block;
+  margin: 0 1ch;
+}
 .value {
   display: inline-flex;
   max-width: 8ch;
