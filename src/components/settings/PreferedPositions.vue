@@ -2,11 +2,10 @@
   <div v-for="(rank, index) in generate"
     class='row'
     :key='rank'>
-    <label class='label__inline'> {{ index + 1 }} </label>
-    <div class='radio__group'>
+    <label> {{ index + 1 }} </label>
+    <div class='radio-group'>
       <input v-for="(position) in rank.availablePos"
         v-model="rank.choosen"
-        class='radioButton'
         type='radio'
         :name='index'
         :label="position"
@@ -55,13 +54,13 @@ function reset () { store.dispatch('updateUserBasicInfo', { _id: user._id, prefe
 label{
   margin-right: 2ch;
 }
-.radio__group {
+.radio-group {
   display: inline-flex;
-  background: #454857;
+  background: $decorativa-neutral-dark;
   padding: 4px;
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 3px rgba(35, 33, 45, 0.3),
-    0 0 0 3px rgba(185, 185, 185, 0.3);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 3px rgba($decorativa-neutral-light, 0.3),
+    0 0 0 3px rgba($decorativa-neutral-light, 0.3);
   position: relative;
   input {
     width: auto;
@@ -69,16 +68,11 @@ label{
     appearance: none;
     outline: none;
     cursor: pointer;
-    border-radius: 2px;
     padding: 4px 8px;
     margin-right: 2ch;
-    background: #454857;
-    color: #bdbdbdbd;
-    font-size: 14px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    transition: all 100ms linear;
+    background: $decorativa-neutral-dark;
+    color: $decorativa-neutral-light;
+    transition: all .6s linear;
 
     &:last-of-type{
       margin-right: 0;
@@ -86,9 +80,7 @@ label{
   }
   input:checked {
     background-image: linear-gradient(180deg, $blueLight, $blueDark);
-    color: #fff;
-    box-shadow: 0 1px 1px #0000002e;
-    text-shadow: 0 1px 0px rgba($blueDark, .3);
+    color: $white;
   }
   input:before {
     content: attr(label);

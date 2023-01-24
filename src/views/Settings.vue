@@ -1,29 +1,29 @@
 <template>
-  <div class="layout">
-    <div class="t"> 
+  <section class="grid-layout">
+    <div class="grid-header"> 
       <h2>Bienvenidos {{this.$store.getters.getUsername}}</h2>
-      <p class='extra__message'>Aquí encontrarás tus datos y configuraciones</p>
+      <p class='extra-message'>Aquí encontrarás tus datos y configuraciones</p>
     </div>
-    <div class='container' id="payments_calendar">
+    <div class='flex-column-container ' id="payments_calendar">
       <h3>Calendario de pagos</h3>
       <PaymentCalendar />
     </div>
-    <div class='container' id="informacion_basic">
+    <div class='flex-column-container ' id="informacion_basic">
       <h3>Información básica</h3>
-      <p class='extra__message'>Lo usaremos para:</p>
+      <p class='extra-message'>Lo usaremos para:</p>
       <BasicInfo />
     </div>
-    <div class='container' id="position_preferences">
+    <div class='flex-column-container ' id="position_preferences">
       <h3>Elija preferencia de posición:</h3>
-      <p class='extra__message'>Seleccione de mayor deseo a menor</p>
+      <p class='extra-message'>Seleccione de mayor deseo a menor</p>
       <PreferedPositions />
     </div>
-    <div class='container' id="privacy_preferences">
+    <div class='flex-column-container ' id="privacy_preferences">
       <h3>Preferencias de privacidad:</h3>
-      <p class='extra__message'>Selecciona lo que estás dispuesto a compartir en nuestra página.</p>
+      <p class='extra-message'>Selecciona lo que estás dispuesto a compartir en nuestra página.</p>
       <PrivacyPref />
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -47,15 +47,15 @@ export default {
 @import '@/colors.scss';
 
 @media only screen and (min-width: 992px){
-  .layout {
+  .grid-layout {
     display: grid;
     grid-template:
       "top top"
       "basic payments"
       "position privacy";
-    grid-gap: minmax(10px 1rem);
+    gap: 0vmin 10vmin;
   }
-  .t {
+  .grid-header {
     grid-area: top;
   }
   #informacion_basic {

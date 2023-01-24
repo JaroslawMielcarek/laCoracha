@@ -1,29 +1,30 @@
 <template>
-  <div>
+  <section>
     <h1>Moderator Area</h1>
-    <p class='extra__message'>Here are moderator settings</p>
-    <div>
-      <CalendarManager />
-      <TeamsManager />
-      <PlayersManager />
-      <PracticeManager />
-    </div>
-  </div>
+    <Tabs>
+      <Tab title="Calendario">
+        <CalendarManager />
+      </Tab>
+      <Tab title="Equipos">
+        <TeamsManager />
+      </Tab>
+      <Tab title="Jugadores">
+        <PlayersManager />
+      </Tab>
+      <Tab title="Quedadas">
+        <PracticeManager />
+      </Tab>
+    </Tabs>
+  </section>
 </template>
 
-<script>
+<script setup>
 import CalendarManager from '@/components/moderator/match/CalendarManager'
 import TeamsManager from '@/components/moderator/team/TeamsManager'
 import PlayersManager from '@/components/moderator/player/PlayersManager'
 import PracticeManager from '@/components/moderator/practice/PracticeManager.vue'
+import Tab from '@/components/tabs/Tab.vue'
+import Tabs from '@/components/tabs/Tabs.vue'
 
-export default {
-  name: 'Moderator',
-  components: {
-    CalendarManager,
-    TeamsManager,
-    PlayersManager,
-    PracticeManager
-  },
-}
+
 </script>

@@ -1,10 +1,10 @@
 <template>
   <div class='group' >
-      <p class='extra__message'> muestra tu tarjeta de jugador en la página web (si aceptas en la sección de privacidad)</p>
+      <p class='extra-message'> muestra tu tarjeta de jugador en la página web (si aceptas en la sección de privacidad)</p>
       <div class='group'>
+        <p class='extra-message'>nick en quedadas</p>
         <div class='row'>
-          <p class='extra__message'>nick en quedadas</p>
-          <label class='label__inline'>Nick<p class='extra__message inline__extra'>*</p>:</label>
+          <label><p class='extra-message inline-extra'>*</p>Nick:</label>
           <CustomInput
             type='text'
             pattern="^(?=.{2,20}$)([A-Za-z]{1,10})[^\S\t\n\r]?[A-Za-z]{0,10}([A-Za-z]+)$"
@@ -15,31 +15,31 @@
         </div>
       </div>
       <div class='row'>
-          <label class='label__inline'>Posicion:</label>
+          <label>Posicion:</label>
           <CustomSelectInput
             v-model:value="position"
             :options="['Exterior', 'Opuesto', 'Central', 'Libero', 'Colocador']"/>
       </div>
       <div class='row'>
-          <label class='label__inline'>Número:</label>
+          <label>Número:</label>
           <CustomNumberInput
-            :min="this.$store.getters.getMinPlayerNumber"
-            :max="this.$store.getters.getMaxPlayerNumber"
+            :min="store.getters.getMinPlayerNumber"
+            :max="store.getters.getMaxPlayerNumber"
             :step= 1
             v-model:value='number'
           />
       </div>
       <div class='row'>
-          <label class='label__inline'>Altura:</label>
+          <label>Altura:</label>
           <CustomNumberInput
-            :min="this.$store.getters.getMinPlayerHeight"
-            :max="this.$store.getters.getMaxPlayerHeight"
+            :min="store.getters.getMinPlayerHeight"
+            :max="store.getters.getMaxPlayerHeight"
             :step= 0.01
             v-model:value='height'
           />
       </div>
       <div class='row'>
-          <label class='label__inline'>Mano dominante:</label>
+          <label>Mano dominante:</label>
           <CustomSelectInput
           v-model:value="dominantHand"
           :options="['Izquierda', 'Derecha', 'Ambas']"/>
@@ -86,4 +86,7 @@ function dispatch (propName, value) {
 
 <style lang="scss" scoped>
 
+.row {
+  display: flex;
+}
 </style>

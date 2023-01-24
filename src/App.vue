@@ -31,9 +31,9 @@ export default {
 .views {
   width: 100vw;
   min-height: 100vh;
-  padding-bottom: 44px;
+  padding-bottom: 60px;//44px;
   overflow-x: hidden;
-  padding: 4px 4px 44px;
+  // padding: 4px 4px 44px;
 }
 .pageChange-enter {
   opacity: 0;
@@ -60,9 +60,6 @@ export default {
 }
 
 @media (min-width: 600px) {
-  .views {
-    padding: 1rem 1rem 44px;
-  }
 }
 
 </style>

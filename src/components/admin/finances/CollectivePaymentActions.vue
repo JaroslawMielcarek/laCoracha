@@ -5,7 +5,7 @@
       <p class='label'>Cuota de membresía automática:</p>
       <ToggleSlider  :checked="automaticMonthlyPayment" @toggled="setMonthlyPayment()"/>
     </div>
-    <p class='extra__message'>cada 1er día del mes (30€)</p>
+    <p class='extra-message'>cada 1er día del mes (30€)</p>
   </div>
 </template>
 
