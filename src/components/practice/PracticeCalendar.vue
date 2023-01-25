@@ -9,11 +9,12 @@
         :class="['day',
           {
             [day.dayOfWeek]: !index,
-            currentMonth: day.month === new Date().getMonth(),
+            currentMonth: day.month === currentMonth,
             practice: day.practice,
             participate: checkIfParticipating(day.practice),
             inQueue: isInQueue(currentUser, day.practice),
-            today: day.isToday
+            today: day.isToday,
+            past: day.isPast
           }
         ]"
         @click="togglePracticeDetails(day)"
@@ -46,7 +47,7 @@ const store = useStore()
 const practiceID = ref(undefined)
 const daysNames = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 const currentUser = store.getters.getUser
-
+const currentMonth = new Date().getMonth()
 onMounted( () => store.dispatch('fetchPractices'))
 
 const practicesAroundToday = computed( () => store.getters.getTwoWeeksAround('practices'))
@@ -66,7 +67,8 @@ const days = computed( () => {
       dayOfWeek: getDayOfWeek(loop),
       month: new Date(loop).getMonth(),
       practice: practice,
-      isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop)
+      isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop),
+      isPast: new Date().setHours(0, 0, 0, 0) > new Date(loop)
     })
     const newDate = loop.setDate(loop.getDate() + 1)
     loop = new Date(newDate)
@@ -155,6 +157,9 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
   &.today {
     color: red;
     font-weight: 900;
+  }
+  &.past {
+    filter: grayscale(.8);
   }
   &.practice {
     cursor: pointer;
