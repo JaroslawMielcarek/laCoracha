@@ -95,60 +95,21 @@ function getSetsResult (location) {
     bottom: 0;
     z-index: -1;
     background: $futureMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
+    background: -moz-linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
+    background: -webkit-linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
+    background: linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
     //Correct this microsoft colors- are wrong
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#4c00ed",endColorstr="#7d36ff",GradientType=1);
   }
 
   &.friendly::after{
     background: $pastMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
+    background: -moz-linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
+    background: -webkit-linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
+    background: linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
   }
-  &.past::after {
-    background: $pastMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
+  &.past {
+    filter: grayscale(.6);
   }
 }
 .team,

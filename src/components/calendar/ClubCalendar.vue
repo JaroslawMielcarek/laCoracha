@@ -3,26 +3,21 @@
     <h1 class='header'>Calendario</h1>
   </div>
   <div class='sectionBody'>
-    <div class='listOptions'>
-      <p>Partidos de esta </p>
-      <SelectInput :options="['semana', 'mes', 'temporada']" v-model:value="showBy" placeholder="choose"/>
-    </div>
-    <div class='list large' v-if="matches(showBy).length">
-      <Match v-for="match in matches(showBy)"
-        :league="match.league"
-        :dateTime="match.dateTime"
-        :location="match.location"
-        :friendly="match.friendly"
-        :homeTeam="match.homeTeam"
-        :guestTeam="match.guestTeam"
-        :key="match.date"
-      />
-    </div>
-    <div class='list' v-else>
-      <p v-if='isLoading' class='no-data'>Loading...</p>
-      <p v-else-if='fetchError' class='no-data'>{{ fetchError }}</p>
-      <p v-else class='no-data'>Puedes descansar, no hacemos nada en {{showBy === 'mes' ? 'este mes' : 'esta '+ showBy}}.</p>
-    </div>
+    <Table  category="partido" v-model:showBy="showBy" :filterOptions="['semana', 'mes', 'temporada', 'todo']">
+      <template v-slot:body>
+        <p v-if='isLoading' class='no-data'>Loading...</p>
+        <p v-else-if='fetchError' class='no-data'>{{ fetchError }}</p>
+          <Match v-for="match in matches(showBy)"
+            :league="match.league"
+            :dateTime="match.dateTime"
+            :location="match.location"
+            :friendly="match.friendly"
+            :homeTeam="match.homeTeam"
+            :guestTeam="match.guestTeam"
+            :key="match.date"
+          />
+      </template>
+    </Table>
     <div class="legendContainer">
       <p class="legend">Futuro</p>
       <p class="legend friendly">Amistoso</p>
@@ -35,7 +30,7 @@
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
 import Match from './Match.vue'
-import SelectInput from '@/components/CustomSelectInput.vue'
+import Table from '@/components/table/Table.vue'
 
 const store = useStore()
 const showBy = ref('semana')
@@ -56,9 +51,6 @@ onMounted( () => { store.dispatch('fetchMatches') })
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.sectionBody {
-  padding: 0; // Reset Global style
-}
 .legend {
   display: flex;
   align-items: center;
