@@ -30,7 +30,7 @@
 import BasicInfo from '@/components/settings/BasicInfo.vue'
 import PreferedPositions from '@/components/settings/PreferedPositions.vue'
 import PrivacyPref from '@/components/settings/PrivacyPref.vue'
-import PaymentCalendar from '@/components/payment/PaymentCalendar.vue'
+import PaymentCalendar from '@/components/settings/PaymentCalendar.vue'
 
 export default {
   name: 'Settings',

@@ -51,15 +51,16 @@ export const auth = {
     },
     updateUserBasicInfo ({ commit }, data) {
       commit('setAuthLoading', true)
-      return UserService.updateUserData(data).then(
-        response => {
+      return UserService.updateUserData(data)
+        .then(response => {
           commit('updateUserBasicInfo', response)
-          return Promise.resolve(response)
-        },
-        error => {
-          return Promise.reject(error)
-        }
-      )
+          return Promise.resolve(response.message ? response.message : 'successful update')
+        })
+        .catch(error => {
+          return (error.response.data && error.response.data.message)
+            ? Promise.reject(error.response.data.message)
+            : Promise.reject(error)
+        })
     }
   },
   mutations: {

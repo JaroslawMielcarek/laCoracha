@@ -1,10 +1,12 @@
 <template>
-  <label class="uploadFile">
-    <input type='file' @change="handleFileUpload" :accept="canAccept"/>
-    <img src='@/assets/images/upload.svg'/>{{ !file || isEmptyObject(file) ? `UPLOAD ${text}` : file.name }}
-  </label>
-  <p class='extra__message'>max: {{ sizeLimit/8000 }}kb</p>
-  <p v-if="error" class='error'>{{ error }}</p>
+  <div>
+    <label class="uploadFile">
+      <input type='file' @change="handleFileUpload" :accept="canAccept"/>
+      <img src='@/assets/images/upload.svg'/>{{ !file || isEmptyObject(file) ? `UPLOAD ${text}` : file.name }}
+    </label>
+    <p class='extra__message'>max: {{ sizeLimit/8000 }}kb</p>
+    <p v-if="error" class='error'>{{ error }}</p>
+  </div>
 </template>
 
 <script setup>

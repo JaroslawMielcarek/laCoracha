@@ -1,43 +1,63 @@
 <template>
-  <div>
-    <div v-for="notification in notificationList" :class="['notification', notification.typeOfNotification]" :key="notification">
-      <p v-for="text in notification.text" class="text" :key="text">{{text}}</p>
+  <div class='notifications-wrapper'>
+    <div v-for="notification, index in toRemoveQueue" :class="['notification', notification.typeOfNotification]" :key="notification">
+      <p v-for="text in notification.text" class="text"  :key="text">{{ text }}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  computed: {
-    notificationList () { return this.$store.getters.getNotifications }
-  }
-}
+<script setup>
+import { useStore } from 'vuex';
+import { ref, watch } from 'vue';
+
+const store = useStore()
+const toRemoveQueue = ref([])
+
+watch(store.getters.getNotifications, () => {
+  const list = store.getters.getNotifications 
+  const ids = new Set(toRemoveQueue.value.map(n => n.id))
+  const dif = list.filter(n => !ids.has(n.id)) // check for new notifications
+
+  if (!dif.length) return null // do nothing if notifications are removed from store
+  
+  console.log('dif list ids', dif, list, ids)
+
+  toRemoveQueue.value.unshift(...dif)
+  const t = setTimeout(() => {
+    toRemoveQueue.value.pop()
+    clearTimeout(t)
+  }, 10000)
+})
+
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.notification {
+
+.notifications-wrapper {
   position: fixed;
-  top: -100%;
+  top: 0;
   left: 0;
   width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: nowrap;
+  gap: 4px;
+  z-index: 10;
+}
+.notification {
+  // position: fixed;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
   opacity: .85;
   display: flex;
   flex-direction: column;
-  z-index: 10;
   background-color: $blueDark;
   color: $white;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   padding: 20px;
-  transition: all .6s ease-in-out;
-
-  &.success,
-  &.info,
-  &.warning,
-  &.danger {
-    top: 0;
-  }
   &.success {
     background-color: $valid;
   }

@@ -28,7 +28,7 @@
       <span>Fecha y Hora:</span>
       <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
       <span>Límite de jugadores:</span>
-      <CustomSelectInput v-model:value="choosedValue.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
+      <CustomSelectInput class='short' v-model:value="choosedValue.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
     </div>
     <PracticePlayersList :playersSubscribed="choosedValue.players" :key="playersList" @addPlayer="addPlayer($event)" @removePlayer="removePlayer($event)"/>
     <div class='row legend__container'>
@@ -43,12 +43,12 @@
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
-import AddEditData from '../AddEditData.vue'
+import AddEditData from '@/components/AddEditData.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import CustomDateTimeInput from '@/components/CustomDateTimeInput.vue'
 import PracticePlayersList from '@/components/moderator/practice/PracticePlayersList.vue'
 import { isoDateToDayMonthYear, getDayOfWeek } from '@/services/util/time.js'
-import { setNotification, submitForm, removeElement} from '@/services/util/universal.js'
+import { submitForm, removeElement} from '@/services/util/universal.js'
 import Table from '@/components/table/Table.vue'
 
 onMounted( () => { store.dispatch('fetchPractices') })
@@ -88,6 +88,9 @@ function removePlayer (player) { choosedValue.value.players = choosedValue.value
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
+.short {
+  max-width: 6ch;
+}
 .table-row {
   grid-template-columns: 60px repeat(3, 1fr) 60px 50px;
 }

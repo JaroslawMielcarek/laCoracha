@@ -36,7 +36,7 @@ import { useStore } from 'vuex'
 import { ref, watch, computed } from 'vue'
 import { getDayOfWeek } from '@/services/util/time.js'
 import { checkIfPracticeAvailable, isInQueue } from '@/services/util/practice.js'
-import { setNotification } from '@/services/util/universal'
+import { submitForm } from '../../services/util/universal'
 
 const store = useStore()
 const emit = defineEmits(['closeDetails'])
@@ -57,22 +57,7 @@ function toggleParticipation () {
   
   if (!preferedPositions || !preferedPositions.length) return error.value = 'Primero elige tus posiciones preferidas'
 
-  store.dispatch('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick: nick.value, practices, preferedPositions } })
-    .then(response => { 
-      setNotification({
-        name: 'subscribeForPractice response',
-        text: response,
-        typeOfNotification: 'success'
-      })
-      error.value = response 
-    })
-    .catch(err => { 
-      setNotification({
-        name: 'subscribeForPractice error',
-        text: err,
-        typeOfNotification: 'danger'
-      })
-    })
+  submitForm('subscribeForPractice', { _id: practice._id, player: { _id: _id, nick: nick.value, practices, preferedPositions } } )
 }
 
 watch(error, (newValue) => { const t = setTimeout(() => { error.value = ''; clearTimeout(t) }, 3000) })

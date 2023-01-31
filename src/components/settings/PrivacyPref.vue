@@ -14,24 +14,23 @@
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
+import { submitForm } from '../../services/util/universal'
 
 const store = useStore()
 
+const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
 const privacyDescriptions = store.getters.getPrivacyDescriptions
-const userData = store.getters.getUser
+const userData = computed( () => store.getters.getUser )
 
 const basicInformationes = computed( () => {
-  if (!userData) return {}
-  const { nick, position, number, height, dominantHand, photo } =userData
+  if (!userData.value) return {}
+  const { nick, position, number, height, dominantHand, photo } = userData.value
   return { nick, position, number, height, dominantHand, photo }
 })
 function dispatch (propName, value) {
-  store.dispatch('updateUserBasicInfo', { _id: userData._id, [propName]: { ...userData[propName], permisionGranted: value } })
+  submitForm('updateUserBasicInfo', { _id: userData.value._id, [propName]: { ...userData.value[propName], permisionGranted: value } })
 }
-function translateToSpanish (name) {
-  const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
-  return names[name] || name
-}
+function translateToSpanish (name) { return names[name] || name }
 
 </script>
 
@@ -41,9 +40,7 @@ function translateToSpanish (name) {
   display: flex;
   align-items: center;
   margin-bottom: 0.75em;
+  gap: 1ch;
 }
 .extra-message { margin-bottom: 0; }
-.label-inline {
-  margin-right: 1ch;
-}
 </style>

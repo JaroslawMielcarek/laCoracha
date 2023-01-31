@@ -28,10 +28,12 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-
+.grid {
+  margin-top: 24px;
+}
 .filter-panel{
   display: flex;
-  margin: 32px 0 0;
+  align-items: baseline;
   gap: 1ch;
 }
 .table-head {

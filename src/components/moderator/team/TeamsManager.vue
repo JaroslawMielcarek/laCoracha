@@ -47,14 +47,14 @@
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed } from 'vue'
-import AddEditData from '../AddEditData.vue'
+import AddEditData from '@/components/AddEditData.vue'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import PlayerToggle from './PlayerToggle.vue'
 import CustomUploadFile from '@/components/CustomUploadFile.vue'
 import ImagePrevWithRemoveVue from '@/components/ImagePrevWithRemove.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
-import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import { submitForm, removeElement } from '@/services/util/universal.js'
 import Table from '@/components/table/Table.vue'
 
 const store = useStore()

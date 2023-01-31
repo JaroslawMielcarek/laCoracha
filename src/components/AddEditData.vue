@@ -28,15 +28,17 @@ const props = defineProps({
 }
 .modal-wrapper{
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: absolute;
-  top:0;
-  left:0;
-  width: 100vw;
-  height: 100vh;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
   background-color: rgba($decorativa-neutral-dark, .4);
   overflow-y: scroll;
+  padding: 0 0 44px;
+  z-index: 10;
 }
 
 .add_edit {
@@ -46,12 +48,14 @@ const props = defineProps({
   padding: 1rem;
   margin: 20px auto;
   box-shadow: 0 4px 20px rgba($blueDark, .2);
-  max-width: 400px;
-  position: relative;
-  z-index: 2;
+  min-width: 360px;
+  max-width: min-content;
 }
 
 @media screen and (min-width: 740px) {
+  .modal-wrapper {
+    justify-content: center;
+  }
   .add_edit {
     max-width: 800px;
   }

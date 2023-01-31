@@ -39,8 +39,8 @@
       </div>
     </template>
   </Table>
-  <AddEditData v-if="choosedValue" category="Partido" :isEditing="isEditing" @submitForm="submitForm( isEditing ? 'updateMatch' : 'addMatch', choosedValue, setState(undefined))" @closeForm="setState(undefined)">
-    <div>
+  <AddEditData v-if="choosedValue" category="Partido" :isEditing="isEditing" @submitForm="submit" @closeForm="setState(undefined)">
+    <div class='row'>
       <div class='team'>
         <h5>Local</h5>
         <CustomInput v-model:value="choosedValue.homeTeam.clubName" placeholder='Club' :required='true'/>
@@ -56,16 +56,14 @@
         <CustomSelectInput v-model:value="choosedValue.guestTeam.wonSets" :options="['0','1','2','3']" placeholder='Sets ganados' />
       </div>
     </div>
-    <div class='details'>
-      <div class='row'>
-        <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }"/>
-        <CustomInput v-model:value="choosedValue.location" placeholder='Ubicación' :required='true'/>
-        <CustomInput v-model:value="choosedValue.league" placeholder='League'/>
-      </div>
-      <div class='row toggle'>
-        <ToggleSlider  :checked="choosedValue.friendly" @toggled="choosedValue.friendly = !choosedValue.friendly"/>
-        <label class='label__inline'>Amistoso</label>
-      </div>
+    <div class='row details'>
+      <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }"/>
+      <CustomInput v-model:value="choosedValue.location" placeholder='Ubicación' :required='true'/>
+      <CustomInput v-model:value="choosedValue.league" placeholder='League'/>
+    </div>
+    <div class='row toggle'>
+      <ToggleSlider  :checked="choosedValue.friendly" @toggled="choosedValue.friendly = !choosedValue.friendly"/>
+      <label class='label__inline'>Amistoso</label>
     </div>
   </AddEditData>
 </template>
@@ -78,15 +76,15 @@ import CustomInput from '@/components/CustomInput.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import { getMonthNameByNumber } from '@/services/util/time.js'
-import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
-import AddEditData from '../AddEditData.vue'
+import { submitForm, removeElement } from '@/services/util/universal.js'
+import AddEditData from '@/components/AddEditData.vue'
 import Table from '@/components/table/Table.vue'
+
+const store = useStore()
 
 const isEditing = ref(false)
 const choosedValue = ref(undefined)
 const showBy = ref('Todo')
-
-const store = useStore()
 
 onMounted( () => { store.dispatch('fetchMatches')})
 
@@ -97,6 +95,9 @@ const matches = computed( () => {
   return store.getters.getMatches
 })
 
+async function submit(){
+  if (await submitForm(isEditing.value ? 'updateMatch' : 'addMatch', choosedValue.value)) setState(undefined)
+}
 function setState(val, isEdit = false) {
   !val
     ? choosedValue.value = undefined
@@ -107,6 +108,13 @@ function setState(val, isEdit = false) {
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
+.row {
+  display: flex;
+  gap: 14px;
+  &.details {
+    flex-direction: column;
+  }
+}
 .table-row {
   // max 400px - 110 + 2fr
     grid-template-columns: 50px repeat(2, minmax(60px, 1fr)) minmax(40px, 1fr) minmax(80px, .5fr) minmax(40px, .5fr) 40px;
@@ -141,26 +149,19 @@ function setState(val, isEdit = false) {
 
 .team {
   display: inline-block;
-  width: min-content;
+  width: max-content;
   vertical-align: middle;
   text-align: center;
-  margin-right: 10px;
-  &:last-of-type{
-    margin-right: 0;
-  }
   input, select {
     margin-bottom: .5rem;
   }
-}
-.details {
-  margin: 20px auto;
 }
 .toggle {
   display: flex;
   align-items: center;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 740px) {
   .table-row {
     // max 400px - 60 + 120 + 40 + 80 + 40 + 50
     grid-template-columns: 60px repeat(2, minmax(60px, 1fr)) minmax(40px, 1fr) minmax(80px, .5fr) minmax(40px, .5fr) 50px;
