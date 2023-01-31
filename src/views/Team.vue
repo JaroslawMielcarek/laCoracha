@@ -1,20 +1,25 @@
 <template>
-  <div class="team">
+  <section class="team">
     <h2>{{ name }}</h2>
-    <p v-if="team.description" class='extra__message'>{{ team.description }}</p>
     <p v-if="team.players"><b>{{team.players.length}}</b>/16 Jugador{{team.gender === 'Female' ? 'as' : 'es'}}</p>
-    <section id = "playersList" :class="{ expanded: this.expanded }">
-      <img class='gameField' src = "@/assets/images/field.svg" alt="field"/>
-      <template v-for="(players, position) in scoredPlayers.mainPlayers" :key="position">
-        <PlayerCard v-for="(player, index) in players" :pos=" !index ? position : `${position}-${index}`" :value="player.player" :key="player" @expandHeight="expandHeight" />
-      </template>
-      <div id = "reserves">
-        <template v-for="(players, position) in scoredPlayers.reserves" :key="position">
-          <PlayerCard class='reserve' v-for="(player, index) in players" :pos=" !index ? position : `${position}-${index}`" :value="player.player" :key="player" @expandHeight="expandHeight"/>
+
+    <p v-if="team.description" class='extra-message'>{{ team.description }}</p>
+
+    <div class="row">
+      <h5>Line up</h5>
+      <div id = "playersList" :class="{ expanded: this.expanded }">
+        <img class='gameField' src = "@/assets/images/field.svg" alt="field"/>
+        <template v-for="(players, position) in scoredPlayers.mainPlayers" :key="position">
+          <PlayerCard v-for="(player, index) in players" :pos=" !index ? position : `${position}-${index}`" :value="player.player" :key="player" @expandHeight="expandHeight" />
         </template>
+        <div id = "reserves">
+          <template v-for="(players, position) in scoredPlayers.reserves" :key="position">
+            <PlayerCard class='reserve' v-for="(player, index) in players" :pos=" !index ? position : `${position}-${index}`" :value="player.player" :key="player" @expandHeight="expandHeight"/>
+          </template>
+        </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -112,25 +117,29 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/colors.scss';
+.row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 #playersList{
-    display: grid;
-    grid-template-columns: repeat(10, 38px); // max 380
-    grid-template-rows: 40px repeat(3, 48px) 108px repeat(2, 48px) 24px 96px; //max 400
-    //background-color: beige;
-    max-width: 380px;
-    //max-height: 460px;
-    margin: 0 auto;
-    position: relative;
-    grid-template-areas:
-                          " . . . . . . . . . ."
-                          " . . . . libero libero . . . ."
-                          " . colocador colocador . libero libero . exterior exterior ."
-                          " . colocador colocador . . . . exterior exterior ."
-                        " . . . . . . . . . ."
-                          " . exterior-1 exterior-1 . central central . opuesto opuesto ."
-                          " . exterior-1 exterior-1 . central central . opuesto opuesto ."
-                        " . . . . . . . . . ."
-                          " reserve reserve reserve reserve reserve reserve reserve reserve reserve reserve";
+  display: grid;
+  grid-template-columns: repeat(10, 38px); // max 380
+  grid-template-rows: 40px repeat(3, 48px) 108px repeat(2, 48px) 24px 96px; //max 400
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+  grid-template-areas:
+    " .     .     .           .     .     .       .     .     .       . "
+    " .     .     .           .   libero libero   .     .     .       . "
+    " . colocador colocador   .   libero libero   . exterior exterior . "
+    " . colocador colocador   .     .     .       . exterior exterior . "
+    " .     .     .           .     .     .       .     .     .       . "
+    " . exterior-1 exterior-1 .   central central . opuesto opuesto   . "
+    " . exterior-1 exterior-1 .   central central . opuesto opuesto   . "
+    " .     .     .           .     .     .       .     .     .       . "
+    " reserve reserve reserve reserve reserve reserve reserve reserve reserve reserve";
 
   &.expanded {
     min-height: 600px;
@@ -140,8 +149,6 @@ export default {
   position: absolute;
   width: 100%;
   height: auto;
-    // grid-column: 1 / -1;
-    // grid-row: 1 /-1;
 }
 
 .player[data-position='Colocador']{
