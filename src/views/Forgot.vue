@@ -1,33 +1,35 @@
 <template>
-  <form class='wrapper' @submit.prevent="handleSubmit">
-    <h3 class='title'>Recuperar contraseña</h3>
-    <div class='row'>
-      <label>Email:</label>
-      <CustomInput
-        type='email'
-        pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
-        hint="example@gmail.com"
-        v-model:value='email'
-        placeholder='example@hotmail.com'
-        :required='true'
-        key='email'/>
-    </div>
-    <div class='row'>
-      <label>Repetir email:</label>
-      <CustomInput
-        type='email'
-        pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
-        hint="example@gmail.com"
-        v-model:value='email_confirm'
-        placeholder='example@hotmail.com'
-        :required='true'
-        key='email_confirm'/>
-    </div>
-    <template v-if="errorMessage.length">
-      <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-    </template>
-    <button type='submit' class='btn white full-width'>Enviar</button>
-  </form>
+  <div class='wrapper'>
+    <form @submit.prevent="handleSubmit">
+      <h3 class='title'>Recuperar contraseña</h3>
+      <div class='row'>
+        <label>Email:</label>
+        <CustomInput
+          type='email'
+          pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+          hint="example@gmail.com"
+          v-model:value='email'
+          placeholder='example@hotmail.com'
+          :required='true'
+          key='email'/>
+      </div>
+      <div class='row'>
+        <label>Repetir email:</label>
+        <CustomInput
+          type='email'
+          pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+          hint="example@gmail.com"
+          v-model:value='email_confirm'
+          placeholder='example@hotmail.com'
+          :required='true'
+          key='email_confirm'/>
+      </div>
+      <template v-if="errorMessage.length">
+        <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
+      </template>
+      <button type='submit' class='btn white full-width'>Enviar</button>
+    </form>
+  </div>
 </template>
 
 <script>

@@ -20,17 +20,17 @@
             @click=" toggleIsOpen() " >
             <img :src="getAvatar" alt = "Player avatar" />
         </div>
-        <router-link to='/' v-if="isLogged"><button class='btn white' @click=" logout()"> logout </button></router-link>
-        <router-link to='/login' v-else><button class= 'btn color' @click=" login()"> login </button></router-link>
+        <router-link to='/' v-if="isLogged"><button class='btn white' @click=" logout"> logout </button></router-link>
+        <router-link to='/login' v-else><button class= 'btn color' @click=" login"> login </button></router-link>
     </div>
     <div :class="['user__banner', {visible: isVisible}]">
-      <router-link to='/settings' v-if="isLogged" class='tab'>
+      <router-link to='/settings' v-if="isLogged" class='tab' @click='isToggled = false'>
           <CustomToolTip text='Revisa tu perfil' direction='right' :delay=1500 />
           <div class='avatar'>
               <img src='@/assets/images/edit-profile.svg' alt="profile"/>
           </div>
       </router-link>
-      <router-link to='/practice' v-if="isLogged" class = 'tab'>
+      <router-link to='/practice' v-if="isLogged" class = 'tab'  @click='isToggled = false'>
           <CustomToolTip text='Quedadas' direction='right' :delay=1500 />
           <div class='avatar'>
               <img src='@/assets/images/calendar.svg' alt="calendar"/>
@@ -38,7 +38,7 @@
       </router-link>
     </div>
     <div :class="['moderator__banner', {visible: isVisible}]">
-      <router-link to='/moderator' v-if="isLogged && isModerator" class='tab'>
+      <router-link to='/moderator' v-if="isLogged && isModerator" class='tab'  @click='isToggled = false'>
         <CustomToolTip text='Moderator poder' direction='right' :delay=1500 />
         <div class='avatar'>
             <img src='@/assets/images/settings.svg' alt="settings"/>
@@ -46,13 +46,13 @@
       </router-link>
     </div>
     <div :class="['admin__banner', {visible: isVisible}]">
-      <router-link to='/finances' v-if="isLogged && isAdmin" class="tab" >
+      <router-link to='/finances' v-if="isLogged && isAdmin" class="tab"  @click='isToggled = false'>
           <CustomToolTip text='Condiciones financieras' direction='right' :delay=1500 />
           <div class='avatar'>
               <img src='@/assets/images/dolar.svg' alt="finances"/>
           </div>
       </router-link>
-      <router-link to='/permissions' v-if="isLogged && isAdmin" class='tab'>
+      <router-link to='/permissions' v-if="isLogged && isAdmin" class='tab'  @click='isToggled = false'>
           <CustomToolTip text='Permisos otorgados a los usuarios' direction='right' :delay=1500 />
           <div class='avatar'>
               <img src='@/assets/images/permission.svg' alt="permissions"/>
@@ -97,9 +97,13 @@ function logout () {
   router.push({ path: '/' })
   store.dispatch('logout')
   toggleIsOpen()
+  isToggled.value = false
 }
 
-function login () { toggleIsOpen() }
+function login () { 
+  toggleIsOpen() 
+  isToggled.value = false
+}
 
 // Visibility of the tab menu
 onMounted( () => {

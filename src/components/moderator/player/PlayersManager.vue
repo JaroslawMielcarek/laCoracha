@@ -1,9 +1,8 @@
 <template>
-  <div class='container full-width'>
-    <h3>Jugadores</h3>
-    <p class='extra__message'>Administrar jugadores del club</p>
-    <div class='grid'>
-      <div class='list-head'>
+  <p class='extra-message'>Administrar jugadores del club</p>
+  <Table category="jugadores">
+    <template v-slot:head>
+      <div class='table-row'>
         <p class='column'></p>
         <p class='column sort' @click="sortBy = 'memberID'">ID</p>
         <p class='column sort' @click="sortBy = 'name'">Nick</p>
@@ -12,51 +11,57 @@
         <p class='column sort' @click="sortBy = 'team'">Equipo</p>
         <p class='column'></p>
       </div>
-      <div class='list large'>
-        <div class='list-row' v-if="!players.length">
-          <p class="no-data">No hay jugadores para mostrar</p>
+    </template>
+    <template v-slot:body>
+      <div class='table-row' v-for="player in players" :key="player">
+        <div class='action column'><button class='btn color' @click="setState(player, true)">Editar</button></div>
+        <p class='column id'>{{ player.memberID || 'no data' }}</p>
+        <p class='column name'>{{ player.nick ? player.nick.value : '' }}</p>
+        <p class='column number'>{{ player.number? player.number.value : '' }}</p>
+        <p class='column gender'>{{ player.isFemale ? 'Mujer' : 'Hombre' }}</p>
+        <p class='column team'>{{ player.team }}</p>
+        <div class='action column'><button class='btn danger' @click="removeElement('Player', player)">x</button></div>
+      </div>
+    </template>
+
+  </Table>
+  <AddEditData v-if="choosedValue" category="Jugador" :isEditing="isEditing" @submitForm="submit" @closeForm="setState(undefined)">
+    <div class='grid-row'>
+      <div>
+        <h5>Lo esencial</h5>
+        <div class='row'>
+          <p class='team'>ID: <span class='value'>{{ choosedValue.memberID }}</span></p>
         </div>
-        <div class='list-row' v-for="player in players" :key="player">
-          <div class='action column'><button class='btn color' @click="setState(player, true)">Editar</button></div>
-          <p class='column id'>{{ player.memberID || 'no data' }}</p>
-          <p class='column name'>{{ player.nick ? player.nick.value : '' }}</p>
-          <p class='column number'>{{ player.number? player.number.value : '' }}</p>
-          <p class='column gender'>{{ player.isFemale ? 'Mujer' : 'Hombre' }}</p>
-          <p class='column team'>{{ player.team }}</p>
-          <div class='action column'><button class='btn danger' @click="removeElement('Player', player)">x</button></div>
+        <div class='row'>
+          <p>Nick: </p>
+          <CustomInput v-model:value="choosedValue.nick.value" placeholder='Nick' />
         </div>
+        <div class='row'>
+          <p>Number: </p>
+          <CustomInput v-model:value="choosedValue.number.value" pattern='^[0-9]*$' hint='Solo números permitidos' placeholder='Numero'/>
+        </div>
+        <div class='row toggle'>
+          <label class='mujer label__inline'>Mujer:</label>
+          <ToggleSlider  :checked="choosedValue.isFemale" @toggled="choosedValue.isFemale = !choosedValue.isFemale"/>
+        </div>
+        <p class='row team'>Equipo: <span class='value'>{{ choosedValue.team ? choosedValue.team : "No pertenece a ninguno" }}</span></p>
+      </div>
+      <div>
+        <PlayerPractices v-if="choosedValue.practices" v-model:value="choosedValue.practices" />
       </div>
     </div>
-    <AddEditData v-if="choosedValue" category="Jugador" :isEditing="isEditing" @submitForm="submitForm( isEditing ? 'updatePractice' : 'addPractice', setInTeamPerformancePercents(choosedValue), setState(undefined))" @closeForm="setState(undefined)">
-      <div class='row grid-row'>
-        <div class='column'>
-          <h5>Lo esencial</h5>
-          <div class='row'>
-            <CustomInput v-model:value="choosedValue.memberID" placeholder='ID' :required='true' @update:value="checkIfExist"/>
-            <CustomInput v-model:value="choosedValue.nick.value" placeholder='Nick' />
-            <CustomInput v-model:value="choosedValue.number.value" pattern='^[0-9]*$' hint='Solo números permitidos' placeholder='Numero'/>
-          </div>
-          <div class='row toggle'>
-            <label class='mujer label__inline'>Mujer:</label>
-            <ToggleSlider  :checked="choosedValue.isFemale" @toggled="choosedValue.isFemale = !choosedValue.isFemale"/>
-          </div>
-          <p class='team'>Equipo: <span class='value'>{{ choosedValue.team ? choosedValue.team : "No pertenece a ninguno" }}</span></p>
-        </div>
-        <div class='column'>
-          <PlayerPractices v-if="choosedValue.practices" v-model:value="choosedValue.practices" />
-        </div>
-      </div>
+    <div class='grid-row'>
       <ImagePrevWithRemoveVue v-if="choosedValue.photo && choosedValue.photo.value" :image="file" @removeLogo="choosedValue.photo.value=undefined"/>
       <CustomUploadFile v-else text="Photo" :file="file" :sizeLimit="200000" @fileChoosed="(val) => choosedValue.photo.value = val"/>
-      <PlayerPerformance v-if="choosedValue.team" v-model:value="choosedValue.inTeamPerformance" />
-    </AddEditData>
-  </div>
+    </div>
+    <PlayerPerformance v-if="choosedValue.team" v-model:value="choosedValue.inTeamPerformance" />
+  </AddEditData>
 </template>
 
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
-import AddEditData from '../AddEditData.vue'
+import AddEditData from '@/components/AddEditData.vue'
 import CustomInput from '@/components/CustomInput.vue'
 import PlayerPerformance from '@/components/moderator/player/PlayerPerformance.vue'
 import PlayerPractices from '@/components/moderator/player/PlayerPractices.vue'
@@ -64,7 +69,8 @@ import CustomUploadFile from '@/components/CustomUploadFile.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import ImagePrevWithRemoveVue from '@/components/ImagePrevWithRemove.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
-import { setNotification, submitForm, removeElement } from '@/services/util/universal.js'
+import { submitForm, removeElement } from '@/services/util/universal.js'
+import Table from '@/components/table/Table.vue'
 
 const isEditing = ref(false)
 const choosedValue = ref(undefined)
@@ -82,6 +88,9 @@ const players = computed( () => {
   return list
 })
 
+async function submit(){
+  if (await submitForm(isEditing.value ? 'updatePlayer' : 'addPlayer', setInTeamPerformancePercents(choosedValue.value))) setState(undefined)
+}
 function setState(val, isEdit = false) {
   !val
     ? choosedValue.value = undefined
@@ -92,25 +101,30 @@ function setInTeamPerformancePercents (player) {
   // We take old player object and we update current player object
   // prevPercent with old percent
   for (const [name, prop] of Object.entries(player.inTeamPerformance)) {
-    prop.prevPercent = props.value.inTeamPerformance[name].percent
+    prop.prevPercent = player.inTeamPerformance[name].percent
   }
   return player
-}
-function checkIfExist (value) {
-  const existingValues = store.getters.getPlayersIDs
-  const result = existingValues.find(t => t.toString().toLowerCase() === value.toString().toLowerCase())
-  if (result) {
-    alert('El ID ya existe. Por favor, edite en su lugar')
-    choosedValue.value.id = ''
-  }
 }
 
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.list-head,
-.list-row {
+
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 1ch;
+  margin-bottom: 0.4rem;
+  input {
+    max-width: 16ch;
+  }
+}
+input {
+  max-width: 16ch;
+}
+.table-row {
   // max 375px 220 = 150 / 2 = 75
   grid-template-columns: 60px 30px minmax(60px, 1fr) 30px 60px minmax(80px, 1fr) 50px;
 
@@ -130,18 +144,14 @@ function checkIfExist (value) {
 .team {
   .value {
     color: $blueDark;
-  }
-}
-.column {
-  display: inline-block;
-  margin-right: 20px;
-  &:last-of-type{
-    margin-right: 0;
+    margin-left: 1ch;
   }
 }
 .grid-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 .mujer {
   margin-right: 1ch;
@@ -149,5 +159,16 @@ function checkIfExist (value) {
 .toggle {
   display: flex;
   align-items: center;
+}
+
+
+@media screen and (min-width: 740px) {
+  .row {
+    max-width: 200px;
+  }
+  .grid-row {
+    grid-template-columns: auto auto;
+  }
+
 }
 </style>

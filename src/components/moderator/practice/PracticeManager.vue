@@ -1,13 +1,9 @@
 <template>
-  <div class='container full-width'>
-    <h3>Quedadas</h3>
-    <p class='extra__message'>Administrar el calendario de quedadas</p>
-    <div>
-      <span>Mostrar: </span>
-      <CustomSelectInput v-model:value="showBy" :options="['Todo', 'Semana', 'Mes', 'Temporada']" placeholder="Eligue periodo" />
-    </div>
-    <div class='grid row'>
-      <div class='list-head'>
+  <p class='extra-message'>Administrar el calendario de quedadas</p>
+  <button class='addNew btn white' @click="choosedValue = store.getters.getDefaultPractice">Agregar Quedada</button>
+  <Table category="quedadas" v-model:showBy="showBy" :filterOptions="['Todo', 'Semana', 'Mes', 'Temporada']">
+    <template v-slot:head>
+      <div class='table-row'>
         <p class='column'></p>
         <p class='column'>Día de la semana</p>
         <p class='column'>Fecha</p>
@@ -15,48 +11,47 @@
         <p class='column'>Jugadores</p>
         <p class='column'></p>
       </div>
-      <div class='list'>
-        <div class='list-row' v-if="!practices.length">
-          <p class="no-data">No hay quedadas para mostrar</p>
-        </div>
-        <div class='list-row' v-for="practice in practices" :key="practice">
-          <p class='column'><button class='btn color' @click="setState(practice, true, true)">Editar</button></p>
-          <p class='column'>{{ getDayOfWeek(practice.dateTime.date) }}</p>
-          <p class='column'>{{ isoDateToDayMonthYear(practice.dateTime.date) }}</p>
-          <p class='column'>{{ practice.dateTime.time }}</p>
-          <p :class="['column',{ overLimit: practice.playersSubscribed > practice.playersLimit }]"><b>{{ practice.playersSubscribed }}</b>/{{ practice.playersLimit }}</p>
-          <p class='column'><button class='btn danger' @click="removeElement('Practice', practice)">x</button></p>
-        </div>
+    </template>
+    <template v-slot:body>
+      <div class='table-row' v-for="practice in practices" :key="practice">
+        <p class='column'><button class='btn color' @click="setState(practice, true, true)">Editar</button></p>
+        <p class='column'>{{ getDayOfWeek(practice.dateTime.date) }}</p>
+        <p class='column'>{{ isoDateToDayMonthYear(practice.dateTime.date) }}</p>
+        <p class='column'>{{ practice.dateTime.time }}</p>
+        <p :class="['column',{ overLimit: practice.playersSubscribed > practice.playersLimit }]"><b>{{ practice.playersSubscribed }}</b>/{{ practice.playersLimit }}</p>
+        <p class='column'><button class='btn danger' @click="removeElement('Practice', practice)">x</button></p>
       </div>
+    </template>
+  </Table>
+  <AddEditData v-if="choosedValue" category="Quedada" :isEditing="isEditing" @submitForm="submitForm( isEditing ? 'updatePractice' : 'addPractice', choosedValue, setState(undefined))" @closeForm="setState(undefined)">
+    <div class='row'>
+      <span>Fecha y Hora:</span>
+      <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
     </div>
-    <button v-if="!choosedValue" class='btn white' @click="choosedValue = JSON.parse(JSON.stringify(store.getters.getDefaultPractice))">Agregar Quedada</button>
-    <AddEditData v-else category="Quedada" :isEditing="isEditing" @submitForm="submitForm( isEditing ? 'updatePractice' : 'addPractice', choosedValue, setState(undefined))" @closeForm="setState(undefined)">
-      <div class='row'>
-        <span>Fecha y Hora:</span>
-        <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
-        <span>Límite de jugadores:</span>
-        <CustomSelectInput v-model:value="choosedValue.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
-      </div>
-      <PracticePlayersList :playersSubscribed="choosedValue.players" :key="playersList" @addPlayer="addPlayer($event)" @removePlayer="removePlayer($event)"/>
-      <div class='row legend__container'>
-        <p class='extra__message'>Leyenda</p>
-        <span class='legend single'>1 strike</span>
-        <span class='legend doble'>2 strike</span>
-        <span class='legend triple'>3 strike</span>
-      </div>
-    </AddEditData>
-  </div>
+    <div class='row'> 
+      <span>Límite de jugadores:</span>
+      <CustomSelectInput class='short' v-model:value="choosedValue.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
+    </div>
+    <PracticePlayersList :playersSubscribed="choosedValue.players" :key="playersList" @addPlayer="addPlayer($event)" @removePlayer="removePlayer($event)"/>
+    <div class='row legend__container'>
+      <p class='extra__message'>Leyenda</p>
+      <span class='legend single'>1 strike</span>
+      <span class='legend doble'>2 strike</span>
+      <span class='legend triple'>3 strike</span>
+    </div>
+  </AddEditData>
 </template>
 
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
-import AddEditData from '../AddEditData.vue'
+import AddEditData from '@/components/AddEditData.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import CustomDateTimeInput from '@/components/CustomDateTimeInput.vue'
 import PracticePlayersList from '@/components/moderator/practice/PracticePlayersList.vue'
 import { isoDateToDayMonthYear, getDayOfWeek } from '@/services/util/time.js'
-import { setNotification, submitForm, removeElement} from '@/services/util/universal.js'
+import { submitForm, removeElement} from '@/services/util/universal.js'
+import Table from '@/components/table/Table.vue'
 
 onMounted( () => { store.dispatch('fetchPractices') })
 
@@ -95,8 +90,10 @@ function removePlayer (player) { choosedValue.value.players = choosedValue.value
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.list-head,
-.list-row {
+.short {
+  max-width: 6ch;
+}
+.table-row {
   grid-template-columns: 60px repeat(3, 1fr) 60px 50px;
 }
 .legend__container {

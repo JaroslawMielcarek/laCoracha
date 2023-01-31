@@ -2,7 +2,7 @@
   <div :class="{ match: true, friendly: friendly, past: isFinished }">
     <div class='team home-team'>
       <img class='club__logo' :src=" getClubLogo('home') " :alt=" 'home team ' + getClubName('home') " />
-      <h3 class='club__name'>{{ getClubName('home') }}</h3>
+      <h4 class='club__name'>{{ getClubName('home') }}</h4>
       <p class='team__name'>{{ getTeamName('home') }}</p>
       <p class='sets__result' v-if="isFinished">{{ getSetsResult('home') }}</p>
     </div>
@@ -16,7 +16,7 @@
     </div>
     <div class='team guest-team'>
       <img class='club__logo' :src=" getClubLogo('guest') " :alt=" 'guest team ' + getClubName('guest') " />
-      <h3 class='club__name'>{{ getClubName('guest') }}</h3>
+      <h4 class='club__name'>{{ getClubName('guest') }}</h4>
       <p class='team__name'>{{ getTeamName('guest') }}</p>
       <p class='sets__result' v-if="isFinished">{{ getSetsResult('guest') }}</p>
     </div>
@@ -80,90 +80,47 @@ function getSetsResult (location) {
 @import '@/colors.scss';
 .match {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 5vh;
-  padding-bottom: 3rem;
-  padding-left: 2vw;
-  padding-right: 2vw;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 16px;
   position: relative;
-  &:last-of-type {
-    margin-bottom: 0;
-  }
+  z-index: 1;
+
   &::after{
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    top: 3.5em;
+    top: 72px; // 32px mid of cirle then 8px + 32px padding
     bottom: 0;
-    z-index: -2;
+    z-index: -1;
     background: $futureMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($futureMatch-primary, 1) 0%,
-      rgba($futureMatch-secondary, 1) 100%
-    );
+    background: -moz-linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
+    background: -webkit-linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
+    background: linear-gradient( 180deg, $futureMatch-primary 0%, $futureMatch-secondary 100% );
     //Correct this microsoft colors- are wrong
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#4c00ed",endColorstr="#7d36ff",GradientType=1);
   }
 
   &.friendly::after{
     background: $pastMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($friendlyMatch-primary, 1) 0%,
-      rgba($friendlyMatch-secondary, 1) 100%
-    );
+    background: -moz-linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
+    background: -webkit-linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
+    background: linear-gradient( 180deg, $friendlyMatch-primary 0%, $friendlyMatch-secondary 100% );
   }
-  &.past::after {
-    background: $pastMatch-primary;
-    background: -moz-linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
-    background: -webkit-linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
-    background: linear-gradient(
-      180deg,
-      rgba($pastMatch-primary, 1) 0%,
-      rgba($pastMatch-secondary, 1) 100%
-    );
+  &.past {
+    filter: grayscale(.6);
   }
 }
 .team,
 .match-info {
   position: relative;
-  z-index: -1;
-}
-.team {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+}
+.team {
   min-width: 110px;
   user-select: none;
   filter: drop-shadow(0 0 20px rgba($greyDark, 0.1));
@@ -178,89 +135,83 @@ function getSetsResult (location) {
   .club__name,
   .team__name,
   .sets__result {
-    color: $white;
+    color: $text--light;
   }
   .club__name {
     text-transform: capitalize;
-    font-size: 1.1em;
+    // font-size: 1.1rem;
     margin-top: 0;
     margin-bottom: .025em;
     max-width: 12ch;
-    text-align: center;
   }
   .team__name {
-    font-size: .8em;
-    margin: 0 auto;
     text-transform: uppercase;
     font-weight: 200;
   }
   .sets__result {
-    font-size: 2.2em;
+    font-size: 1.75rem;
     font-weight: 300;
-    margin: .75em 0 0 0;
+    margin-top: .25em;
   }
 }
 
 .match-info{
   font-family: 'Lato', sans-serif;
   margin: 0 5vw;
-  text-align: center;
   .league{
-    min-height: 1em;
+    min-height: 1.4rem;
   }
   .type{
-    color: $greyLight;
+    color: $text--dark-secondary;
   }
   .versus,
   .date,
   .location,
   .hour,
   .friendly {
-    color: #fff;
-    margin-bottom: .5em
+    color: $text--light;
   }
   .versus{
     font-size: 3rem;
     line-height: 3rem;
-    text-shadow: 0 0 2px #000;
+    text-shadow: 0 0 2px $text--dark;
   }
   .location{
     font-weight: 200;
   }
 }
 
-@media only screen and (min-device-width: 600px){
-  .match{
-    justify-content: center;
-    .matchInfo{
-        margin: 0 10vw;
+@media only screen and (min-width: 1070px){
+  .match::after {
+    top: 88px; //mid of circle + 8px + 32px padding
+  }
+
+  .match-info {
+    margin-top: 12px;
+    .versus {
+      font-size: 3.4rem;
     }
   }
   .team{
-    .team__logo{
+    .club__logo{
         width: 92px;
         height: 92px;
         clip-path: circle(46px at center);
     }
   }
 }
-@media only screen and (min-device-width: 992px){
-  .match{
-      margin-bottom: 10vh;
+@media only screen and (min-width: 1400px){
+  .match::after {
+    top: 104px; //mid of circle + 32px
+  }
+  .match-info {
+    margin-top: 32px;
   }
   .team{
-    .team__logo{
+    .club__logo{
         width: 128px;
         height: 128px;
         clip-path: circle(64px at center);
-    }
-    .team__type{
-      font-weight: 100;
-    }
-  }
-  .matchInfo{
-    .location{
-        font-weight: 100;
     }
   }
 }

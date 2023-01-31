@@ -36,7 +36,7 @@ function setRoles (role) {
 
 function save () {
   // if no permision choosed or choosed is equal to already top then return
-  if (!selectedPermision.value || topPermision() === selectedPermision.value) return isEditing = false
+  if (!selectedPermision.value || topPermision() === selectedPermision.value) return isEditing.value = false
   emit('updateUserPermision',{ ...props.user, roles: setRoles(selectedPermision.value) })
 }
 </script>

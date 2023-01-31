@@ -2,28 +2,26 @@
   <div class='sectionHeader'>
     <h1 class='header'>Patrocinadores</h1>
   </div>
-  <div class='sponsor__main row' v-if="sponsors.main.length">
+  <div class='sponsorMain' v-if="sponsors.main.length">
     <template v-for="sponsor in sponsors.main" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
-        <div class="logo__wrapper" v-if="sponsor.logo">
-          <img :src="getLogo(sponsor)" :alt="sponsor.name"/>
-          <!-- <img :src="`data:${sponsor.logo.contentType};base64,${sponsor.logo.data.toString('base64')}`" :alt="sponsor.name"/> -->
-        </div>
-        <p class="name">{{sponsor.name}}</p>
+        <img v-if="sponsor.logo" :src="getLogo(sponsor)" :alt="sponsor.name"/>
+        <p v-else class="name">{{ sponsor.name }}</p>
       </a>
     </template>
   </div>
-  <div class='sponsor__sub row' v-if="sponsors.side.length">
+  <div class='sponsorSub' v-if="sponsors.side.length">
     <template v-for="sponsor in sponsors.side" :key="sponsor">
       <a class='sponsor'  :href="sponsor.link ? `https://${sponsor.link}` : ''">
-        <div class="logo__wrapper" v-if="sponsor.logo">
-          <img :src="getLogo(sponsor)" :alt="sponsor.name"/>
-        </div>
-        <p class="name">{{sponsor.name}}</p>
+        <img v-if="sponsor.logo" :src="getLogo(sponsor)" :alt="sponsor.name"/>
+        <p v-else class="name">{{ sponsor.name }}</p>
       </a>
     </template>
   </div>
-  <p class='center_text'><button class='btn color' @click="sendToWhatsApp">Habla con nosotros</button> si quieres patrocinar La Coracha</p>
+  <div class='sponsorContact'>
+    <p class='center_text'>Si quieres patrocinar La Coracha</p>
+    <button class='btn color' @click="sendToWhatsApp">Habla con nosotros</button>
+  </div>
 </template>
 
 <script>
@@ -75,110 +73,66 @@ export default {
 <style lang="scss" scoped>
 @import '@/colors.scss';
 
-.center_text{
-    text-align: center;
-    .btn{
-        display: block;
-        margin: 0 auto .5em;
-    }
+.sponsorContact{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 18px;
 }
 
-.sponsor__main,
-.sponsor__sub{
-  display: grid;
+.sponsorMain,
+.sponsorSub{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  grid-gap: .5rem;
+  grid-gap: 32px;
 }
-.sponsor__main{
-  grid-template-columns: minmax(300px, 500px);
-  .sponsor .logo__wrapper{
-    height: 200px;
+.sponsorMain{
+  .sponsor {
+    width: 378px;
+    height: 252px;
   }
 }
-.sponsor__sub{
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 auto;
-  // grid-template-columns: minmax(100px, 200px);
-  .sponsor .logo__wrapper{
-    max-width: 150px;
+.sponsorSub{
+  flex-direction: row;
+  padding-top: 18px;
+  .sponsor {
+    width: 126px;
+    height: 68px;
   }
 }
 .sponsor {
-    position: relative;
-    // background: black;
-    padding: 1rem;
-    .logo__wrapper{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 70px;
-      // overflow: hidden;
-
-      img {
-        grid-area: 1 / 1/ 2 / 2;
-        width: 100%;
-        max-height: 100%;
-        // height: 100%;
-        object-fit: contain;
-        transition: transform .5s, filter 1s ease-in-out;
-        filter: grayscale(100%);
-      }
-    }
-    &::befor{
-      content: '';
-      padding-bottom: 100%;
-      display: block;
-    }
-
-    &:hover {
-      img {
-        filter: grayscale(0);
-        transform: scale(1.1);
-      }
-      .name {
-        opacity: 0;
-      }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    max-height: 100%;
+    max-width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: contain;
+    transition: transform .5s, filter 1s ease-in-out;
+    filter: grayscale(100%);
+  }
+  &:hover {
+    img {
+      filter: grayscale(0);
+      transform: scale(1.1);
     }
     .name {
-      margin: 0;
-      padding: .5rem;
-      text-decoration: none;
-      font-weight: 700;
-      text-align: center;
-      transition: .5s ease;
-      opacity: 1;
+      opacity: 0;
     }
   }
-// .sponsor__main {
-//   border-bottom: 1px solid rgba($blueDark, .2);
-// }
-// .sponsor__main img{
-//   max-width: 50vw;
-//   // height: auto;
-//   // max-width: 50vw;
-// }
-// .sponsor__sub{
-//     flex-direction: column;
-//     margin: 0 10vw 5vh;
-// }
-@media only screen
-and (min-device-width: 600px)
-and (orientation: landscape){
-
-  .sponsor__main,
-  .sponsor__sub{
-    grid-gap: 1rem;
-  }
-  .sponsor__sub{
-    // grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
-    .sponsor .logo__wrapper{
-      max-width: 250px;
-    }
-  }
-  .sponsor .logo__wrapper{
-    height: 100px;
+  .name {
+    margin: 0;
+    padding: .5rem;
+    text-decoration: none;
+    font-weight: 700;
+    text-align: center;
+    transition: .5s ease;
+    opacity: 1;
   }
 }
 </style>

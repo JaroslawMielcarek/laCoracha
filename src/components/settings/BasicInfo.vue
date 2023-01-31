@@ -1,10 +1,10 @@
 <template>
   <div class='group' >
-      <p class='extra__message'> muestra tu tarjeta de jugador en la página web (si aceptas en la sección de privacidad)</p>
+      <p class='extra-message'> muestra tu tarjeta de jugador en la página web (si aceptas en la sección de privacidad)</p>
       <div class='group'>
+        <p class='extra-message'>nick en quedadas</p>
         <div class='row'>
-          <p class='extra__message'>nick en quedadas</p>
-          <label class='label__inline'>Nick<p class='extra__message inline__extra'>*</p>:</label>
+          <label><p class='extra-message inline-extra'>*</p>Nick:</label>
           <CustomInput
             type='text'
             pattern="^(?=.{2,20}$)([A-Za-z]{1,10})[^\S\t\n\r]?[A-Za-z]{0,10}([A-Za-z]+)$"
@@ -15,31 +15,31 @@
         </div>
       </div>
       <div class='row'>
-          <label class='label__inline'>Posicion:</label>
+          <label>Posicion:</label>
           <CustomSelectInput
             v-model:value="position"
             :options="['Exterior', 'Opuesto', 'Central', 'Libero', 'Colocador']"/>
       </div>
       <div class='row'>
-          <label class='label__inline'>Número:</label>
+          <label>Número:</label>
           <CustomNumberInput
-            :min="this.$store.getters.getMinPlayerNumber"
-            :max="this.$store.getters.getMaxPlayerNumber"
+            :min="store.getters.getMinPlayerNumber"
+            :max="store.getters.getMaxPlayerNumber"
             :step= 1
             v-model:value='number'
           />
       </div>
       <div class='row'>
-          <label class='label__inline'>Altura:</label>
+          <label>Altura:</label>
           <CustomNumberInput
-            :min="this.$store.getters.getMinPlayerHeight"
-            :max="this.$store.getters.getMaxPlayerHeight"
+            :min="store.getters.getMinPlayerHeight"
+            :max="store.getters.getMaxPlayerHeight"
             :step= 0.01
             v-model:value='height'
           />
       </div>
       <div class='row'>
-          <label class='label__inline'>Mano dominante:</label>
+          <label>Mano dominante:</label>
           <CustomSelectInput
           v-model:value="dominantHand"
           :options="['Izquierda', 'Derecha', 'Ambas']"/>
@@ -53,37 +53,43 @@ import { computed } from 'vue'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomNumberInput from '@/components/CustomNumberInput.vue'
 import CustomSelectInput from '@/components/CustomSelectInput.vue'
+import { submitForm } from '../../services/util/universal'
 
 const store = useStore()
-const userData = store.getters.getUser
+const userData = computed( () => store.getters.getUser )
     
 const nick = computed({
-      get () { return userData.nick ? userData.nick.value : '' },
+      get () { return userData.value.nick ? userData.value.nick.value : '' },
       set (value) { dispatch('nick', value) }
     })
 const position = computed({
-      get () { return userData.position ? userData.position.value : '' },
+      get () { return userData.value.position ? userData.value.position.value : '' },
       set (value) { dispatch('position', value) }
     })
 const number = computed({
-      get () { return userData.number ? userData.number.value : '' },
+      get () { return userData.value.number ? userData.value.number.value : '' },
       set (value) { dispatch('number', parseInt(value)) }
     })
 const height = computed({
-      get () { return userData.height ? userData.height.value : '' },
+      get () { return userData.value.height ? userData.value.height.value : '' },
       set (value) { dispatch('height', parseFloat(value).toFixed(2)) }
     })
 const dominantHand = computed({
-      get () { return userData.dominantHand ? userData.dominantHand.value : '' },
+      get () { return userData.value.dominantHand ? userData.value.dominantHand.value : '' },
       set (value) { dispatch('dominantHand', value) }
     })
 
-function dispatch (propName, value) { 
-  store.dispatch('updateUserBasicInfo', { _id: userData._id, [propName]: { ...userData[propName], value: value } })
+function dispatch (propName, value) {
+  submitForm('updateUserBasicInfo', { _id: userData.value._id, [propName]: { ...userData.value[propName], value: value } })
 }
 
 </script>
 
 <style lang="scss" scoped>
 
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 1ch;
+}
 </style>

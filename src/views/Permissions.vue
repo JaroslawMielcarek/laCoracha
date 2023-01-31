@@ -1,38 +1,38 @@
 <template>
-  <div class='container'>
+  <section class='container'>
     <h1>Área de permisos</h1>
-    <p class='extra__message'>Aquí están las configuraciones de permisos.</p>
-    <div class='row'>
-      <h5>Permisos de usuario</h5>
-      <div class='list-head'>
-        <p class='column'></p>
-        <p class='column sort' @click="sortBy = 'memberID'">ID</p>
-        <p class='column sort' @click="sortBy = 'name'">Nick</p>
-        <p class='column'>Género</p>
-        <p class='column sort' @click="sortBy = 'team'">Equipo</p>
-        <p class='column sort' @click="sortBy = 'roles'">Roles</p>
-      </div>
-      <div class='list large'>
-        <div class='list-row' v-if="!players.length">
-          <p class="no-data">No hay jugadores para mostrar</p>
+    <p class='extra-message'>Aquí están las configuraciones de permisos.</p>
+    <Table category="jugadores">
+      <template v-slot:head>
+        <div class='table-row'>
+          <p class='column'></p>
+          <p class='column sort' @click="sortBy = 'memberID'">ID</p>
+          <p class='column sort' @click="sortBy = 'name'">Nick</p>
+          <p class='column'>Género</p>
+          <p class='column sort' @click="sortBy = 'team'">Equipo</p>
+          <p class='column sort' @click="sortBy = 'roles'">Roles</p>
         </div>
-        <div class='list-row' v-for="player in players" :key="player">
+      </template>
+      <template v-slot:body>
+        <div class='table-row' v-for="player in players" :key="player">
           <UserPermissions :user="player" @updateUserPermision="updateUserPermision"/>
         </div>
-      </div>
-    </div>
-    <div class='row memberID'>
+      </template>
+    </Table>
+    <div>
       <h5>MemberID disponibilidad</h5>
       <div class='row'>
         <button class='btn color' @click="createNextMemberID(nextAvailableID)">Añadir siguiente disponible memberID: {{nextAvailableID}}</button>
       </div>
-      <p class='extra__message'>Seleccione memberID para eliminar. También eliminará al jugador conectado a esta memberID.</p>
       <div class='row'>
-        <CustomSelectInput v-model:value="memberIDtoDelete" :options="['none',...membersIDsList]" placeholder="memberID to remove" :key="membersIDsList"/>
-        <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Eliminar memberID {{memberIDtoDelete}}</button>
+        <p class='extra-message'>Seleccione memberID para eliminar. También eliminará al jugador conectado a esta memberID.</p>
+        <div class='eliminate'>
+          <CustomSelectInput v-model:value="memberIDtoDelete" :options="['none',...membersIDsList]" placeholder="memberID to remove" :key="membersIDsList"/>
+          <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Eliminar memberID {{memberIDtoDelete}}</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -41,12 +41,14 @@ import CustomSelectInput from '@/components/CustomSelectInput.vue'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
 import { setNotification } from '@/services/util/universal.js'
 import AdminService from '@/services/admin.service.js'
+import Table from '@/components/table/Table.vue'
 
 export default {
   name: 'Permissions',
   components: {
     UserPermissions,
     CustomSelectInput,
+    Table
   },
   data () {
     return {
@@ -179,15 +181,14 @@ export default {
 <style lang="scss">
 @import '@/colors.scss';
 
-.memberID {
-  .row {
-    display: flex;
-    align-items: center;
+.eliminate {
+  display: flex;
+  & button {
+    margin-left: 1ch;
   }
 }
 
-.list-head,
-.list-row {
+.table-row {
   // max 375px 220 = 150 / 2 = 75
   grid-template-columns: 80px 30px minmax(60px, 1fr) 60px 1fr 100px;
 

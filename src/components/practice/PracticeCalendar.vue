@@ -1,50 +1,45 @@
 <template>
-  <div class='container'>
-    <div class='strikes' v-if="checkStrikes">
-      <p>Tienes <b>{{ checkStrikes.qty }}</b>/3 strikes!</p>
-      <p v-if="checkStrikes.lastStrike">Último strike obtenido en <b>{{ isoDateToDayMonthYear(checkStrikes.lastStrike) }}</b></p>
+  <div class='card'>
+    <h3 class='month'>{{ getMonthNameByNumber(new Date()) }}</h3>
+    <div class='day-names'>
+      <div class='name' v-for='name in daysNames' :key="name">{{ name }}</div>
     </div>
-    <div class='card'>
-      <h3 class='month'>{{ getMonthNameByNumber(new Date()) }}</h3>
-      <div class='day__names'>
-        <div class='name' v-for='name in daysNames' :key="name">{{ name }}</div>
-      </div>
-      <div class='calendar'>
-        <div
-          :class="['day',
-            {
-              [day.dayOfWeek]: !index,
-              currentMonth: day.month === new Date().getMonth(),
-              practice: day.practice,
-              participate: checkIfParticipating(day.practice),
-              inQueue: isInQueue(currentUser, day.practice),
-              today: day.isToday
-            }
-          ]"
-          @click="togglePracticeDetails(day)"
-          v-for="(day, index) in days"
-          :key="day">
-          <p class='dayNumber'>{{ day.day }}</p>
-          <span class='practiceTime' v-if="day.practice">{{ day.practice.dateTime.time }}</span>
-          <span class='ocupationPercent' v-if="day.practice" :style="{ top: checkOcupation(day.practice) + '%' } "/>
-        </div>
-      </div>
-      <div class='legend__container'>
-          <p class='legend'>Libre</p>
-          <p class='legend full'>Completa</p>
-          <p class='legend subscribed'>Suscrito</p>
-          <p class='legend inQueue'>En cola</p>
-          <p class='legend current__day'>Hoy</p>
+    <div class='calendar'>
+      <div
+        :class="['day',
+          {
+            [day.dayOfWeek]: !index,
+            currentMonth: day.month === currentMonth,
+            practice: day.practice,
+            participate: checkIfParticipating(day.practice),
+            inQueue: isInQueue(currentUser, day.practice),
+            today: day.isToday,
+            past: day.isPast
+          }
+        ]"
+        @click="togglePracticeDetails(day)"
+        v-for="(day, index) in days"
+        :key="day">
+        <p class='dayNumber'>{{ day.day }}</p>
+        <span class='practiceTime' v-if="day.practice">{{ day.practice.dateTime.time }}</span>
+        <span class='ocupationPercent' v-if="day.practice" :style="{ top: checkOcupation(day.practice) + '%' } "/>
       </div>
     </div>
-    <PracticeCalendarDetails v-if="practiceDetails" :value="practiceDetails" :isParticipating="checkIfParticipating(practiceDetails)" @closeDetails="handleClose()" />
+    <div class='legend-container'>
+        <p class='legend'>Libre</p>
+        <p class='legend full'>Completa</p>
+        <p class='legend subscribed'>Suscrito</p>
+        <p class='legend inQueue'>En cola</p>
+        <p class='legend current-day'>Hoy</p>
+    </div>
   </div>
+  <PracticeCalendarDetails v-if="practiceDetails" :value="practiceDetails" :isParticipating="checkIfParticipating(practiceDetails)" @closeDetails="handleClose()" />
 </template>
 
 <script setup>
 import { useStore } from 'vuex'
-import { ref, watch, onMounted, computed } from 'vue'
-import { getDayOfWeek, getMonthNameByNumber, areEqualDates, isoDateToDayMonthYear } from '@/services/util/time.js'
+import { ref, onMounted, computed } from 'vue'
+import { getDayOfWeek, getMonthNameByNumber, areEqualDates} from '@/services/util/time.js'
 import { isInQueue } from '@/services/util/practice.js'
 import PracticeCalendarDetails from '@/components/practice/PracticeCalendarDetails.vue'
 
@@ -52,16 +47,12 @@ const store = useStore()
 const practiceID = ref(undefined)
 const daysNames = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 const currentUser = store.getters.getUser
-
+const currentMonth = new Date().getMonth()
 onMounted( () => store.dispatch('fetchPractices'))
 
 const practicesAroundToday = computed( () => store.getters.getTwoWeeksAround('practices'))
 const practiceDetails = computed( () => practicesAroundToday.value.find(p => p._id === practiceID.value) )
-const checkStrikes = computed( () => {
-  return (!currentUser || !currentUser.practices)
-    ? false
-    : currentUser.practices.strikes
-})
+
 const days = computed( () => {
   const list = []
   const currDay = new Date(new Date().setHours(0, 0, 0, 0))
@@ -76,7 +67,8 @@ const days = computed( () => {
       dayOfWeek: getDayOfWeek(loop),
       month: new Date(loop).getMonth(),
       practice: practice,
-      isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop)
+      isToday: areEqualDates(new Date().setHours(0, 0, 0, 0), loop),
+      isPast: new Date().setHours(0, 0, 0, 0) > new Date(loop)
     })
     const newDate = loop.setDate(loop.getDate() + 1)
     loop = new Date(newDate)
@@ -94,21 +86,18 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.strikes {
-  b {
-    color: red;
-  }
-}
 .card {
   box-shadow: 0 10px 40px $greySuperLight,  0 2px 4px rgba($blueDark, .4) ;
   border-radius: 4px;
   width: clamp(369px, 369px, 400px);
-  margin: 2rem auto;
+  margin: 0 auto;
   .month {
     margin: 0.2em 0;
+    font-weight: 200;
+    color: rgba($blueDark, .6);
   }
 }
-.day__names,
+.day-names,
 .calendar {
   display: grid;
   grid-template-areas: "Monday Tuesday Wednesday Thursday Friday Saturday Sunday";
@@ -123,7 +112,7 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
   border-bottom: 1px solid rgba($blueDark, .4);
   background-color: rgba($greySuperLight, .1);
 }
-.day__names {
+.day-names {
   padding: 0 4px;
   border-top: 1px solid rgba($blueDark, .4);
   background-color: rgba($greyLight, .1);
@@ -168,6 +157,9 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
   &.today {
     color: red;
     font-weight: 900;
+  }
+  &.past {
+    filter: grayscale(.8);
   }
   &.practice {
     cursor: pointer;
@@ -222,7 +214,7 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
   }
 }
 
-.legend__container{
+.legend-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -256,7 +248,7 @@ function togglePracticeDetails (day) { if (day.practice) practiceID.value = (pra
       background-color: inherit;
       border: 1px solid $blueDark
     }
-    &.current__day::before{
+    &.current-day::before{
       content: '1';
       color: red;
       background-color: inherit;

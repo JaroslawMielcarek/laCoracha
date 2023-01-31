@@ -1,26 +1,24 @@
 <template>
-  <div class="list__container">
-    <div class='sectionHeader'>
-      <h1 class='header'>Calendario</h1>
-    </div>
-    <h4>Partidos de esta <SelectInput :options="['semana', 'mes', 'temporada']" v-model:value="showBy" placeholder="choose"/></h4>
-    <div class='list large' v-if="matches(showBy).length">
-      <Match v-for="match in matches(showBy)"
-        :league="match.league"
-        :dateTime="match.dateTime"
-        :location="match.location"
-        :friendly="match.friendly"
-        :homeTeam="match.homeTeam"
-        :guestTeam="match.guestTeam"
-        :key="match.date"
-      />
-    </div>
-    <div class='list' v-else>
-      <p v-if='isLoading' class='no-data'>Loading...</p>
-      <p v-else-if='fetchError' class='no-data'>{{ fetchError }}</p>
-      <p v-else class='no-data'>Puedes descansar, no hacemos nada en {{showBy === 'mes' ? 'este mes' : 'esta '+ showBy}}.</p>
-    </div>
-    <div class="legend__container">
+  <div class='sectionHeader'>
+    <h1 class='header'>Calendario</h1>
+  </div>
+  <div class='sectionBody'>
+    <Table  category="partido" v-model:showBy="showBy" :filterOptions="['semana', 'mes', 'temporada', 'todo']">
+      <template v-slot:body>
+        <p v-if='isLoading' class='no-data'>Loading...</p>
+        <p v-else-if='fetchError' class='no-data'>{{ fetchError }}</p>
+          <Match v-for="match in matches(showBy)"
+            :league="match.league"
+            :dateTime="match.dateTime"
+            :location="match.location"
+            :friendly="match.friendly"
+            :homeTeam="match.homeTeam"
+            :guestTeam="match.guestTeam"
+            :key="match.date"
+          />
+      </template>
+    </Table>
+    <div class="legendContainer">
       <p class="legend">Futuro</p>
       <p class="legend friendly">Amistoso</p>
       <p class="legend disputed">Disputado</p>
@@ -32,7 +30,7 @@
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
 import Match from './Match.vue'
-import SelectInput from '@/components/CustomSelectInput.vue'
+import Table from '@/components/table/Table.vue'
 
 const store = useStore()
 const showBy = ref('semana')
@@ -53,30 +51,6 @@ onMounted( () => { store.dispatch('fetchMatches') })
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-h4 {
-  display: flex;
-  .select {
-    margin: 0 1ch 0 1ch;
-  }
-}
-.list__container {
-  margin-bottom: 40px;
-}
-.legend__container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
-}
-.list {
-  max-height: 400px;
-  padding: 30px 0 20px;
-  margin-bottom: 10px;
-  -webkit-box-shadow: inset 0px 0px 4px 0px rgba($blueDark,0.2);
-  box-shadow: inset 0px 0px 4px 0px rgba($blueDark,0.2);
-  overflow-y: scroll;
-  background-color: transparent;
-}
 .legend {
   display: flex;
   align-items: center;
@@ -139,6 +113,15 @@ h4 {
       rgba($pastMatch-primary, 1) 0%,
       rgba($pastMatch-secondary, 1) 100%
     );
+  }
+}
+
+@media only screen and (min-width: 740px){
+  .list {
+    max-height: calc(4 * 75px);
+    .large {
+      max-height: calc(5 * 75px);
+    }
   }
 }
 </style>

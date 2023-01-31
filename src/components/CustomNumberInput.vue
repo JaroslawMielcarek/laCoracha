@@ -17,67 +17,53 @@
   <p v-if="error.showHint" class='text_small hint'><b>Hint: </b>{{hint}}</p>
 </template>
 
-<script>
-export default {
-  name: 'CustomInput',
-  emits: ['update:value'],
-  data () {
-    return {
-      error: { message: '', showHint: false }
-    }
-  },
-  props: {
-    placeholder: {
-      type: String,
-      default: '0'
-    },
-    min: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: 99
-    },
-    value: {
-      type: [Number, String],
-      default (props) { return props.min }
-    },
-    step: {
-      type: Number,
-      default: 1
-    },
-    hint: {
-      type: String,
-      default: 'hint'
-    },
-    inputmode: {
-      type: String,
-      default: 'text'
-    }
-  },
-  methods: {
-    validate (val) {
-      const value = parseFloat(val)
-      if (Number.isNaN(value)) return this.$emit('update:value', this.min)
-      if (value < this.min) { this.error = { message: `Necesita ser más grande que ${this.min}`, showHint: false }; return }
-      if (value > this.max) { this.error = { message: `Necesita ser más pequeño que ${this.max}`, showHint: false }; return }
-      this.error = { message: '', showHint: false }
-      this.$emit('update:value', value)
-    }
-  }
+<script setup>
+import { ref } from 'vue'
+
+const emit = defineEmits(['update:value'])
+const props = defineProps({
+  placeholder: { type: String, default: '0' },
+  min: { type: Number, default: 0 },
+    max: { type: Number, default: 99 },
+    value: { type: [Number, String], default (props) { return props.min } },
+    step: { type: Number, default: 1 },
+    hint: { type: String, default: 'hint' },
+    inputmode: { type: String, default: 'text' }
+})
+const error =  ref({ message: '', showHint: false })
+
+function validate (val) {
+  const value = parseFloat(val)
+  if (Number.isNaN(value)) return emit('update:value', props.min)
+  if (value < this.min) { error.value = { message: `Necesita ser más grande que ${props.min}`, showHint: false }; return }
+  if (value > this.max) { error.value = { message: `Necesita ser más pequeño que ${props.max}`, showHint: false }; return }
+  error.value = { message: '', showHint: false }
+  emit('update:value', value)
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.numberInput { display: inline-block; }
+.numberInput { 
+  display: inline-block;
+}
 .value {
   display: inline-flex;
   max-width: 8ch;
   border: none;
   border-radius: 4px;
   text-align: center;
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
 }
 .btn {
   width: 24px;
@@ -102,11 +88,6 @@ export default {
   b {
     font-weight: 200;
   }
-}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  appearance: none;
-  margin: 0;
 }
 
 </style>

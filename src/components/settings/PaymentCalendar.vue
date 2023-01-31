@@ -1,18 +1,20 @@
 <template>
   <div class='yearHeader'>
     <span :class="['prev', 'year', { disabled: currYear <= minYear } ]" @click=" currYear -= 1 ">&lt;</span>
-    <h4 class='year'>{{ currYear }}</h4>
+    <h3 class='year'>{{ currYear }}</h3>
     <span :class="['next', 'year', { disabled: currYear >= maxYear } ]" @click=" currYear += 1 ">&gt;</span>
   </div>
-  <p v-if="!payments.length" class='no-data'>¡No hay historial de pagos en este período!</p>
-  <div v-else class='calendar'>
-    <div class='month' v-for="element in payments" :key="element">
-      <h5 class='name'>{{ getMonthNameByNumber(element.monthYear) }}</h5>
-      <div :class="['payment', {paid: payment.isPaid !== 'no'}]" v-for="payment in element.payments" :key="payment">
-        <p class='type'>{{ payment.type }}:</p>
-        <p class='qty'>{{ payment.qty }}</p>
+  <p v-if="!payments().length" class='no-data'>¡No hay historial de pagos en este período!</p>
+  <div v-else class='payments-calendar'>
+    <template v-for="element in payments()" :key="element">
+      <div class='month' v-if="element.payments.length">
+        <h5 class='name'>{{ getMonthNameByNumber(element.monthYear) }}</h5>
+        <div :class="['payment', {paid: payment.isPaid !== 'no'}]" v-for="payment in element.payments" :key="payment">
+          <p class='type'>{{ payment.type }}:</p>
+          <p class='qty'>{{ payment.qty }}</p>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -29,12 +31,12 @@ const minYear = new Date().getFullYear() - 5
 const userData = store.getters.getUser
 
 function payments() {
-  if (!userData || userData.payments) return []
+  if (!userData || !userData.payments) return []
 
   const list = userData.payments
   return list.filter(p => {
     const paymentYear = new Date(p.monthYear).getFullYear()
-    if (paymentYear === currYear) return p
+    if (paymentYear === currYear.value) return p
   })
 }
 </script>
@@ -45,6 +47,8 @@ function payments() {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  .year { margin: 0; }
+
   .prev,
   .next {
     font-size: 2em;
@@ -59,7 +63,7 @@ function payments() {
 .no-data {
   text-align: center;
 }
-.calendar {
+.payments-calendar {
   display: grid;
   grid-template-columns: repeat(2, 150px);
   grid-column-gap: 4px;
@@ -71,6 +75,7 @@ function payments() {
   border: 1px solid rgba($blueDark, .4);
   border-radius: 4px;
   min-width: 140px;
+  background-color: $white;
   .name {
     text-align: center;
     margin: 0.1em 0 .3em;
@@ -116,7 +121,7 @@ function payments() {
 }
 
 @media (min-width: 600px) {
-.calendar {
+.payments-calendar {
   grid-template-columns: repeat(3, 150px);
 }
 }

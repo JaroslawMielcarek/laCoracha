@@ -1,10 +1,10 @@
 <template>
-  <ul class='privacy__choises'>
+  <ul>
     <template v-for="(property, name) in basicInformationes" :key="name">
       <li v-if="property" class='choise'>
         <ToggleSlider  :checked="property.permisionGranted" @toggled="dispatch(name, !property.permisionGranted)" />
-        <label class='label__inline'>{{ translateToSpanish(name) }}</label>
-        <p class='extra__message inline__extra' v-if="privacyDescriptions[name]">{{ privacyDescriptions[name].extraInfo }}</p>
+        <label class='label-inline'>{{ translateToSpanish(name) }}</label>
+        <p class='extra-message inline-extra' v-if="privacyDescriptions[name]">{{ privacyDescriptions[name].extraInfo }}</p>
       </li>
     </template>
   </ul>
@@ -14,37 +14,33 @@
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
+import { submitForm } from '../../services/util/universal'
 
 const store = useStore()
 
+const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
 const privacyDescriptions = store.getters.getPrivacyDescriptions
-const userData = store.getters.getUser
+const userData = computed( () => store.getters.getUser )
 
 const basicInformationes = computed( () => {
-  if (!userData) return {}
-  const { nick, position, number, height, dominantHand, photo } =userData
+  if (!userData.value) return {}
+  const { nick, position, number, height, dominantHand, photo } = userData.value
   return { nick, position, number, height, dominantHand, photo }
 })
 function dispatch (propName, value) {
-  store.dispatch('updateUserBasicInfo', { _id: userData._id, [propName]: { ...userData[propName], permisionGranted: value } })
+  submitForm('updateUserBasicInfo', { _id: userData.value._id, [propName]: { ...userData.value[propName], permisionGranted: value } })
 }
-function translateToSpanish (name) {
-  const names = { nick: 'nick', position: 'position', number: 'numero', height: 'altura', dominantHand: 'mano dominante', photo: 'photo' }
-  return names[name] || name
-}
+function translateToSpanish (name) { return names[name] || name }
 
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-
 .choise{
   display: flex;
   align-items: center;
   margin-bottom: 0.75em;
-  p { margin-bottom: 0; }
+  gap: 1ch;
 }
-.label__inline {
-  margin-right: 1ch;
-}
+.extra-message { margin-bottom: 0; }
 </style>

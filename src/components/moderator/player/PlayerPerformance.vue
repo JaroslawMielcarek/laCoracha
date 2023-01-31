@@ -1,7 +1,7 @@
 <template>
-  <div class='row'>
+  <div class='player-performance'>
     <h5>El rendimiento</h5>
-    <div class = 'list-head'>
+    <div class = 'list-row'>
       <p class = 'column category'></p>
       <p class = 'column total'>Total</p>
       <p class = 'column'>Good</p>
@@ -9,21 +9,19 @@
       <p class = 'column percent'>%</p>
       <p class = 'column'></p>
     </div>
-    <div class = 'list-body'>
-      <div class='list-row' v-for="(property, name) in gamePerformance" :key="property">
-        <p class = 'column category'>{{ name }}</p>
-        <p class = 'column total'>{{ total(property) }}</p>
-        <PlusMinus class = 'column' v-model:value="property.good"/>
-        <PlusMinus class = 'column' v-model:value="property.bad"/>
-        <p class = 'column percent'>{{ percent(property) }}</p>
-        <i :class="['column', 'change', change(property)]"></i>
-      </div>
+    <div class='list-row' v-for="(property, name) in gamePerformance" :key="property">
+      <p class = 'column category'>{{ name }}</p>
+      <p class = 'column total'>{{ total(property) }}</p>
+      <PlusMinus class = 'column' v-model:value="property.good"/>
+      <PlusMinus class = 'column' v-model:value="property.bad"/>
+      <p class = 'column percent'>{{ percent(property) }}</p>
+      <i :class="['column', 'change', change(property)]"></i>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, defineEmits, defineProps } from 'vue'
+import { computed } from 'vue'
 import PlusMinus from '@/components/PlusMinus.vue'
 
 const emit = defineEmits('update:value')
@@ -49,18 +47,23 @@ function change (obj) {
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.list-head,
 .list-row {
+  display: grid;
   // max 400px  60 + 260 + 80 = 80
-  grid-template-columns: 60px 120px 120px 40px 20px;
+  grid-template-columns: minmax(60px, 2fr) minmax(120px, 6fr) minmax(120px, 6fr) minmax(40px, 2fr) minmax(20px, 1fr);
+  justify-items: center;
+  align-items: baseline;
   .total {
     display: none;
   }
 }
+.category {
+  justify-self: flex-start;
+}
 .change {
     width: 12px;
     height: 12px;
-    border-color: #000;
+    border-color: $black;
     /* position: absolute; */
     border-bottom: 2px solid;
     border-left: 2px solid;
@@ -84,11 +87,10 @@ function change (obj) {
     }
   }
 
-@media (min-width: 600px) {
-  .list-head,
+@media (min-width: 740px) {
   .list-row {
     // max 400px  100 + 260 + 70 = 80
-    grid-template-columns: 60px 40px 130px 130px 40px 20px;
+  grid-template-columns: minmax(60px, 2fr) minmax(40px, 2fr) minmax(120px, 6fr) minmax(120px, 6fr) minmax(40px, 2fr) minmax(20px, 1fr);
 
     .total {
       display: flex;
