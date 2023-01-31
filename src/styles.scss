@@ -91,7 +91,27 @@ section {
 }
 
 .row {
-  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+
+
+/*** wrapper ***/
+/*** used in Login/Register/Forgot... ***/
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  form {
+    padding: 1.6rem 1rem;
+    border: 1px solid rgba($blueDark, .2);
+    border-radius: 4px;
+    background-color: $white;
+    .title {
+      margin-top: 0;
+    }
+  }
 }
 
 /*** flex-row ***/

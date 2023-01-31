@@ -82,7 +82,25 @@ section {
 }
 
 .row {
-  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+/*** wrapper ***/
+/*** used in Login/Register/Forgot... ***/
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.wrapper form {
+  padding: 1.6rem 1rem;
+  border: 1px solid rgba(76, 0, 237, 0.2);
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+.wrapper form .title {
+  margin-top: 0;
 }
 
 /*** flex-row ***/
