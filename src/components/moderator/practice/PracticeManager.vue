@@ -27,6 +27,8 @@
     <div class='row'>
       <span>Fecha y Hora:</span>
       <CustomDateTimeInput v-model="choosedValue.dateTime" :required="{ date: true, time: true }" @update:modelValue="checkIfExist"/>
+    </div>
+    <div class='row'> 
       <span>Límite de jugadores:</span>
       <CustomSelectInput class='short' v-model:value="choosedValue.playersLimit" :options="['6', '12', '18', '24']" placeholder="Eligue límite" :required="true"/>
     </div>

@@ -31,11 +31,11 @@
       <CustomUploadFile text="LOGO" :file="choosedValue.logo" :sizeLimit="200000" @fileChoosed="(val) => choosedValue.logo = val"/>
     </div>
     <div class='row'>
-      <CustomInput v-if="!isEditing" v-model:value="choosedValue.name" placeholder='Nombre' :required='true' @update:value="checkIfExist"/>
-      <CustomInput v-model:value="choosedValue.league" placeholder='Liga'/>
-      <CustomSelectInput class='component' v-model:value="choosedValue.gender" :options="['Female', 'Male', 'Mix']" placeholder="Eligue Género"  :required='true'/>
-      <textarea class='component' v-model="choosedValue.description" placeholder="Añadir descriptión del equipo"></textarea>
-      <div class='list-players'>
+      <CustomInput class='row' v-if="!isEditing" v-model:value="choosedValue.name" placeholder='Nombre' :required='true' @update:value="checkIfExist"/>
+      <CustomInput class='row' v-model:value="choosedValue.league" placeholder='Liga'/>
+      <CustomSelectInput class='row' v-model:value="choosedValue.gender" :options="['Female', 'Male', 'Mix']" placeholder="Eligue Género"  :required='true'/>
+      <textarea class='row' v-model="choosedValue.description" placeholder="Añadir descriptión del equipo"></textarea>
+      <div class='row list-players'>
         <template v-for="player in players" :key="player">
           <PlayerToggle :player="player" :onList="checkIfInTeam(player)" @togglePlayer="togglePlayer($event)"/>
         </template>

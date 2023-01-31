@@ -63,7 +63,7 @@
     </div>
     <div class='row toggle'>
       <ToggleSlider  :checked="choosedValue.friendly" @toggled="choosedValue.friendly = !choosedValue.friendly"/>
-      <label class='label__inline'>Amistoso</label>
+      <label>Amistoso</label>
     </div>
   </AddEditData>
 </template>

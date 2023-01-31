@@ -1,5 +1,6 @@
 <template>
     <input
+      :class="class"
       :type="type"
       :pattern="pattern"
       :placeholder="placeholder"
@@ -18,12 +19,13 @@ import { ref } from 'vue'
 const emit = defineEmits(['update:value'])
 const props = defineProps({
   placeholder: { type: String, default: 'jajaj' },
-    value: { type: [String, Number], default: '' },
-    type: { type: String, default: 'text' },
-    pattern: String,
-    hint: { type: String, default: 'hint' },
-    inputmode: { type: String, default: 'text' },
-    required: { type: Boolean, default: false },
+  value: { type: [String, Number], default: '' },
+  type: { type: String, default: 'text' },
+  pattern: String,
+  hint: { type: String, default: 'hint' },
+  inputmode: { type: String, default: 'text' },
+  required: { type: Boolean, default: false },
+  class: { type: String, default: '' }
 })
 
 const error = ref({message: '', showHint: false})

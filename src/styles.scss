@@ -6,6 +6,7 @@
   outline: none;
   border: none;
   font-size: 14px;
+  line-height: 1.2em;
   box-sizing: border-box;
   vertical-align: baseline;
 }
@@ -89,6 +90,17 @@ section {
   padding: 12px 18px;
 }
 
+.row {
+  margin-top: 14px;
+}
+
+/*** flex-row ***/
+/*** used in Modals for buttons (save and close) ***/
+.flex-row {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 @media screen and (min-width: 740px) {
   section {
     padding: 0 3%;
@@ -106,10 +118,6 @@ section {
 p {
   line-height: 1.375rem;
   font-size: 0.9375rem;
-
-  // &.btn {
-  //   margin: 0;
-  // }
 }
 
 h1,
@@ -158,10 +166,6 @@ h5 {
   white-space: pre-wrap;
 }
 
-// ELEMENTS
-.component {
-  margin-bottom: .5em;
-}
 
 img {
   -webkit-user-drag: none;
@@ -180,21 +184,15 @@ input,
 select {
   padding: 0.25em 0.5em;
   display: block;
-}
-
-input,
-select {
   background-color: rgba($blueDark, 0.6);
   color: $white;
   margin-bottom: 0;
-  // width: 100%;
+  width: 100%;
   max-width: 20ch;
   border: 1px solid $white;
   border-radius: 4px;
-  // text-transform: capitalize;
 
   &:focus {
-    // border: 1px dashed $silver;
     background-color: rgba($blueDark, 0.2);
     color: $greyDark;
   }
@@ -203,6 +201,7 @@ select {
     color: $greySuperLight;
   }
 }
+
 input[type='file']{
   display: none;
 }
@@ -231,6 +230,7 @@ textarea {
   max-height: 5rem;
 }
 
+/*** Close ***/
 .close {
   grid-area: close;
   position: absolute;
@@ -263,6 +263,8 @@ textarea {
   transform: rotate(-45deg);
 }
 
+
+/*** btn ***/
 .btn {
   padding: 0.4em 0.8em;
   border: 1px solid rgba($blueDark, 0.2);
@@ -344,44 +346,6 @@ textarea {
   }
 }
 
-// .cta {
-//   background-color: violet;
-//   color: $white;
-//   border: none;
-
-//   &:hover {
-//     color: black;
-//   }
-
-//   &:focus,
-//   &:active {
-//     background-color: rgba(violet, 0.4);
-//     color: rgba($black, 0.4);
-//   }
-// }
-
-
-form.wrapper {
-  // max-width: 300px;
-  // max-width: clamp(300px, 450px, 100%);
-  width: 300px;
-  margin: 20vh auto;
-  background-color: $white;
-  border: 1px solid rgba($blueDark, .2);
-  border-radius: 4px;
-  box-shadow: 0 0 100px rgba($blueDark, .1);
-  padding: 1em 2em 2em;
-
-  .row {
-    margin-bottom: 1.25rem;
-  }
-
-  .title {
-    margin-top: 1rem;
-  }
-
-}
-
 .extra-message {
   font-size: .825em;
   display: block;
@@ -391,14 +355,39 @@ form.wrapper {
 
   &.inline-extra {
     display: inline-block;
-    max-width: 200px;
     vertical-align: top;
+    line-height: 1.025em;
   }
 }
 .filter {
   padding: 1rem 0;
 }
 
+
+.header {
+  display: inline;
+  position: relative;
+  overflow-wrap: break-word;
+  text-align: center;
+  max-width: 20ch;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  bottom: 0.1em;
+  height: 2px;
+  width: 60%;
+  margin: 0 auto;
+  background-color: $blueDark;
+}
+
+
+/*** addNew ***/
+/*** used in Moderator sections ***/
 .addNew {
   margin-top: 14px;
 }
@@ -425,63 +414,8 @@ form.wrapper {
   }
 }
 
-.row {
-  // max-width: 50ch;
-  margin-bottom: 20px;
-
-  .position__rank {
-    min-width: 6ch;
-  }
-
-  .radio__label {
-    margin-right: 4ch;
-  }
-
-  &:last-of-type {
-    margin-bottom: 10px;
-  }
-}
-
-// Need to check where is used
-.flex-row {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: baseline;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.layout--color {
-  .header::after {
-    background-color: $white;
-  }
-}
-
-.header {
-  display: inline;
-  position: relative;
-  overflow-wrap: break-word;
-  text-align: center;
-  max-width: 20ch;
-}
-
-.header::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 0;
-  right: 0;
-  bottom: 0.1em;
-  height: 2px;
-  width: 60%;
-  margin: 0 auto;
-  background-color: $blueDark;
-}
+/*** table ***/
+/*** used in Moderator sections ***/
 
 .table-body {
   max-width: 100%;
@@ -508,7 +442,7 @@ form.wrapper {
 }
 
 .table-row {
-  padding: 10px 0;
+  padding: 10px 4px;
   display: grid;
   grid-template-rows: auto;
   grid-row-gap: 0;
@@ -544,17 +478,6 @@ form.wrapper {
   }
 }
 
-// .table-head {
-//   border-bottom: 1px solid rgba($blueDark, 0.2);
-
-//   .sort {
-//     cursor: pointer;
-
-//     &:hover {
-//       background-color: rgba($blueDark, 0.1);
-//     }
-//   }
-// }
 
 .listOptions {
   display: flex;
@@ -584,14 +507,7 @@ form.wrapper {
   .listOptions {
     margin-left: 0;
   }
-
-  p {
-    // line-height: 1.1rem;
-    // font-size: 1rem;
-  }
-
   h1 {
-    // margin-top: 0;
     font-size: 3.052rem;
   }
 
@@ -643,13 +559,6 @@ form.wrapper {
 }
 
 @media (min-width: 1070px) {
-
-  p {
-    // margin-bottom: 1rem;
-    // line-height: 1.2rem;
-    // font-size: 1.1rem;
-  }
-
   h1 {
     // margin-top: 0;
     font-size: 3.552rem;

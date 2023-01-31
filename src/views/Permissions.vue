@@ -19,15 +19,17 @@
         </div>
       </template>
     </Table>
-    <div class='row memberID'>
+    <div>
       <h5>MemberID disponibilidad</h5>
       <div class='row'>
         <button class='btn color' @click="createNextMemberID(nextAvailableID)">Añadir siguiente disponible memberID: {{nextAvailableID}}</button>
       </div>
-      <p class='extra-message'>Seleccione memberID para eliminar. También eliminará al jugador conectado a esta memberID.</p>
       <div class='row'>
-        <CustomSelectInput v-model:value="memberIDtoDelete" :options="['none',...membersIDsList]" placeholder="memberID to remove" :key="membersIDsList"/>
-        <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Eliminar memberID {{memberIDtoDelete}}</button>
+        <p class='extra-message'>Seleccione memberID para eliminar. También eliminará al jugador conectado a esta memberID.</p>
+        <div class='eliminate'>
+          <CustomSelectInput v-model:value="memberIDtoDelete" :options="['none',...membersIDsList]" placeholder="memberID to remove" :key="membersIDsList"/>
+          <button class='btn red' v-if="memberIDtoDelete !== 'none'" @click="removeMemberID(memberIDtoDelete)">Eliminar memberID {{memberIDtoDelete}}</button>
+        </div>
       </div>
     </div>
   </section>
@@ -179,10 +181,10 @@ export default {
 <style lang="scss">
 @import '@/colors.scss';
 
-.memberID {
-  .row {
-    display: flex;
-    align-items: center;
+.eliminate {
+  display: flex;
+  & button {
+    margin-left: 1ch;
   }
 }
 

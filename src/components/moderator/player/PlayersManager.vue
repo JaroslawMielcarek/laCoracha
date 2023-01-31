@@ -44,7 +44,7 @@
           <label class='mujer label__inline'>Mujer:</label>
           <ToggleSlider  :checked="choosedValue.isFemale" @toggled="choosedValue.isFemale = !choosedValue.isFemale"/>
         </div>
-        <p class='team'>Equipo: <span class='value'>{{ choosedValue.team ? choosedValue.team : "No pertenece a ninguno" }}</span></p>
+        <p class='row team'>Equipo: <span class='value'>{{ choosedValue.team ? choosedValue.team : "No pertenece a ninguno" }}</span></p>
       </div>
       <div>
         <PlayerPractices v-if="choosedValue.practices" v-model:value="choosedValue.practices" />
@@ -144,6 +144,7 @@ input {
 .team {
   .value {
     color: $blueDark;
+    margin-left: 1ch;
   }
 }
 .grid-row {
