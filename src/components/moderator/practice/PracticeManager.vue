@@ -1,5 +1,5 @@
 <template>
-  <button class='addNew btn white' @click="choosedValue = store.getters.getDefaultPractice">Agregar Quedada</button>
+  <button class='btn white' @click="choosedValue = store.getters.getDefaultPractice">Agregar Quedada</button>
   <Table category="quedadas" v-model:showBy="showBy" :filterOptions="['Todo', 'Semana', 'Mes', 'Temporada']">
     <template v-slot:head>
       <div class='table-row'>

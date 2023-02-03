@@ -343,7 +343,6 @@ textarea {
 .extra-message {
   font-size: 0.825em;
   display: block;
-  margin-bottom: 0.5em;
   font-style: italic;
   color: rgba(76, 0, 237, 0.6);
 }
@@ -378,12 +377,6 @@ textarea {
   background-color: rgb(76, 0, 237);
 }
 
-/*** addNew ***/
-/*** used in Moderator sections ***/
-.addNew {
-  margin-top: 14px;
-}
-
 .flex-column-container {
   position: relative;
   display: flex;
@@ -405,7 +398,8 @@ textarea {
 
 /*** table ***/
 /*** used in Moderator sections ***/
-.table-body {
+.table-body,
+.no-data {
   max-width: 100%;
   min-height: 3rem;
   max-height: 50vh;
@@ -415,16 +409,19 @@ textarea {
   /* Hide scrollbar */
   scrollbar-width: none;
 }
-.table-body::-webkit-scrollbar {
+.table-body::-webkit-scrollbar,
+.no-data::-webkit-scrollbar {
   display: none;
 }
-.table-body .no-data {
+.table-body.large,
+.no-data.large {
+  max-height: 300px;
+}
+
+.no-data {
   grid-column: 1/-1;
   text-align: center;
   padding: 1rem 0;
-}
-.table-body.large {
-  max-height: 300px;
 }
 
 .table-row {
@@ -442,7 +439,8 @@ textarea {
   font-size: 0.9rem;
   text-align: center;
 }
-.table-row .column.overLimit {
+.table-row .column .overLimit b,
+.table-row .column .closeToLimit b {
   color: #d64f4f;
 }
 .table-row .column.blocks {
@@ -485,6 +483,34 @@ textarea {
   margin-bottom: 0.2em;
 }
 
+.modal-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: rgba(55, 43, 71, 0.4);
+  overflow-y: scroll;
+  padding: 0 0 44px;
+  z-index: 10;
+}
+
+.modal {
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  background-color: #ffffff;
+  padding: 1rem;
+  margin: 20px auto;
+  box-shadow: 0 4px 20px rgba(76, 0, 237, 0.2);
+  min-width: 360px;
+  max-width: -webkit-min-content;
+  max-width: -moz-min-content;
+  max-width: min-content;
+}
+
 @media screen and (min-width: 740px) {
   .listOptions {
     margin-left: 0;
@@ -524,6 +550,12 @@ textarea {
 .date .month::after {
     content: "/";
     width: 1ch;
+  }
+  .modal-wrapper {
+    justify-content: center;
+  }
+  .modal {
+    max-width: 800px;
   }
 }
 @media (min-width: 1070px) {
