@@ -35,18 +35,17 @@ import Table from '@/components/table/Table.vue'
 const store = useStore()
 const showBy = ref('semana')
 
+onMounted( () => { store.dispatch('fetchMatches') })
+
+const isLoading = computed(() => { return store.getters.getMatchesLoadingState })
+const fetchError = computed(() => { return store.getters.getMatchesErrorMessage })
+
 function matches (showBy) {
   if (showBy === 'semana') return store.getters.getMatchesOf('week')
   if (showBy === 'mes') return store.getters.getMatchesOf('month')
   if (showBy === 'temporada') return store.getters.getMatchesOf('season')
   return store.getters.getMatches
 }
-
-const isLoading = computed(() => { return store.getters.getMatchesLoadingState })
-const fetchError = computed(() => { return store.getters.getMatchesErrorMessage })
-
-onMounted( () => { store.dispatch('fetchMatches') })
-
 </script>
 
 <style lang="scss" scoped>

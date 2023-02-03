@@ -1,5 +1,4 @@
 <template>
-  <p class='extra-message'>Administrar el calendario de quedadas</p>
   <button class='addNew btn white' @click="choosedValue = store.getters.getDefaultPractice">Agregar Quedada</button>
   <Table category="quedadas" v-model:showBy="showBy" :filterOptions="['Todo', 'Semana', 'Mes', 'Temporada']">
     <template v-slot:head>

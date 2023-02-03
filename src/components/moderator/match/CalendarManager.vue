@@ -1,5 +1,4 @@
 <template>
-  <p class='extra-message'>Administrar el calendario de partidos</p>
   <button class='addNew btn white' @click="choosedValue = store.getters.getDefaultMatch">Agregar Partido</button>
   <Table category="partidos" v-model:showBy="showBy" :filterOptions="['Todo', 'Semana', 'Mes', 'Temporada']" >
     <template v-slot:head>

@@ -6,7 +6,7 @@
             min = 0
             maxLength = 4
             inputMode = 'numeric'
-            v-model.number="val"
+            v-model.number = "val"
             />
     <button class = "btn increase" id="increase" @click.prevent="val++" v-bind:disabled="val >= max">+</button>
   </div>
@@ -33,7 +33,7 @@ export default {
   computed: {
     val: {
       get () {
-        return this.value
+        return this.value || this.min
       },
       set (newValue) {
         if (isNaN(parseInt(newValue))) {
