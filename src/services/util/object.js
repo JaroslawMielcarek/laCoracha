@@ -13,8 +13,8 @@ export function isEmptyObject (obj) {
  * @returns {Array}
  */
 
-
 export function sortListOfObjectsBy (list, property, descending = false, numeric = false) {
+  if (!property) return list
   const newList = [...list]
   newList.sort(
     (a, b) => {

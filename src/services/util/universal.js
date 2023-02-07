@@ -35,7 +35,7 @@ export function removeElement (type, value) {
   if (confirm(`Are you sure you want to delete ${type}`)) {
     store.dispatch(`remove${type}`, value) 
       .then(response => {
-        this.setNotification({
+        setNotification({
           id: uuidv4(),
           name: `remove${type}`,
           text: response,
@@ -43,7 +43,7 @@ export function removeElement (type, value) {
         })
       })
       .catch(error => {
-        this.setNotification({
+        setNotification({
           id: uuidv4(),
           name: `remove${type}`,
           text: error,
@@ -51,4 +51,9 @@ export function removeElement (type, value) {
         })
       })
   }
+}
+
+export function translateToSpanish (word) {
+  const translation = { female: 'feminino', male: 'masculino'}
+  return translation[word]
 }
