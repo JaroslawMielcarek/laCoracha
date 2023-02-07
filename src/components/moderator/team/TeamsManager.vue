@@ -1,6 +1,5 @@
 <template>
-  <p class='extra-message'>Administrar equipos de club</p>
-  <button  class='addNew btn white' @click="choosedValue = store.getters.getDefaultTeam">Agregar Equipo</button>
+  <button  class='btn white' @click="choosedValue = store.getters.getDefaultTeam">Agregar Equipo</button>
   <Table category="equipos">
     <template v-slot:head>
       <div class='table-row'>

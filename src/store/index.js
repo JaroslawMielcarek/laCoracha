@@ -7,6 +7,7 @@ import { settings } from './modules/settings.js'
 import { practices } from './modules/practices.js'
 import { universal } from './modules/universal.js'
 import { sponsors } from './modules/sponsors.js'
+import { enrolled } from './modules/enrollment.js'
 import { notifications } from './modules/notifications.js'
 
 const store = createStore({
@@ -18,6 +19,7 @@ const store = createStore({
     practices,
     universal,
     sponsors,
+    enrolled,
     notifications,
     auth
   },

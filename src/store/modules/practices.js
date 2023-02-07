@@ -88,7 +88,7 @@ export const practices = {
       state.errorMessage = ''
       console.log('setPracticesSuccess')
     },
-    setPracticesFailure: (state) => {
+    setPracticesFailure: (state, error) => {
       state.practices = []
       state.failed = true
       state.isLoading = false

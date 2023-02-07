@@ -2,11 +2,12 @@
   <div class = 'plusMinusInput'>
     <button class = "btn decrease" id="decrease" @click.prevent="val--" v-bind:disabled="val < (min + 1)">-</button>
     <input  class = 'value--input'
-            type = "text"
-            min = 0
+            type = "number"
+            required
+            :min = min
             maxLength = 4
             inputMode = 'numeric'
-            v-model.number="val"
+            v-model.number = "val"
             />
     <button class = "btn increase" id="increase" @click.prevent="val++" v-bind:disabled="val >= max">+</button>
   </div>
@@ -33,13 +34,22 @@ export default {
   computed: {
     val: {
       get () {
-        return this.value
+        return this.value || this.min
       },
       set (newValue) {
-        if (isNaN(parseInt(newValue))) {
-          alert('Insert number')
-        } else this.$emit('update:value', newValue)
+        this.checkIfInRange(newValue)
       }
+    }
+  },
+  methods: {
+    checkIfInRange (newValue) {
+      const nv = parseInt(newValue)
+      if (isNaN(nv)) return this.$emit('update:value', this.min)
+
+      if (nv >= this.max) return this.$emit('update:value', this.max) 
+      if (nv < this.min) return this.$emit('update:value', this.min)
+      
+      this.$emit('update:value', nv) 
     }
   }
 }
@@ -66,5 +76,17 @@ export default {
   &.decrease {
     border-right: none;
   }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
