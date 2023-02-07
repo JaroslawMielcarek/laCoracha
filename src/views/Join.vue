@@ -1,120 +1,200 @@
 <template>
-  <form class='wrapper' @submit.prevent="sendMessage">
-    <h3 class='title'>Consulta de nuevo jugador</h3>
-    <div class='row'>
-      <p class='extra__message'>Nombre y apellidos</p>
-      <CustomInput
-          type='text'
-          pattern="^[A-Za-z][A-Za-z]{2,29}$"
-          placeholder='Antonio'
-          hint="Only alfabet leters allowed. min 3 char"
-          v-model:value='name'
-          key="name"/>
+  <div class='wrapper'>
+    <form @submit.prevent="sendEnrollmentData()">
+      <h3 class='title'>Consulta de nuevo jugador</h3>
+      <div class='row'>
+        <p class='extra-message'>Nombre y apellidos</p>
+        <CustomInput
+            type='text'
+            pattern="^[A-Za-z][A-Za-z]{2,29}$"
+            placeholder='Antonio'
+            hint="Only alfabet leters allowed. min 3 char"
+            v-model:value='candidate.name'
+            :required="true"
+            key="name"/>
+      </div>
+      <div class='row'>
+        <p class='extra-message'>Número de contacto</p>
+        <CustomInput
+            type='text'
+            pattern="^\d{9}$"
+            placeholder='606 606 606'
+            hint="Only digits allowed. 6 digits required"
+            v-model:value='candidate.phoneNumber'
+            :required="true"
+            key="phoneNumber"/>
+      </div>
+      <fieldset class='inline-group row'>
+        <legend class='extra-message'>Genero</legend>
+        <label :class="['btn', {female: gender === 'female'}]">
+          <input v-model="candidate.gender" value='female' type='radio' name='genero' />
+          F
+        </label>
+        <label :class="['btn', {male: gender === 'male'}]">
+          <input v-model="candidate.gender" value='male' type='radio' name='genero' />
+          M
+        </label>
+      </fieldset>
+      <fieldset class='inline-group row' v-if="candidate.gender">
+        <legend class='extra-message'>Edad</legend>
+        <PlusMinus v-if="!categories.length" v-model:value="candidate.category" :min="6" :max="65"/>
+        
+        <template v-else v-for="category in categories" >
+          <label :class="['btn', {[gender]: candidate.category === category.name}]" 
+            v-if="Object.hasOwn(category, gender) && category[gender].currentEnrolled < category[gender].maxPlaces">
+            <input v-model="candidate.category" :value="category.name" type="radio" name="category" />
+          <p>{{ category[gender].minAge }} {{ (category[gender].maxAge !== category[gender].minAge) ? ` - ${category[gender].maxAge}` : null }}</p>
+         <p class="extra-message">{{  category.name }}</p>
+          </label>
+        </template>
+      </fieldset>
+      <div class='inline-group row'>
+        <label class='extra-message'>Jugué con este club antes:</label>
+        <ToggleSlider  :checked="candidate.wasWithUsBefore" @toggled="candidate.wasWithUsBefore = !candidate.wasWithUsBefore"/>
+      </div>
+      <p v-for='err in error' class='error' :key="error">{{ err }}</p>
+      <p v-if="fetchError" class='error' >{{ fetchError }}</p>
+      <button class='submit btn color full-width' type='submit'>Unirse</button>
+    </form>
+
+
+    <div v-if="enrollmentResult" class='modal-wrapper' @click="'dsdds'">
+      <div class='modal enrollment-result'>
+        <h4>{{ enrollmentResult.title }}</h4>
+        <p class='row'>{{ enrollmentResult.message }}</p>
+        <!-- icon -->
+        <div class='row flex-row'>
+          <router-link class="btn color" to='/'>
+            Regresar a la página principal
+          </router-link>
+          <p class='btn text' @click.prevent="reset">Suscríbete a alguien más</p>
+        </div>
+      </div>
     </div>
-    <fieldset class='inline-group row'>
-      <legend><p class='extra__message'>Nivel</p></legend>
-      <label :class="['btn', checkIfSelected('Nunca jugó', level)]">
-        <input v-model="level" value='Nunca jugó' type='radio' name='level' />
-        Nunca jugó
-      </label>
-      <label :class="['btn', checkIfSelected('Jugó un poco', level)]">
-        <input v-model="level" value='Jugó un poco' type='radio' name='level' />
-        Jugó un poco
-      </label>
-      <label :class="['btn', checkIfSelected('Se como jugar', level)]">
-        <input v-model="level" value='Se como jugar' type='radio' name='level' />
-        Se como jugar
-      </label>
-    </fieldset>
-     <fieldset class='inline-group row'>
-      <legend><p class='extra__message'>Edad</p></legend>
-      <label :class="['btn', checkIfSelected('menos que 16', age)]">
-        <input v-model="age" value='menos que 16' type='radio' name='age' />
-        &lt; 16
-      </label>
-      <label :class="['btn', checkIfSelected('16 - 18', age)]">
-        <input v-model="age" value='16 - 18' type='radio' name='age' />
-        16 - 18
-      </label>
-      <label :class="['btn', checkIfSelected('más que 20', age)]">
-        <input v-model="age" value='más que 20' type='radio' name='age' />
-        &gt; 20
-      </label>
-    </fieldset>
-    <p v-for='err in error ' class='error' :key="err">{{err}}</p>
-    <button class='submit btn color full-width' type='submit'>Unirse</button>
-  </form>
+  </div>
 </template>
 
-<script>
+<script setup>
 import CustomInput from '@/components/CustomInput.vue'
+import ToggleSlider from '@/components/ToggleSlider.vue'
+import PlusMinus from '@/components/PlusMinus.vue'
+import PublicService from '@/services/public.service.js'
+import { ref, onMounted, watch, computed} from 'vue'
+import { setNotification } from '@/services/util/universal.js'
 
-export default {
-  components: {
-    CustomInput
-  },
-  data () {
-    return {
-      error: [],
-      name: '',
-      level: '',
-      age: '',
-      fromUrl: ''
-    }
-  },
-  methods: {
-    checkIfSelected (value, choosed) { return choosed === value ? 'color' : 'white' },
-    checkForm () {
-      this.error = []
+const emit = defineEmits(['submitForm'])
+const DEFAULT = {
+  name: undefined,
+  phoneNumber: undefined,
+  gender: undefined,
+  category: undefined,
+  wasWithUsBefore: false,
+}
 
-      if (!this.name) this.error.push('Nombre requerido')
-      if (!this.level) this.error.push('Elige tu nivel')
-      if (!this.age) this.error.push('Edad requerida')
+const candidate = ref({...DEFAULT})
 
-      return !this.error.length
-    },
-    clearForm () {
-      this.name = ''
-      this.level = ''
-      this.age = ''
-    },
-    sendMessage () {
-      if (this.checkForm()) {
-        const message = 'name quiere unirse al club. level y tiene age años.'
-        let text = message
+const enrollmentResult = ref(undefined)
+const error = ref([])
+const fetchError = ref(undefined)
+const categoryList = ref([])
+const gender = computed( () => candidate.value.gender)
+const categories = computed( () => {
+  if (!gender.value || !categoryList.value.length) return []
 
-        const mapObj = {
-          name: this.name[0].toUpperCase() + this.name.slice(1),
-          level: this.level,
-          age: this.age
-        }
-        text = text.replace(
-          /name|level|age/gi,
-          function (matched) {
-            return mapObj[matched]
-          }
-        )
-        window.location.href = `https://wa.me/393497492300?text=${text}`
-        this.clearForm()
-      }
-    }
+  return categoryList.value.filter( c => Object.hasOwn(c, gender.value) && c[gender.value].currentEnrolled < c[gender.value].maxPlaces )
+})
+
+onMounted( () => {
+  PublicService.getAll('Enrolled')
+    .then(response => {
+      categoryList.value = response
+    })
+    .catch(err => {
+      fetchError.value = 'Hay un problema para conectarse a la base de datos'
+    })
+})
+
+watch( () => candidate.value.gender, () => delete candidate.value.category )
+
+function checkForm () {
+  error.value = []
+
+  if (!candidate.value.name) error.value.push('Nombre requerido')
+  if (!candidate.value.phoneNumber) error.value.push('Necesitamos numero para contactarte')
+  if (!candidate.value.category) error.value.push('Edad requerida')
+
+  return error.value.length
+}
+
+function sendEnrollmentData () {
+  if (checkForm()) return null
+  if (!!fetchError.value || !categories.value.length) return sendMessage()
+
+  PublicService.sendJoinRequest(candidate.value)
+    .then(response => {
+      enrollmentResult.value = response
+    })
+    .catch(error => {
+      setNotification({
+        name: 'Enrolled display',
+        text: error.response.data.message,
+        typeOfNotification: 'danger'
+      })
+    })
+
+    candidate.value = {...DEFAULT}
+}
+
+function sendMessage () {
+  let text = '*name* _(gender con age años)_ quiere unirse al club. *withUs* y su numero de contacto es *phoneNumber*'
+
+  const mapObj = {
+    name: candidate.value.name[0].toUpperCase() + candidate.value.name.slice(1),
+    age: candidate.value.category,
+    gender: candidate.value.gender[0].toUpperCase() + candidate.value.gender.slice(1),
+    phoneNumber: candidate.value.phoneNumber,
+    withUs: candidate.value.wasWithUsBefore ? `Estaba con nosotros antes` : 'No estaba con nosotros antes'
   }
+  text = text.replace(
+    /name|age|gender|phoneNumber|withUs/gi,
+    function (matched) {
+      return mapObj[matched]
+    }
+  )
+  window.location.href = `https://wa.me/393497492300?text=${text}`
+}
+
+function reset () {
+  candidate.value = {...DEFAULT}
+  enrollmentResult.value = null
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/colors.scss';
-.wrapper {
+
+form {
   width: clamp(300px, 90vw, 380px);
   padding: 1em 1em 2em;
 }
 .inline-group {
   display: flex;
+  align-items: center;
   column-gap: 10px;
-  margin-bottom: 10px;
 }
 .btn {
   flex-shrink: 0;
+
+  &.female,
+  &.male {
+    color: $white;
+  }
+  &.female {
+    background-color: $female;
+  }
+  &.male {
+    background-color: $male;
+  }
   input {
     display: none;
   }

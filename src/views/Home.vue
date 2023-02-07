@@ -34,6 +34,14 @@
       <ClubCalendar />
     </section>
     <section>
+      <div class='sectionHeader'>
+        <h1 class='header'>Inscripción</h1>
+      </div>
+      <div class='sectionBody'>
+        <EnrollmentDisplay/>
+      </div>
+    </section>
+    <section>
       <SponsorsDisplay/>
     </section>
   </div>
@@ -42,6 +50,7 @@
 <script setup>
 import ClubCalendar from '@/components/calendar/ClubCalendar.vue'
 import SponsorsDisplay from '@/components/SponsorsDisplay.vue'
+import EnrollmentDisplay from '@/components/EnrollmentDisplay.vue'
 
 </script>
 
