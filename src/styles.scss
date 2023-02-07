@@ -542,6 +542,7 @@ textarea {
   box-shadow: 0 4px 20px rgba($blueDark, .2);
   min-width: 360px;
   max-width: min-content;
+  position: relative;
 }
 
 @media screen and (min-width: 740px) {

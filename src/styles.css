@@ -509,6 +509,7 @@ textarea {
   max-width: -webkit-min-content;
   max-width: -moz-min-content;
   max-width: min-content;
+  position: relative;
 }
 
 @media screen and (min-width: 740px) {
