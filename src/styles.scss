@@ -369,7 +369,6 @@ textarea {
 .extra-message {
   font-size: .825em;
   display: block;
-  margin-bottom: .5em;
   font-style: italic;
   color: rgba($blueDark, .6);
 
@@ -405,13 +404,6 @@ textarea {
   background-color: $blueDark;
 }
 
-
-/*** addNew ***/
-/*** used in Moderator sections ***/
-.addNew {
-  margin-top: 14px;
-}
-
 .flex-column-container {
   position: relative;
   display: flex;
@@ -437,7 +429,8 @@ textarea {
 /*** table ***/
 /*** used in Moderator sections ***/
 
-.table-body {
+.table-body,
+.no-data {
   max-width: 100%;
   min-height: 3rem;
   max-height: 50vh;
@@ -450,15 +443,15 @@ textarea {
     display: none;
   }
 
-  .no-data {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 1rem 0;
-  }
-
   &.large {
     max-height: calc(4 * 75px);
   }
+}
+
+.no-data {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 1rem 0;
 }
 
 .table-row {
@@ -475,7 +468,8 @@ textarea {
     margin: 0;
     font-size: 0.9rem;
     text-align: center;
-    &.overLimit {
+    .overLimit b,
+    .closeToLimit b {
       color: $dangerous;
     }
     &.blocks {
@@ -521,6 +515,34 @@ textarea {
   .year {
     margin-bottom: 0.2em;
   }
+}
+
+
+.modal-wrapper{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: rgba($decorativa-neutral-dark, .4);
+  overflow-y: scroll;
+  padding: 0 0 44px;
+  z-index: 10;
+}
+
+.modal {
+  border: 1px solid $white;
+  border-radius: 4px;
+  background-color: $white;
+  padding: 1rem;
+  margin: 20px auto;
+  box-shadow: 0 4px 20px rgba($blueDark, .2);
+  min-width: 360px;
+  max-width: min-content;
+  position: relative;
 }
 
 @media screen and (min-width: 740px) {
@@ -575,6 +597,14 @@ textarea {
         width: 1ch;
       }
     }
+  }
+
+  .modal-wrapper {
+    justify-content: center;
+  }
+
+  .modal {
+    max-width: 800px;
   }
 }
 

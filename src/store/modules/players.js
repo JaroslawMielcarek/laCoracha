@@ -128,7 +128,7 @@ export const players = {
       state.errorMessage = ''
       console.log('setPlayersSuccess')
     },
-    setPlayersFailure (state) {
+    setPlayersFailure (state, error) {
       state.players = []
       state.failed = true
       state.isLoading = false

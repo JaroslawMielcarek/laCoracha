@@ -1,5 +1,4 @@
 <template>
-  <p class='extra-message'>Administrar jugadores del club</p>
   <Table category="jugadores">
     <template v-slot:head>
       <div class='table-row'>
