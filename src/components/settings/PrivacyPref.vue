@@ -3,7 +3,7 @@
     <template v-for="(property, name) in basicInformationes" :key="name">
       <li v-if="property" class='choise'>
         <ToggleSlider  :checked="property.permisionGranted" @toggled="dispatch(name, !property.permisionGranted)" />
-        <label class='label-inline'>{{ translateToSpanish(name) }}</label>
+        <label>{{ translateToSpanish(name) }}</label>
         <p class='extra-message inline-extra' v-if="privacyDescriptions[name]">{{ privacyDescriptions[name].extraInfo }}</p>
       </li>
     </template>
@@ -38,6 +38,7 @@ function translateToSpanish (name) { return names[name] || name }
 @import '@/colors.scss';
 .choise{
   display: flex;
+  flex-direction: row;
   align-items: center;
   margin-bottom: 0.75em;
   gap: 1ch;
