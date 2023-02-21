@@ -58,7 +58,8 @@ export default {
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .plusMinusInput {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   flex-wrap: nowrap;
 }
 .btn,
