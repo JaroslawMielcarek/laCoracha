@@ -4,7 +4,7 @@
       type='date'
       :value="timeS.date"
       :required="required.date"
-      @blur='setDate'
+      @change='setDate'
     />
     <select :value="timeS.time" @input="setTime" :required="required.time">
       <option value='' disabled selected>-- : --</option>
@@ -50,7 +50,7 @@ function setTime (event) {
     return
   }
   if (error.value) error.value = ''
-  emit('update:modelValue', { ...props.modelValue, time: val.value })
+  emit('update:modelValue', { ...props.modelValue, time: val })
 }
 function setDate (event) {
       const val = event.target.value
@@ -59,8 +59,8 @@ function setDate (event) {
         resetError()
         return
       }
-      if (error) error.value = ''
-      emit('update:modelValue', { ...props.modelValue, date: val.value })
+      if (error.value) error.value = ''
+      emit('update:modelValue', { ...props.modelValue, date: val })
     }
 const timeS = computed( () => { return { date: props.modelValue.date, time: props.modelValue.time } })
 </script>
