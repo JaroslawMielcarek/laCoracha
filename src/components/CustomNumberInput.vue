@@ -35,8 +35,8 @@ const error =  ref({ message: '', showHint: false })
 function validate (val) {
   const value = parseFloat(val)
   if (Number.isNaN(value)) return emit('update:value', props.min)
-  if (value < this.min) { error.value = { message: `Necesita ser más grande que ${props.min}`, showHint: false }; return }
-  if (value > this.max) { error.value = { message: `Necesita ser más pequeño que ${props.max}`, showHint: false }; return }
+  if (value < props.min) { error.value = { message: `Necesita ser más grande que ${props.min}`, showHint: false }; return }
+  if (value > props.max) { error.value = { message: `Necesita ser más pequeño que ${props.max}`, showHint: false }; return }
   error.value = { message: '', showHint: false }
   emit('update:value', value)
 }
