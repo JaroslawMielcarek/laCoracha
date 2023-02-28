@@ -45,9 +45,7 @@
         </div>
         <p class='row team'>Equipo: <span class='value'>{{ choosedValue.team ? choosedValue.team : "No pertenece a ninguno" }}</span></p>
       </div>
-      <div>
-        <PlayerPractices v-if="choosedValue.practices" v-model:value="choosedValue.practices" />
-      </div>
+      <PlayerPractices v-if="choosedValue.practices" v-model:value="choosedValue.practices" />
     </div>
     <div class='grid-row'>
       <ImagePrevWithRemoveVue v-if="choosedValue.photo && choosedValue.photo.value" :image="file" @removeLogo="choosedValue.photo.value=undefined"/>

@@ -22,13 +22,13 @@
         <label class="gender">{{ translateToSpanish(gender) }}</label>
         <fieldset class='fieldset' v-if="choosedValue[gender]">
           <legend>Límite de inscripción</legend>
-          <PlusMinus v-if="choosedValue[gender]" v-model:value="choosedValue[gender].maxPlaces" :min="1" :max="24"/>
+          <CustomNumberInput v-if="choosedValue[gender]" v-model:value="choosedValue[gender].maxPlaces" :min="1" :max="24"/>
         </fieldset>
         <fieldset v-if="choosedValue[gender]" class="fieldset age-requiments">
           <legend>Tramos de edad</legend>
-          <PlusMinus v-model:value="choosedValue[gender].minAge" :min="6" :max="choosedValue[gender].maxAge"/>
+          <CustomNumberInput v-model:value="choosedValue[gender].minAge" :min="6" :max="choosedValue[gender].maxAge"/>
           <span> - </span>
-          <PlusMinus v-model:value="choosedValue[gender].maxAge" :min="choosedValue[gender].minAge" :max="65"/>
+          <CustomNumberInput v-model:value="choosedValue[gender].maxAge" :min="choosedValue[gender].minAge" :max="65"/>
         </fieldset>
       </div>
     </fieldset>
@@ -40,7 +40,7 @@
 import AddEditData from '@/components/AddEditData.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
 import CustomInput from '@/components/CustomInput.vue'
-import PlusMinus from '@/components/PlusMinus.vue'
+import CustomNumberInput from '@/components/CustomNumberInput.vue'
 import { useStore } from 'vuex'
 import { ref, computed, onMounted } from 'vue'
 import { submitForm, removeElement, translateToSpanish } from '@/services/util/universal.js'
@@ -108,12 +108,12 @@ function setState(val, isEdit = false) {
   max-width: 350px;
 }
 .fieldset{
-  flex: 1;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   border: 1px dashed rgba($blueDark, .4);
-  padding: 0.5rem 0.25rem;
+  padding: 1rem;
+  column-gap: 1ch;
 }
 .danger {
   font-size: .7rem;

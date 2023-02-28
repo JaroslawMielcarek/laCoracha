@@ -24,11 +24,11 @@ const emit = defineEmits(['update:value'])
 const props = defineProps({
   placeholder: { type: String, default: '0' },
   min: { type: Number, default: 0 },
-    max: { type: Number, default: 99 },
-    value: { type: [Number, String], default (props) { return props.min } },
-    step: { type: Number, default: 1 },
-    hint: { type: String, default: 'hint' },
-    inputmode: { type: String, default: 'text' }
+  max: { type: Number, default: 99 },
+  value: { type: [Number, String], default (props) { return props.min } },
+  step: { type: Number, default: 1 },
+  hint: { type: String, default: 'hint' },
+  inputmode: { type: String, default: 'text' }
 })
 const error =  ref({ message: '', showHint: false })
 
@@ -49,7 +49,7 @@ function validate (val) {
 }
 .value {
   display: inline-flex;
-  max-width: 8ch;
+  max-width: clamp(4ch, 6ch, 8ch);
   border: none;
   border-radius: 4px;
   text-align: center;
@@ -63,6 +63,7 @@ function validate (val) {
   /* Firefox */
   &[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
   }
 }
 .btn {

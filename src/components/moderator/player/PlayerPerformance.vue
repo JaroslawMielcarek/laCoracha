@@ -12,8 +12,8 @@
     <div class='list-row' v-for="(property, name) in gamePerformance" :key="property">
       <p class = 'column category'>{{ name }}</p>
       <p class = 'column total'>{{ total(property) }}</p>
-      <PlusMinus class = 'column' v-model:value="property.good"/>
-      <PlusMinus class = 'column' v-model:value="property.bad"/>
+      <CustomNumberInput v-model:value="property.good"/>
+      <CustomNumberInput v-model:value="property.bad"/>
       <p class = 'column percent'>{{ percent(property) }}</p>
       <i :class="['column', 'change', change(property)]"></i>
     </div>
@@ -22,7 +22,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import PlusMinus from '@/components/PlusMinus.vue'
+import CustomNumberInput from '@/components/CustomNumberInput.vue'
 
 const emit = defineEmits('update:value')
 const props = defineProps({ value: {type: Object, default: undefined} })
@@ -53,6 +53,7 @@ function change (obj) {
   grid-template-columns: minmax(60px, 2fr) minmax(120px, 6fr) minmax(120px, 6fr) minmax(40px, 2fr) minmax(20px, 1fr);
   justify-items: center;
   align-items: baseline;
+  margin-bottom: 2px;
   .total {
     display: none;
   }
