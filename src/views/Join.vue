@@ -37,7 +37,7 @@
       </fieldset>
       <fieldset class='inline-group row' v-if="candidate.gender">
         <legend class='extra-message'>Edad</legend>
-        <PlusMinus v-if="!categories.length" v-model:value="candidate.category" :min="6" :max="65"/>
+        <CustomNumberInput v-if="!categories.length" v-model:value="candidate.category" :min="6" :max="65"/>
         
         <template v-else v-for="category in categories" >
           <label :class="['btn', {[gender]: candidate.category === category.name}]" 
@@ -77,7 +77,7 @@
 <script setup>
 import CustomInput from '@/components/CustomInput.vue'
 import ToggleSlider from '@/components/ToggleSlider.vue'
-import PlusMinus from '@/components/PlusMinus.vue'
+import CustomNumberInput from '@/components/CustomNumberInput.vue'
 import PublicService from '@/services/public.service.js'
 import { ref, onMounted, watch, computed} from 'vue'
 import { setNotification } from '@/services/util/universal.js'
