@@ -89,4 +89,15 @@ function login () {
 form {
   max-width: 190px; 
 }
+@media screen and (min-width: 740px) {
+  form {
+    max-width: 240px;
+  }
+}
+@media screen and (min-width: 1070px) {
+  form {
+    max-width: 300px;
+  }
+
+  }
 </style>
