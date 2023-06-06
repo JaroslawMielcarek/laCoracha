@@ -51,54 +51,46 @@
           key='memberID'/>
       </div>
       <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
-      <p v-if="isLoading">Loading..</p>
+      <p v-if="isLoading">Espere por favor..</p>
       <button v-else type='submit' class='btn white full-width'>Crear Cuenta</button>
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
 import CustomInput from '@/components/CustomInput.vue'
 import { sendToWhatsApp } from '@/services/util/universal'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-export default {
-  components: {
-    CustomInput
-  },
-  data () {
-    return {
-      errorMessage: [],
-      user: {
-        username: '',
-        password: '',
-        memberID: '',
-        email: '',
-      }
-    }
-  },
-  methods: {
-    sendToWhatsApp,
-    register () {
-      this.$store.dispatch('register', this.user)
-        .then(() => {
-          this.$router.push({ path: '/login' })
-        })
-        .catch((error) => {
-          console.log('error', error)
-            Array.isArray(this.errorMsg) ? this.errorMessage = this.errorMsg : this.errorMessage.push(this.errorMsg)
-          const t = setTimeout(() => { 
-            this.errorMessage = []
-            clearTimeout(t)
-          }, 4000)
-        })
-    }
-  },
-  computed: {
-    isLoading () { return this.$store.getters.getAuthLoadingState },
-    errorMsg () { return this.$store.getters.getAuthErrorMessage }
-  }
-  
+const store = useStore()
+const router = useRouter()
+const errorMessage = ref([])
+const user = ref({
+  username: '',
+  password: '',
+  memberID: '',
+  email: '',
+})
+
+const isLoading = computed(() => store.getters.getAuthLoadingState )
+const errorMsg = computed(() => store.getters.getAuthErrorMessage )
+
+function register () {
+  store.dispatch('register', user.value)
+    .then(() => {
+      router.push({ path: '/login' })
+    })
+    .catch(() => {
+      Array.isArray(errorMsg.value) ? errorMessage.value = errorMsg.value : errorMessage.value.push(errorMsg.value)
+      const t = setTimeout(() => { 
+        errorMessage.value = []
+        clearTimeout(t)
+      }, 4000)
+    })
 }
+
 </script>
 
 <style lang="scss" scoped>

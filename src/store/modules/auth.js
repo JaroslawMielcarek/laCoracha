@@ -86,13 +86,13 @@ export const auth = {
         state.errorMessage = 'Hay un problema para conectarse a la base de datos'
       } else if (error.response) {
         state.errorMessage = error.response.data.message
-        console.log('Error', error.response)
       } else {
         console.log('setSponsorsFailure')
       }
     },
     logout (state) {
       state.status.loggedIn = false
+      state.isLoading = false
       state.user = null
     },
     registerSuccess (state) { 
@@ -109,7 +109,7 @@ export const auth = {
       if (!error.response) {
         state.errorMessage = 'Hay un problema para conectarse a la base de datos'
       } else if (error.response) {
-        console.log('Error', error.response)
+        state.errorMessage = error.response.data.message
       } else {
         console.log('setSponsorsFailure')
       }
