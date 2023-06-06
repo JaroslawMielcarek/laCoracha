@@ -39,41 +39,36 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import CustomInput from '@/components/CustomInput.vue'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 
-export default {
-  components: {
-    CustomInput
-  },
-  data () {
-    return {
-      errorMessage: [],
-      username: '',
-      password: '',
-      fromUrl: ''
-    }
-  },
-  methods: {
-    login () {
-      this.$store.dispatch('login', { username: this.username, password: this.password })
-        .then(() => {
-          if (this.$route.query.nextUrl) this.$router.push({ path: this.$route.query.nextUrl })
-          else this.$router.push({ path: '/' })
-        })
-        .catch((error) => {
-          Array.isArray(this.errorMsg) ? this.errorMessage = this.errorMsg : this.errorMessage.push(this.errorMsg)
-          const t = setTimeout(() => { 
-            this.errorMessage = []
-            clearTimeout(t)
-          }, 4000)
-        })
-    }
-  },
-  computed: {
-    isLoading () { return this.$store.getters.getAuthLoadingState },
-    errorMsg () { return this.$store.getters.getAuthErrorMessage }
-  }
+const store = useStore()
+const route = useRoute()
+const router = useRouter()
+
+const errorMessage = ref([])
+const username = ref('')
+const password = ref('')
+
+const isLoading = computed( () => store.getters.getAuthLoadingState )
+const errorMsg = computed( () => store.getters.getAuthErrorMessage )
+
+function login () {
+  store.dispatch('login', { username: username.value, password: password.value })
+    .then( () => {
+      if (route.query.nextUrl) router.push({ path: route.query.nextUrl })
+      else router.push({ path: '/' })
+    })
+    .catch( () => {
+      Array.isArray(errorMsg.value) ? errorMessage.value = errorMsg.value : errorMessage.value.push(errorMsg.value)
+      const t = setTimeout( () => {
+        errorMessage.value = []
+        clearTimeout(t)
+      }, 4000)
+    })
 }
 </script>
 
@@ -90,5 +85,8 @@ export default {
   &:hover {
     color: rgba($blueDark, .2);
   }
+}
+form {
+  max-width: 190px; 
 }
 </style>
