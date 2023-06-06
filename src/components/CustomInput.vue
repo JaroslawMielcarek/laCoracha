@@ -10,7 +10,7 @@
       @blur="validate"
     />
     <p v-if="error.message" class='text_small error'>{{ error.message }}</p>
-    <p v-if="error.showHint" class='text_small hint'><b>Hint: </b>{{ hint }}</p>
+    <p v-if="error.showHint" class='text_small hint'><b>Pista: </b>{{ hint }}</p>
 </template>
 
 <script setup>
