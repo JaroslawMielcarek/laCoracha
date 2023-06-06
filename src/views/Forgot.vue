@@ -27,52 +27,37 @@
       <template v-if="errorMessage.length">
         <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
       </template>
-      <button type='submit' class='btn white full-width'>Enviar</button>
+      <p v-if="isProcessing && !errorMessage.length">Procesamos tu solicitud, espera..</p>
+      <button v-if="!isProcessing" type='submit' class='btn white full-width'>Enviar</button>
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
 import CustomInput from '@/components/CustomInput.vue'
 import AuthService from '@/services/auth/auth.service.js'
+import { ref } from 'vue'
 
-export default {
-  name: 'Forgot',
-  components: {
-    CustomInput
-  },
-  data () {
-    return {
-      errorMessage: [],
-      email: '',
-      email_confirm: ''
-    }
-  },
-  methods: {
-    resetForm () {
-      this.email = ''
-      this.email_confirm = ''
-    },
-    setError (message) {
-      this.errorMessage.push(message)
-      setTimeout(() => { this.errorMessage = [] }, 4000)
-    },
-    handleSubmit () {
-      if (this.email !== this.email_confirm) return this.setError(['Los correos electrónicos son diferentes!'])
+const errorMessage = ref([])
+const email = ref('')
+const email_confirm = ref('')
+const isProcessing = ref(false)
 
-      AuthService.forgot({ email: this.email })
-        .then(response => {
-          this.setError(response.message)
-          this.resetForm()
-        })
-        .catch(error => {
-          this.setError(
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-              error.message)
-        })
-    }
-  }
+function setError (message) {
+  Array.isArray(message) ?errorMessage.value = message : errorMessage.value.push(message)
+  setTimeout(() => { 
+    email.value = ''
+    email_confirm.value = ''
+    errorMessage.value = []
+    isProcessing.value = false
+   }, 6000)
+}
+
+function handleSubmit () {
+  if (email.value !== email_confirm.value) return setError('Los correos electrónicos son diferentes!')
+  isProcessing.value = true
+  AuthService.forgot({ email: email.value })
+  .then(response => setError(response.message))
+  .catch(error => setError( error.response.data ? error.response.data.message : error.message ))
 }
 </script>
