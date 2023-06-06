@@ -8,7 +8,7 @@
             type='text'
             pattern="^[A-Za-z][A-Za-z]{2,29}$"
             placeholder='Antonio'
-            hint="Only alfabet leters allowed. min 3 char"
+            hint="Solo se permiten letras alfabéticas. mínimo 3 caracteres"
             v-model:value='candidate.name'
             :required="true"
             key="name"/>
@@ -19,7 +19,7 @@
             type='text'
             pattern="^\d{9}$"
             placeholder='606 606 606'
-            hint="Only digits allowed. 6 digits required"
+            hint="Solo se permiten dígitos. Se requieren 6 dígitos"
             v-model:value='candidate.phoneNumber'
             :required="true"
             key="phoneNumber"/>
@@ -56,8 +56,6 @@
       <p v-if="fetchError" class='error' >{{ fetchError }}</p>
       <button class='submit btn color full-width' type='submit'>Unirse</button>
     </form>
-
-
     <div v-if="enrollmentResult" class='modal-wrapper' @click="'dsdds'">
       <div class='modal enrollment-result'>
         <h4>{{ enrollmentResult.title }}</h4>
