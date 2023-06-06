@@ -3,10 +3,10 @@
     <form @submit.prevent="sendEnrollmentData()">
       <h3 class='title'>Consulta de nuevo jugador</h3>
       <div class='row'>
-        <p class='extra-message'>Nombre y apellidos</p>
+        <p class='extra-message'>Nombre y apellido</p>
         <CustomInput
             type='text'
-            pattern="^[A-Za-z][A-Za-z]{2,29}$"
+            pattern="^[a-zA-ZÀ-ÖØ-Ýà-öø-ÿ]+ [a-zA-ZÀ-ÖØ-Ýà-öø-ÿ]+$"
             placeholder='Antonio'
             hint="Solo se permiten letras alfabéticas. mínimo 3 caracteres"
             v-model:value='candidate.name'
