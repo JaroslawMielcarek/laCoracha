@@ -1,5 +1,5 @@
 {
-  "name": "laCoracha",
+  "name": "lacoracha",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -22,7 +22,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.8",
-    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-plugin-typescript": "~4.5.15",
     "@vue/cli-service": "~5.0.8",
     "@vue/compiler-sfc": "^3.2.37",
     "@vue/test-utils": "^2.2.10",
