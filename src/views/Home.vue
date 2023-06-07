@@ -38,6 +38,7 @@
         <h1 class='header'>Inscripción</h1>
       </div>
       <div class='sectionBody'>
+        <p class="extra-message">Aquí está la lista de las categorías que ofrecemos y la disponibilidad. Pulsa <router-link to='/join' class="join_link">aqui</router-link> si estás interesado en unirte.</p>
         <EnrollmentDisplay/>
       </div>
     </section>
@@ -59,8 +60,9 @@ import EnrollmentDisplay from '@/components/EnrollmentDisplay.vue'
 // Hero Section //
 .join_link {
   color: $text--light;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  width: fit-content;
   &:hover .plus path {
     transform: translate(0, -.45em) scale(1.3);
     stroke: $decorative-attencion;
