@@ -12,18 +12,16 @@ export function generateHoursArray (hour, maxHour, slot) {
   return arr
 }
 export function isoDateToDayMonthYear (date) {
-  if (!date) return 'not specified'
-  const d = date.split('-')
-  const day = d[2]
-  const month = d[1]
-  const year = d[0]
-  return day && month && year ? `${day}/${month}/${year}` : '--/--/----'
+  const d = checkIfValidDate(date)
+  return (isNaN(d)) ? '--/--/----' : `${ d.getDate() }/${ d.getMonth() + 1 }/${ d.getFullYear() }` 
 }
 export function getDayOfWeek (date) {
- return WEEK_DAYS[new Date(date).getDay()]
+  const d = checkIfValidDate(date)
+  return (isNaN(d)) ? 'Invalid date' : WEEK_DAYS[d.getDay()]
 }
 export function getMonthNameByNumber (date) {
-  return MONTHS[new Date(date).getMonth()]
+  const d = checkIfValidDate(date)
+  return (isNaN(d)) ? 'Invalid date' :  MONTHS[d.getMonth()]
 }
 export function areEqualDates (firstDate, secondDate) {
   const first = new Date(firstDate)
@@ -40,4 +38,17 @@ export function getAllMonths () {
 }
 export function getAllWeekDays () {
   return [...WEEK_DAYS]
+}
+
+
+export function checkIfValidDate(date) {
+  if (!date) return 'not specified'
+  let d = new Date(date)
+  if ( /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(date)) {
+    console.log(date)
+    const dateParts = date.split("/")
+    d = new Date(dateParts[2], dateParts[1], dateParts[0])
+  }
+
+  return isNaN(d) ? 'not specified' : d
 }
