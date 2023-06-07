@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import CustomInput from '@/components/CustomInput.vue'
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
@@ -49,17 +49,17 @@ const store = useStore()
 const route = useRoute()
 const router = useRouter()
 
-const errorMessage = ref([])
-const username = ref('')
-const password = ref('')
+const errorMessage = ref<string[]>([])
+const username = ref<string>('')
+const password = ref<string>('')
 
-const isLoading = computed( () => store.getters.getAuthLoadingState )
-const errorMsg = computed( () => store.getters.getAuthErrorMessage )
+const isLoading = computed<boolean>( () => store.getters.getAuthLoadingState )
+const errorMsg = computed<string | string[]>( () => store.getters.getAuthErrorMessage )
 
 function login () {
   store.dispatch('login', { username: username.value, password: password.value })
     .then( () => {
-      if (route.query.nextUrl) router.push({ path: route.query.nextUrl })
+      if (route.query.nextUrl) router.push({ path: route.query.nextUrl as string })
       else router.push({ path: '/' })
     })
     .catch( () => {
