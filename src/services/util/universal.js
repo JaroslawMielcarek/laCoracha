@@ -57,3 +57,7 @@ export function translateToSpanish (word) {
   const translation = { female: 'feminino', male: 'masculino'}
   return translation[word]
 }
+
+export function setFirstCapital( word ) {
+  return word.charAt(0).toUpperCase() + word.slice(1)
+}
