@@ -45,7 +45,8 @@ function validate (val) {
 <style lang="scss" scoped>
 @import '@/colors.scss';
 .numberInput { 
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 }
 .value {
   display: inline-flex;
