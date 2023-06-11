@@ -52,3 +52,21 @@ export function checkIfValidDate(date) {
 
   return isNaN(d) ? 'not specified' : d
 }
+
+export function getCurrentYearMonth() { 
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth() + 1
+
+  return `${year}-${/^\d$/.test(month) ? '0' + month : month}`
+}
+
+export function compareYearMonth(first, second) {
+  const firstYear = first.split('-')[0]
+  const firstMonth = first.split('-')[1]
+  const secondYear = second.split('-')[0]
+  const secondMonth = second.split('-')[1]
+
+  const d1 = new Date(firstYear, firstMonth)
+  const d2 = new Date(secondYear, secondMonth)
+  return d1 < d2
+}

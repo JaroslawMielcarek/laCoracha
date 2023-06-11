@@ -1,5 +1,12 @@
 <template>
   <h4>Saldos de jugadores</h4>
+  <fieldset class='download border_solid'>
+    <legend class="extra-message">Aquí puede elegir el período económico para descargar en formato de excel</legend>
+    <input type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="downloadPeriod.start" />
+    -
+    <input type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="downloadPeriod.stop" />
+    <button type="button" class="btn color" @click="ExportData()">Descargar</button>
+  </fieldset>
   <Table category="jugadores">
     <template v-slot:head>
       <div class='table-row'>
@@ -25,13 +32,13 @@
   <AddEditData v-if="choosedValue" category="saldo del jugador" :isEditing="isEditing" @submitForm="submit"  @closeForm="setState(undefined)">
     <h5>Miembro: {{ playerID }}</h5>
     <p class="extra-message">Nuevo mes</p>
-    <div class='month new'>
+    <div class='month new border_solid'>
       <input type='month' placeholder='YYYY-MM' pattern="[0-9]{4}-[0-9]{2}" v-model="newMonth.monthYear" @change="checkIfMonthExist" />
       <button class='btn white' @click.prevent="addMonth" :disabled="!newMonth.monthYear && checkIfMonthExist">Agregar</button>
     </div>
     <p class="extra-message">Meses realizados</p>
     <div class='months row' v-if='payments'>
-      <div class='month' v-for="month in payments" :key="month">
+      <div class='month border_solid' v-for="month in payments" :key="month">
         <h5 class='name'>{{ getMonthNameByNumber(month.monthYear) }}</h5>
         <PaymentTemplate v-if="month.payments" v-model:value="month.payments" @removePayment="(index) => removePayment(month, index)" />
         <button class='btn white full-width' @click="addPayment(month)">Agregar pago</button>
@@ -46,10 +53,11 @@ import PaymentTemplate from './PaymentTemplate.vue'
 import AddEditData from '@/components/AddEditData.vue'
 import AdminService from '@/services/admin.service.js'
 import Table from '@/components/table/Table.vue'
+import XLSX from 'xlsx'
 import { ref, onMounted, computed } from 'vue'
 import { setNotification, submitForm } from '@/services/util/universal.js'
 import { sortListOfObjectsBy } from '@/services/util/object.js'
-import { getMonthNameByNumber } from '@/services/util/time.js'
+import { getMonthNameByNumber, getCurrentYearMonth, compareYearMonth } from '@/services/util/time.js'
 
 const choosedValue = ref(undefined)
 const isEditing = ref(false)
@@ -59,6 +67,10 @@ const errors = ref([])
 const newMonth = ref({
   monthYear: '',
   payments: []
+})
+const downloadPeriod = ref({
+  start: getCurrentYearMonth(),
+  stop: getCurrentYearMonth()
 })
 
 onMounted( () => {
@@ -145,7 +157,47 @@ function checkForm () {
   }
   return true
 }
+function GetUsefullData (list) {
+  const order = compareYearMonth(downloadPeriod.value.start, downloadPeriod.value.stop)
+  const start = downloadPeriod.value.start
+  const stop = downloadPeriod.value.stop
+  const yearStart = start.split('-')[0]
+  const monthStart = start.split('-')[1]
+  const yearStop = stop.split('-')[0]
+  const monthStop = stop.split('-')[1]
+  const listOfM = new Map()
 
+  for(let year = yearStart; order ? year <= yearStop : year >= yearStop; order ? year++ : year--){
+    const mStart = (year == yearStart) ? monthStart : ( order ? 1 : 12 )
+    const mStop = (year == yearStop) ? monthStop : ( order ? 12 : 1 )
+    for(let month = mStart; order ? month <= mStop : month >= mStop; order ? month++ : month--){
+      listOfM.set(`${year}-${/^\d$/.test(month) ? '0' + month : month}`, 0)
+    }
+  }
+
+  return list.map( e => {
+    const listOfMonths = new Map(listOfM)
+
+    for (const month of e.payments){
+      for (const payment of month.payments){
+        if(listOfMonths.has(month.monthYear) && payment.isPaid === 'no') {
+          listOfMonths.set(month.monthYear, listOfMonths.get(month.monthYear) - payment.qty)
+        }
+      }
+    }
+    const p = { ID: e.memberID, balance: e.balance }
+    for (const [key,value] of listOfMonths){
+      p[key] = value
+    }
+    return p
+  })
+}
+function ExportData() {
+  const ws = XLSX.utils.json_to_sheet(GetUsefullData(playersList.value))
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, "Players")
+  XLSX.writeFile(wb, 'report.xlsx')
+}
 async function submit(){
   if (!checkForm()) return null
   const { _id, payments } = choosedValue.value
@@ -185,6 +237,10 @@ function setState(val, isEdit = false) {
     }
   }
 }
+.border_solid {
+  border: 1px solid rgba($blueDark, .4);
+  border-radius: 4px;
+}
 .months {
   display: flex;
   flex-direction: column;
@@ -194,8 +250,6 @@ function setState(val, isEdit = false) {
   border-radius: 4px;
 }
 .month {
-  border: 1px solid rgba($blueDark, .4);
-  border-radius: 4px;
   padding: 8px;
   margin: 4px;
   .name {
@@ -207,6 +261,13 @@ function setState(val, isEdit = false) {
   display: flex;
   justify-content: space-evenly;
   align-items: baseline;
+}
+.download {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 2px 4px;
+  button { margin-left: 2ch }
 }
 @media (min-width: 740px) {
 
