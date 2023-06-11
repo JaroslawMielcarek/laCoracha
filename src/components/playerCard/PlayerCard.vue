@@ -18,17 +18,19 @@
             <p class="player__height">Altura:<span>{{ value.height || '-'}}</span></p>
             <p class="player__dominantHand">Mano dominante:<span>{{ value.dominantHand || '-' }}</span></p>
         </div>
-        <PerformanceDonutGraph v-if="value.inTeamPerformance" :data="value.inTeamPerformance"/>
+        <PerformanceDonutGraph v-if="store.getters.getStatus && value.inTeamPerformance" :data="value.inTeamPerformance"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, defineEmits, defineProps } from 'vue'
+import { ref, watch, defineEmits } from 'vue'
+import { useStore } from 'vuex'
 import PerformanceDonutGraph from './PerformanceDonutGraph'
 
 const emit = defineEmits(['expandHeight'])
 const props = defineProps({ value: {type: Object, default: {}}, pos: {type: String, default: ''} })
+const store = useStore()
 
 const details = ref(false)
 
