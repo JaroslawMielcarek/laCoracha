@@ -6,7 +6,7 @@
     <p v-if="team.description" class='extra-message'>{{ team.description }}</p>
 
     <div class="row">
-      <h5>Line up</h5>
+      <h5>La alineación</h5>
       <div id = "playersList" :class="{ expanded: this.expanded }">
         <img class='gameField' src = "@/assets/images/field.svg" alt="field"/>
         <template v-for="(players, position) in scoredPlayers.mainPlayers" :key="position">
