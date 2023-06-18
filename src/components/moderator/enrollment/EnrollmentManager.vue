@@ -12,7 +12,7 @@
   </fieldset>
 
   <AddEditData v-if="choosedValue" category="Categoria" :isEditing="isEditing" @submitForm="submit" @closeForm="setState(undefined)">
-    <button class="btn danger row" @click="removeElement('EnrollmentCategory', choosedValue, setState(undefined))">REMOVE</button>
+    <button v-if="isEditing" class="btn danger row" @click="removeElement('EnrollmentCategory', choosedValue, setState(undefined))">REMOVE</button>
     <p class='extra-message'>Nombre</p>
     <CustomInput class='row' v-model:value="choosedValue.name" placeholder='Cadete' :required='true'/>
     <fieldset>
@@ -67,7 +67,7 @@ function toggleProperty (obj, propertyName) {
 async function submit () {
 
   const hasSelectedGender = GENDER_LIST.filter(g => Object.hasOwn(choosedValue.value, g))
-  if (!hasSelectedGender.length) return error.value = 'Por favor, seleccione al menos un género' 
+  if (!hasSelectedGender.length) return error.value = 'Por favor, seleccione género' 
   
   if (await submitForm( isEditing.value ? 'updateEnrollmentCategory' : 'addEnrollmentCategory', choosedValue.value)) setState(undefined)
 }
