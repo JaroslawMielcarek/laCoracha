@@ -40,7 +40,7 @@ function toggleDetails () { details.value = !details.value }
 function getPhoto(value) { 
   return value 
     ? `data:image/${value.contentType || ''};base64,${value.data.toString('base64') || ''}` 
-    : require('@/assets/images/player-full-body.png')
+    : (props.value.isFemale ? require('@/assets/images/player-full.png') : require('@/assets/images/player-full-body.png'))
 }
 
 watch(details, () => { emit('expandHeight', details.value)})
