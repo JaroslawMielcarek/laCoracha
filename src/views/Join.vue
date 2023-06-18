@@ -52,7 +52,7 @@
         <ToggleSlider  :checked="candidate.wasWithUsBefore" @toggled="candidate.wasWithUsBefore = !candidate.wasWithUsBefore"/>
       </div>
       <p v-for='err in error' class='error'>{{ err }}</p>
-      <button class='submit btn color full-width' type='submit'>Unirse</button>
+      <button class='submit btn color full-width' type='submit' :disabled="!filledCorrectly">Unirse</button>
     </form>
     <div v-if="enrollmentResult.title" class='modal-wrapper' @click="'dsdds'">
       <div class='modal enrollment-result'>
@@ -104,6 +104,10 @@ const categoryList = reactive<Category[]>([])
 const categories = computed( () => {
   if (!categoryList.length) return categoryList
   return categoryList.filter( c => Object.hasOwn(c, getSelectedGender()) && c[getSelectedGender()].currentEnrolled < c[getSelectedGender()].maxPlaces )
+})
+const filledCorrectly = computed( () => {
+  const {wasWithUsBefore, ...tmp} = candidate
+  return Object.values(tmp).every(Boolean)
 })
 
 onMounted( () => {
