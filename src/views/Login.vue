@@ -9,7 +9,7 @@
           pattern="^[A-Za-z][A-Za-z0-9_]{6,29}$"
           placeholder='Usuario123'
           hint="Alfabeto, números y guiones bajos permitidos. min 6 caracteres"
-          v-model:value='username'
+          v-model:value='user.username'
           :required="true"
           key='username' />
       </div>
@@ -20,7 +20,7 @@
           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
           placeholder='Contraseña'
           hint="Mayúscula, letra, número, carácter especial y min 8 caracteres"
-          v-model:value='password'
+          v-model:value='user.password'
           :required="true"
           key='password'/>
       </div>
@@ -34,7 +34,7 @@
       </div>
       <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
       <p v-if="isLoading">Loading..</p>
-      <button v-else type='submit' class='btn white full-width'>INICIA SESIÓN</button>
+      <button v-else type='submit' class='btn color full-width' :disabled="!filledFields">INICIA SESIÓN</button>
     </form>
   </div>
 </template>
@@ -50,14 +50,13 @@ const route = useRoute()
 const router = useRouter()
 
 const errorMessage = ref<string[]>([])
-const username = ref<string>('')
-const password = ref<string>('')
+const user = ref({ username: '', password: '' })
 
 const isLoading = computed<boolean>( () => store.getters.getAuthLoadingState )
 const errorMsg = computed<string | string[]>( () => store.getters.getAuthErrorMessage )
-
+const filledFields = computed( () => Object.values(user.value).every(Boolean) )
 function login () {
-  store.dispatch('login', { username: username.value, password: password.value })
+  store.dispatch('login', user.value)
     .then( () => {
       if (route.query.nextUrl) router.push({ path: route.query.nextUrl as string })
       else router.push({ path: '/' })

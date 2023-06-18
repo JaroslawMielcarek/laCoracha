@@ -52,7 +52,7 @@
       </div>
       <p v-for="error in errorMessage" class='error' :key="error">{{error}}</p>
       <p v-if="isLoading">Espere por favor..</p>
-      <button v-else type='submit' class='btn white full-width'>Crear Cuenta</button>
+      <button v-else type='submit' class='btn color full-width' :disabled="!filledFields">Crear Cuenta</button>
     </form>
   </div>
 </template>
@@ -76,7 +76,7 @@ const user = ref({
 
 const isLoading = computed(() => store.getters.getAuthLoadingState )
 const errorMsg = computed(() => store.getters.getAuthErrorMessage )
-
+const filledFields = computed( () => Object.values(user.value).every(Boolean) )
 function register () {
   store.dispatch('register', user.value)
     .then(() => {
