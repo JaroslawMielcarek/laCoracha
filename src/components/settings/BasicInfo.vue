@@ -59,23 +59,23 @@ const store = useStore()
 const userData = computed( () => store.getters.getUser )
     
 const nick = computed({
-      get () { return userData.value.nick ? userData.value.nick.value : '' },
+      get () { return userData.value?.nick.value || '' },
       set (value) { dispatch('nick', value) }
     })
 const position = computed({
-      get () { return userData.value.position ? userData.value.position.value : '' },
+      get () { return userData.value?.position.value || '' },
       set (value) { dispatch('position', value) }
     })
 const number = computed({
-      get () { return userData.value.number ? userData.value.number.value : '' },
+      get () { return userData.value?.number.value || '' },
       set (value) { dispatch('number', parseInt(value)) }
     })
 const height = computed({
-      get () { return userData.value.height ? userData.value.height.value : '' },
+      get () { return userData.value?.height.value || '' },
       set (value) { dispatch('height', parseFloat(value).toFixed(2)) }
     })
 const dominantHand = computed({
-      get () { return userData.value.dominantHand ? userData.value.dominantHand.value : '' },
+      get () { return userData.value?.dominantHand.value || '' },
       set (value) { dispatch('dominantHand', value) }
     })
 

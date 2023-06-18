@@ -28,7 +28,7 @@ import { submitForm } from '../../services/util/universal'
 const store = useStore()
 const user = computed( () => store.getters.getUser )
 
-const playerPref = computed( () => user.value.preferedPositions ? user.value.preferedPositions : [] )
+const playerPref = computed( () => user.value?.preferedPositions || [] )
 const generate = computed( () => {
   const temp = []
   const arr = playerPref.value.map(rank => {
