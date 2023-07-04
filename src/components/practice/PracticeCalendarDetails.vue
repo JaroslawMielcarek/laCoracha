@@ -5,7 +5,7 @@
     </h3>
     <div class='row'>
       <h5 class="subHeader">Jugadores suscritos:</h5>
-      <div :class="['player', { inQueue: isInQueue(player, this.value) }]" v-for="(player, index) in practiceDetails.players" :key="player">
+      <div :class="['player', { inQueue: isInQueue(player, props.value) }]" v-for="(player, index) in practiceDetails.players" :key="player">
         <label class='index'>{{ index + 1 }}</label>
         <span class="nick">{{ player.nick || 'Anonymous' }}:</span>
         <div class='preferedPosition__container'>
