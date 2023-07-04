@@ -4,9 +4,12 @@
     <p v-if="checkStrikes.lastStrike">Último strike obtenido en: <b>{{ isoDateToDayMonthYear(checkStrikes.lastStrike) }}</b></p>
   </div>
   <div class='practice-history'>
-    <div v-if="currentUser.preferedPositions">
+    <div v-if="currentUser.preferedPositions.length">
       <p class='extra-message'>Su preferencia de posición GUARDADA:</p>
       <span class='prefPosition' v-for="position in currentUser.preferedPositions" :key="position">{{ position.choosen }}</span>
+    </div>
+    <div v-else>
+      <p class='extra-message'>Su preferencia de posición <b>no esta elegida</b>. Por favor eligue algunas <router-link to='/settings'>aqui</router-link></p>
     </div>
     <div class='practice-stats' v-if="currentUser.practices && currentUser.practices.attended">
       <p class='extra-message'>Estadísticas:</p>
